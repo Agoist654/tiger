@@ -12,7 +12,9 @@ namespace misc
 {
   template <typename T, class C> unique<T, C>::unique(const data_type& s)
   // FIXME: Some code was deleted here (Initializations).
-  {}
+  {
+      obj_ = s;
+  }
 
   template <typename T, class C>
   typename unique<T, C>::object_set_type& unique<T, C>::object_set_instance()

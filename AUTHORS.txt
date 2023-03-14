@@ -1,1 +1,4 @@
-FIXME: Who are you?
+Souleymane Meite <souleymane.meite@epita.fr>
+David Xu <david.xu@epita.fr>
+Luca Laghouati <luca.laghouati@epita.fr>
+Elias Dionyssopoulos <elias.dionyssopoulos@epita.fr>
