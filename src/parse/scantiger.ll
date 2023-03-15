@@ -60,70 +60,83 @@
 %x SC_COMMENT SC_STRING
 
 /* Abbreviations.  */
-var "var"
-for "for"
-semicolon ";"
-right_bracket "["
-left_bracket "]"
-right_brace "{"
-left_brace "}"
-coma ","
-equal "="
-right_parenthesis "("
-left_parenthesis ")"
-assign ":="
-if "if"
-then "then"
-else "else"
-while "while"
-for "for"
-break "break"
-let "let"
-in "in"
-end "end"
-point "."
 
-add "+"
-sub "-"
-mul "*"
-div "/"
-diff "<>"
-superior ">"
-inferior "<"
-sup_or_equal ">="
-inferior_or_equal "<="
-and "&"
-or "|"
-type "type"
-function "function"
-primitive "primitive"
-double_point ":"
-array "array"
-of "of"
-new "new"
-class "class"
-extends "extends"
-method "method"
+and      "&"                    { return TOKEN(AND    );}
+array    "array"                { return TOK(ARRAY    );}
+assign   ":="                   { return TOK(ASSIGN   );}
+break    "break"                { return TOK(BREAK    );}
+cast     "_cast"                { return TOK(CAST     );}
+class    "class"                { return TOK(CLASS    );}
+colon    ":"                    { return TOK(COLON    );}
+
+comma    ","                    { return TOK(COMMA    );}
+divide   "/"                    { return TOK(DIVIDE   );}
+do       "do"                   { return TOK(DO       );}
+dot      "."                    { return TOK(DOT      );}
+
+else     "else"                 { return TOK(ELSE     );}
+end      "end"                  { return TOK(END      );}
+equal    "="                    { return TOK(EQ       );}
+extends  "extends"              { return TOK(EXTENDS  );}
+for      "for"                  { return TOK(FOR      );}
+function "function"             { return TOK(FUNCTION );}
+ge       ">="                   { return TOK(GE       );}
+gt       ">"                    { return TOK(GT       );}
+if       "if"                   { return TOK(IF       );}
+import   "import"               { return TOK(IMPORT   );}
+in       "in"                   { return TOK(IN       );}
+lbrace   "{"                    { return TOK(LBRACE   );}
+lbrack   "["                    { return TOK(LBRACK   );}
+le       "<="                   { return TOK(LE       );}
+let      "let"                  { return TOK(LET      );}
+lparen   "("                    { return TOK(LPAREN   );}
+lt       "<"                    { return TOK(LT       );}
+minus    "-"                    { return TOK(MINUS    );}
+method   "method"               { return TOK(METHOD   );}
+ne       "<>"                   { return TOK(NE       );}
+new      "new"                  { return TOK(NEW      );}
+nil      "nil"                  { return TOK(NIL      );}
+of       "of"                   { return TOK(OF       );}
+or       "|"                    { return TOK(OR       );}
+plus     "+"                    { return TOK(PLUS     );}
+primitive"primitive"            { return TOK(PRIMITIVE);}
+rbrace   "}"                    { return TOK(RBRACE   );}
+rbrack   "]"                    { return TOK(RBRACK   );}
+rparen   ")"                    { return TOK(RPAREN   );}
+semi     ";"                    { return TOK(SEMI     );}
+then     "then"                 { return TOK(THEN     );}
+times    "*"                    { return TOK(TIMES    );}
+to       "to"                   { return TOK(TO       );}
+type     "type"                 { return TOK(TYPE     );}
+var      "var"                  { return TOK(VAR      );}
+while    "while"                { return TOK(WHILE    );}
+eof      "end of file"          { return TOK(EOF      );}
+
 
 int             [0-9]+;
 string [a-zA-Z]+
 id              [a-z][a-z0-9]*
-  /* FIXME: Some code was deleted here. */
-
-%class{
-  // FIXME: Some code was deleted here (Local variables).
-
+/* FIXME: Some code was deleted here. */
+           %class{
+// FIXME: Some code was deleted here (Local variables).
 }
-
 %%
-/* The rules.  */
-{int}         {
-                int val = 0;
-  // FIXME: Some code was deleted here (Decode, and check the value).
+/* The rules. */
+{int} {
+        int val = 0;
+    //FIXME:Some code was deleted here (Decode, and check the value).
                 return TOKEN_VAL(INT, val);
-              }
-  /* FIXME: Some code was deleted here. */
+      }
+/* FIXME: Some code was deleted here. */
 %%
+
+
+
+
+
+
+
+
 
 
 
