@@ -60,11 +60,59 @@
 %x SC_COMMENT SC_STRING
 
 /* Abbreviations.  */
-int             [0-9]+
+var "var"
+for "for"
+semicolon ";"
+right_bracket "["
+left_bracket "]"
+right_brace "{"
+left_brace "}"
+coma ","
+equal "="
+right_parenthesis "("
+left_parenthesis ")"
+assign ":="
+if "if"
+then "then"
+else "else"
+while "while"
+for "for"
+break "break"
+let "let"
+in "in"
+end "end"
+point "."
+
+add "+"
+sub "-"
+mul "*"
+div "/"
+diff "<>"
+superior ">"
+inferior "<"
+sup_or_equal ">="
+inferior_or_equal "<="
+and "&"
+or "|"
+type "type"
+function "function"
+primitive "primitive"
+double_point ":"
+array "array"
+of "of"
+new "new"
+class "class"
+extends "extends"
+method "method"
+
+int             [0-9]+;
+string [a-zA-Z]+
+id              [a-z][a-z0-9]*
   /* FIXME: Some code was deleted here. */
 
 %class{
   // FIXME: Some code was deleted here (Local variables).
+
 }
 
 %%
