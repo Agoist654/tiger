@@ -154,6 +154,10 @@
 
 
   // FIXME: Some code was deleted here (Priorities/associativities).
+%right "else" "then"
+%nonassoc "<" "<=" "=" "<>" ">" ">="
+%left "*" "/" "&" "|" "+" "-"
+%precedence "*" "/" "+" "-" ">=" "<=" "=" "<>" "<" ">" "&" "|"
 
 // Solving conflicts on:
 // let type foo = bar
@@ -177,11 +181,79 @@ program:
    
 ;
 
-exp:
-  INT
-   
-  // FIXME: Some code was deleted here (More rules).
+list_id: list_id "," list_id
+       | id "=" exp
+       ;
 
+list_exp: list_exp "," list_exp
+        | exp
+;
+
+%token CAST "_cast";
+%token EXP "_exp";
+
+exp:
+    NIL
+  | INT
+  | STRING
+   /* Array and record creations. */
+
+  | type-id "[" exp "]" "of" exp
+  | type-id LBRACE list_id RBRACE
+  | type-id LBRACE RBRACE
+
+  /* Variables, field, elements of an array. */
+  | lvalue
+
+  /* Function call. */
+  | id "(" ")"
+  | id "(" list_exp ")"
+    
+  /* Operations. */
+  | exp "|" exp
+  | exp "&" exp
+  | exp ">=" exp
+  | exp "<=" exp
+  | exp "=" exp
+  | exp "<>" exp
+  | exp ">" exp
+  | exp ">=" exp
+  | "-" exp
+  | exp "+" exp
+  | exp "-" exp
+  | exp "*" exp
+  | exp "/" exp
+  | "(" exps ")"
+
+  /* Assignment. */
+  | lvalue ":=" ex
+
+  /* Control structures. */
+  | "if" exp "then" exp
+  | "if" exp "then" exp "else" exp
+  | "while" exp "do" exp
+  | "for" id ":=" exp "to" exp "do" exp
+  | "break"
+  | "let" chunks "in" exps "end"
+
+  /* Cast of an expression to a given type */
+  | "_cast" "(" exp "," ty ")"
+  /* An expression metavariable */
+  | "_exp" "(" INT ")"
+  ;
+
+lvalue:
+    id
+  /* Record field access. */
+  | lvalue "." id
+  /* Array subscript. */
+  | lvalue "[" exp "]"
+  /* A l-value metavariable */
+   | "_lvalue" "(" INT ")"
+  ;
+
+
+op: "+" | "-" | "*" | "/" | "=" | "<>" | ">" | "<" | ">=" | "<=" | "&" | "|" ;
 /*---------------.
 | Declarations.  |
 `---------------*/
@@ -198,9 +270,9 @@ chunks:
         end
      which is why we end the recursion with a %empty. */
   %empty                  
-| tychunk   chunks        
-  // FIXME: Some code was deleted here (More rules).
-;
+| tychunk   chunks       
+| funchunk  chunks
+| varchunk  chunks;
 
 /*--------------------.
 | Type Declarations.  |
@@ -213,9 +285,32 @@ tychunk:
 | tydec tychunk       
 ;
 
+funchunk:
+        fundec %prec CHUNKS  
+    | fundec funchunk       
+;
+
+varchunk:
+        varchunk %prec CHUNKS
+    | varcdec
+;
+
+vardec:
+      "var" id ":=" exp
+    | "var" id  ":" type-id ":=" exp 
+;
+
+
 tydec:
   "type" ID "=" ty 
 ;
+
+fundec:
+      "function" id "(" tyfields ")"  "=" exp
+    | "function" id "(" tyfields ")" [ ":" type-id ] "=" exp
+    | "primitive" id "(" tyfields ")"
+    | "primitive" id "(" tyfields ")"  ":" type-id
+  ;
 
 ty:
   typeid               
@@ -229,7 +324,7 @@ tyfields:
 ;
 
 tyfields.1:
-  tyfields.1 "," tyfield 
+  tyfields.1 "," tyfield
 | tyfield                
 ;
 
