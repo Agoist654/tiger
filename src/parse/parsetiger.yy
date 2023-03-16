@@ -155,12 +155,17 @@
 
 
   // FIXME: Some code was deleted here (Priorities/associativities).
-%right "else" "then"
+//%precedence DO
+//%right "else" "then"
+%precedence OF
+%precedence ELSE
+%precedence THEN DO
 %precedence ASSIGN
-%left "&" "|"
-%nonassoc "<" "<=" "=" "<>" ">" ">="
-%left "+" "-" "*" "/"
+%left "|" "&"
 %left ","
+%nonassoc ">=" "<=" "=" "<>" "<" ">"
+%left "+" "-"
+%left "*" "/"
 
 
 // Solving conflicts on:
@@ -171,7 +176,7 @@
 // We want the latter.
 %precedence CHUNKS
 %precedence TYPE
-%nonassoc "do" "of" "var" "function" "primitive"
+//%nonassoc "do" "of" "var" "function" "primitive"
   // FIXME: Some code was deleted here (Other declarations).
 
 %start program
@@ -252,8 +257,8 @@ lvalue:
   | lvalue "." ID
   /* Array subscript. */
   | lvalue "[" exp "]"
-  /* A l-value metavariable */
-   | "_lvalue" "(" INT ")"
+  /* A l-value metavariable
+   | "_lvalue" "(" INT ")"*/
   ;
 
 
@@ -298,8 +303,8 @@ funchunk:
 ;
 
 varchunk:
-        varchunk %prec CHUNKS
-    | vardec
+        vardec
+
 ;
 
 vardec:
@@ -313,10 +318,8 @@ tydec:
 ;
 
 fundec:
-      "function" ID "(" tyfields ")"  "=" exp
-    | "function" ID "(" tyfields ")"  ":" typeid  "=" exp
-    | "primitive" ID "(" tyfields ")"
-    | "primitive" ID "(" tyfields ")"  ":" typeid
+      "function" ID "(" tyfields ")" ":" typeid "=" exp
+    | "primitive" ID "(" tyfields ")" ":" typeid
   ;
 
 ty:
@@ -353,4 +356,5 @@ void
 parse::parser::error(const location_type& l, const std::string& m)
 {
   // FIXME: Some code was deleted here.
+  tp.error_ << misc::error::error_type::parse << l << " : "  << m; // tp.location_ replace l ?
 }
