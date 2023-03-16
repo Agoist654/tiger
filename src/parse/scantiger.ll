@@ -39,6 +39,10 @@
 
   // FIXME: Some code was deleted here (Define YY_USER_ACTION to update locations).
 
+#define YY_USER_ACTION \
+    tp.location_.columns(size());
+
+
 #define TOKEN(Type)                             \
   parser::make_ ## Type(tp.location_)
 
@@ -61,65 +65,23 @@
 
 /* Abbreviations.  */
 
-and      "&"                    { return TOKEN(AND    );}
-array    "array"                { return TOK(ARRAY    );}
-assign   ":="                   { return TOK(ASSIGN   );}
-break    "break"                { return TOK(BREAK    );}
-cast     "_cast"                { return TOK(CAST     );}
-class    "class"                { return TOK(CLASS    );}
-colon    ":"                    { return TOK(COLON    );}
-
-comma    ","                    { return TOK(COMMA    );}
-divide   "/"                    { return TOK(DIVIDE   );}
-do       "do"                   { return TOK(DO       );}
-dot      "."                    { return TOK(DOT      );}
-
-else     "else"                 { return TOK(ELSE     );}
-end      "end"                  { return TOK(END      );}
-equal    "="                    { return TOK(EQ       );}
-extends  "extends"              { return TOK(EXTENDS  );}
-for      "for"                  { return TOK(FOR      );}
-function "function"             { return TOK(FUNCTION );}
-ge       ">="                   { return TOK(GE       );}
-gt       ">"                    { return TOK(GT       );}
-if       "if"                   { return TOK(IF       );}
-import   "import"               { return TOK(IMPORT   );}
-in       "in"                   { return TOK(IN       );}
-lbrace   "{"                    { return TOK(LBRACE   );}
-lbrack   "["                    { return TOK(LBRACK   );}
-le       "<="                   { return TOK(LE       );}
-let      "let"                  { return TOK(LET      );}
-lparen   "("                    { return TOK(LPAREN   );}
-lt       "<"                    { return TOK(LT       );}
-minus    "-"                    { return TOK(MINUS    );}
-method   "method"               { return TOK(METHOD   );}
-ne       "<>"                   { return TOK(NE       );}
-new      "new"                  { return TOK(NEW      );}
-nil      "nil"                  { return TOK(NIL      );}
-of       "of"                   { return TOK(OF       );}
-or       "|"                    { return TOK(OR       );}
-plus     "+"                    { return TOK(PLUS     );}
-primitive"primitive"            { return TOK(PRIMITIVE);}
-rbrace   "}"                    { return TOK(RBRACE   );}
-rbrack   "]"                    { return TOK(RBRACK   );}
-rparen   ")"                    { return TOK(RPAREN   );}
-semi     ";"                    { return TOK(SEMI     );}
-then     "then"                 { return TOK(THEN     );}
-times    "*"                    { return TOK(TIMES    );}
-to       "to"                   { return TOK(TO       );}
-type     "type"                 { return TOK(TYPE     );}
-var      "var"                  { return TOK(VAR      );}
-while    "while"                { return TOK(WHILE    );}
-eof      "end of file"          { return TOK(EOF      );}
+/* FIXME: Some code was deleted here. */
 
 
 int             [0-9]+;
-string [a-zA-Z]+
-id              [a-z][a-z0-9]*
-/* FIXME: Some code was deleted here. */
-           %class{
+string          [a-zA-Z]+;
+id              [a-z][a-z0-9]*;
+space           [ \t]
+line            "\r\n"
+                "\n"
+                "\n\r"
+                "\r"
+
+%class{
 // FIXME: Some code was deleted here (Local variables).
+
 }
+
 %%
 /* The rules. */
 {int} {
@@ -128,6 +90,68 @@ id              [a-z][a-z0-9]*
                 return TOKEN_VAL(INT, val);
       }
 /* FIXME: Some code was deleted here. */
+
+
+"array"       return parser::make_ARRAY(tp.location_);
+"&"           return TOKEN(AND);
+":="          return TOKEN(ASSIGN);
+"break"       return TOKEN(BREAK    );
+"_cast"       return TOKEN(CAST     );
+"class"       return TOKEN(CLASS    );
+":"           return TOKEN(COLON    );
+
+","           return TOKEN(COMMA    );
+"/"           return TOKEN(DIVIDE   );
+"do"          return TOKEN(DO       );
+"."           return TOKEN(DOT      );
+
+"else"        return TOKEN(ELSE     );
+"end"         return TOKEN(END      );
+"="           return TOKEN(EQ       );
+"extends"     return TOKEN(EXTENDS  );
+"for"         return TOKEN(FOR      );
+"function"    return TOKEN(FUNCTION );
+">="          return TOKEN(GE       );
+">"           return TOKEN(GT       );
+"if"          return TOKEN(IF       );
+"import"      return TOKEN(IMPORT   );
+"in"          return TOKEN(IN       );
+"{"           return TOKEN(LBRACE   );
+"["           return TOKEN(LBRACK   );
+"<="          return TOKEN(LE       );
+"let"         return TOKEN(LET      );
+"("           return TOKEN(LPAREN   );
+
+"<"           return TOKEN(LT       );
+"-"           return TOKEN(MINUS    );
+"method"      return TOKEN(METHOD   );
+"<>"          return TOKEN(NE       );
+"new"         return TOKEN(NEW      );
+"nil"         return TOKEN(NIL      );
+"of"          return TOKEN(OF       );
+"|"           return TOKEN(OR       );
+"+"           return TOKEN(PLUS     );
+"primitive"   return TOKEN(PRIMITIVE);
+"}"           return TOKEN(RBRACE   );
+"]"           return TOKEN(RBRACK   );
+")"           return TOKEN(RPAREN   );
+";"           return TOKEN(SEMI     );
+"then"        return TOKEN(THEN     );
+"*"           return TOKEN(TIMES    );
+"to"          return TOKEN(TO       );
+"type"        return TOKEN(TYPE     );
+"var"         return TOKEN(VAR      );
+"while"       return TOKEN(WHILE    );
+<<<EOF>>>       return TOKEN(EOF      );
+
+{id}          return TOKEN_VAL(ID, tp.location_.text());
+{string}          return TOKEN_VAL(ID, tp.location_.text());
+{space}       tp.location_.columns();
+{line}        tp.location_.lines();
+              tp._location_.begin = 0;
+
+
+
 %%
 
 
