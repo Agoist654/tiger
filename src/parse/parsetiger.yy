@@ -17,7 +17,8 @@
 // In TC, we expect the GLR to resolve one Shift-Reduce and zero Reduce-Reduce
 // conflict at runtime. Use %expect and %expect-rr to tell Bison about it.
   // FIXME: Some code was deleted here (Other directives).
-
+%expect 1
+%expect-rr 0
 %define parse.error verbose
 %defines
 %debug
@@ -155,9 +156,12 @@
 
   // FIXME: Some code was deleted here (Priorities/associativities).
 %right "else" "then"
+%precedence ASSIGN
+%left "&" "|"
 %nonassoc "<" "<=" "=" "<>" ">" ">="
-%left "*" "/" "&" "|" "+" "-"
-%precedence "*" "/" "+" "-" ">=" "<=" "=" "<>" "<" ">" "&" "|"
+%left "+" "-" "*" "/"
+%left ","
+
 
 // Solving conflicts on:
 // let type foo = bar
@@ -167,6 +171,7 @@
 // We want the latter.
 %precedence CHUNKS
 %precedence TYPE
+%nonassoc "do" "of" "var" "function" "primitive"
   // FIXME: Some code was deleted here (Other declarations).
 
 %start program
@@ -182,37 +187,36 @@ program:
 ;
 
 list_id: list_id "," list_id
-       | id "=" exp
+       | ID "=" exp
        ;
 
 list_exp: list_exp "," list_exp
         | exp
 ;
 
-%token CAST "_cast";
 %token EXP "_exp";
-
+exps: %empty
+    | list_exp;
 exp:
     NIL
   | INT
   | STRING
    /* Array and record creations. */
 
-  | type-id "[" exp "]" "of" exp
-  | type-id LBRACE list_id RBRACE
-  | type-id LBRACE RBRACE
+  | typeid "[" exp "]" "of" exp
+  | typeid LBRACE list_id RBRACE
+  | typeid LBRACE RBRACE
 
   /* Variables, field, elements of an array. */
   | lvalue
 
   /* Function call. */
-  | id "(" ")"
-  | id "(" list_exp ")"
+  | ID "(" ")"
+  | ID "(" list_exp ")"
     
   /* Operations. */
   | exp "|" exp
-  | exp "&" exp
-  | exp ">=" exp
+  | exp "&" exp 
   | exp "<=" exp
   | exp "=" exp
   | exp "<>" exp
@@ -226,13 +230,13 @@ exp:
   | "(" exps ")"
 
   /* Assignment. */
-  | lvalue ":=" ex
+  | lvalue ":=" exp
 
   /* Control structures. */
   | "if" exp "then" exp
   | "if" exp "then" exp "else" exp
   | "while" exp "do" exp
-  | "for" id ":=" exp "to" exp "do" exp
+  | "for" ID ":=" exp "to" exp "do" exp
   | "break"
   | "let" chunks "in" exps "end"
 
@@ -243,9 +247,9 @@ exp:
   ;
 
 lvalue:
-    id
+    ID
   /* Record field access. */
-  | lvalue "." id
+  | lvalue "." ID
   /* Array subscript. */
   | lvalue "[" exp "]"
   /* A l-value metavariable */
@@ -253,12 +257,13 @@ lvalue:
   ;
 
 
-op: "+" | "-" | "*" | "/" | "=" | "<>" | ">" | "<" | ">=" | "<=" | "&" | "|" ;
+//op: "+" | "-" | "*" | "/" | "=" | "<>" | ">" | "<" | ">=" | "<=" | "&" | "|" ;
 /*---------------.
 | Declarations.  |
 `---------------*/
 
 %token CHUNKS "_chunks";
+
 chunks:
   /* Chunks are contiguous series of declarations of the same type
      (TypeDec, FunctionDec...) to which we allow certain specfic behavior like
@@ -269,10 +274,12 @@ chunks:
             ..
         end
      which is why we end the recursion with a %empty. */
-  %empty                  
-| tychunk   chunks       
-| funchunk  chunks
-| varchunk  chunks;
+  %empty
+
+| tychunk chunks      
+| funchunk chunks
+| varchunk chunks
+|"import" STRING chunks;
 
 /*--------------------.
 | Type Declarations.  |
@@ -292,12 +299,12 @@ funchunk:
 
 varchunk:
         varchunk %prec CHUNKS
-    | varcdec
+    | vardec
 ;
 
 vardec:
-      "var" id ":=" exp
-    | "var" id  ":" type-id ":=" exp 
+      "var" ID ":=" exp
+    | "var" ID  ":" typeid ":=" exp 
 ;
 
 
@@ -306,10 +313,10 @@ tydec:
 ;
 
 fundec:
-      "function" id "(" tyfields ")"  "=" exp
-    | "function" id "(" tyfields ")" [ ":" type-id ] "=" exp
-    | "primitive" id "(" tyfields ")"
-    | "primitive" id "(" tyfields ")"  ":" type-id
+      "function" ID "(" tyfields ")"  "=" exp
+    | "function" ID "(" tyfields ")"  ":" typeid  "=" exp
+    | "primitive" ID "(" tyfields ")"
+    | "primitive" ID "(" tyfields ")"  ":" typeid
   ;
 
 ty:
