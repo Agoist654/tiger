@@ -38,7 +38,7 @@
 #include <parse/tiger-parser.hh>
 
   // FIXME: Some code was deleted here (Define YY_USER_ACTION to update locations).
-//DONE
+/*DONE*/
 #define YY_USER_ACTION \
     tp.location_.columns(size());
 
@@ -58,7 +58,6 @@
                 << misc::escape(text()) << "'\n";       \
   } while (false)
 
-
 %}
 
 %x SC_COMMENT SC_STRING
@@ -66,29 +65,25 @@
 /* Abbreviations.  */
 
 /* FIXME: Some code was deleted here. */
-/*done*/
+/*DONE*/
 
 int             [0-9]+;
 string          [a-zA-Z]+;
-id              [a-z][a-z0-9]*;
+id              [[a-zA-Z][a-zA-Z0-9_]*|"_main"];
 space           [ \t]
 
 
 %class{
 // FIXME: Some code was deleted here (Local variables).
+/*DONE*/
 int nb_comment = 0;
 std::string growing_string = "";
 }
 
 %%
 /* The rules. */
-{int} {
-        int val = 0;
-    //FIXME:Some code was deleted here (Decode, and check the value).
-                return TOKEN_VAL(INT, val);
-      }
 /* FIXME: Some code was deleted here. */
-
+/*FIXED on going*/
 
 "array"       return parser::make_ARRAY(tp.location_);
 "&"           return TOKEN(AND);
@@ -146,6 +141,11 @@ std::string growing_string = "";
            start(SC_COMMENT);
 }
 
+{int} {
+        int val = 0;
+    //FIXME:Some code was deleted here (Decode, and check the value).
+                return TOKEN_VAL(INT, val);
+      }
 
 {id}          return TOKEN_VAL(ID, text());
 
@@ -195,41 +195,66 @@ tp.location_.end.column = 0;
      if (nb_comment == 0)
      start(INITIAL);
      else
-     {
+     do {
          tp.error_ << misc::error::error_type::scan        \
          << tp.location_                                 \
          << "comment never end"                          \
          << misc::escape(text()) << "'\n";               \
      } while (false)
+     start(INITIAL);
 }
 
-<<EOF>> {
+<<EOF>> do {
      tp.error_ << misc::error::error_type::scan        \
      << tp.location_                         \
      << "EOF in comment"                     \
      << misc::escape(text()) << "'\n";       \
- } while (false)
+ } while (false);
+start(INITIAL);
 }
 
 <SC_STRING> {
-    "\a"
-    "\n" tp
-    
 
+"\"" {start(INITIAL);}
+"\a" {growing_string = growing_string + '\a';}
+"\b" {growing_string = growing_string + '\b';}
+"\f" {growing_string = growing_string + '\f';}
+"\n" {growing_string = growing_string + '\n';}
+"\r" {growing_string = growing_string + '\r';}
+"\t" {growing_string = growing_string + '\t';}
+"\v" {growing_string = growing_string + '\v';}
 
+\\[0-7]{3} {
+        growing_string += strtol(text() + 1, 0, 8);
+        do {
+        if (growing_string > 255)
+            tp.error_ << misc::error::error_type::scan        \
+            << tp.location_                                   \
+            << "wring octal\n"                                \
+            << misc::escape(text()) << "'\n";                 \
+        } while (false);
+        start(INITIAL);
 
+    }
+
+\\x[0-9a-fA-F]{2}  {
+  growing_string += strtol(text() + 2, 0, 16);
 
 }
 
+"\\." {
+    do {
+        if (growing_string > 255)
+            tp.error_ << misc::error::error_type::scan        \
+            << tp.location_                                   \
+            << "wring octal\n"                                \
+            << misc::escape(text()) << "'\n";                 \
+        } while (false);
+    start(INITIAL);
+}
+
+"." {growing_string = growing_string + text();}
+}
+
 %%
-
-
-
-
-
-
-
-
-
-
 
