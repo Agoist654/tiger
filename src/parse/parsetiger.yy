@@ -157,13 +157,15 @@
   // FIXME: Some code was deleted here (Priorities/associativities).
 //%precedence DO
 //%right "else" "then"
-%precedence OF
+//%precedence OF
 %precedence ELSE
 %precedence THEN DO
 %precedence ASSIGN
-%left "|" "&"
+%left "|"
+%left "&"
 %left ","
-%nonassoc ">=" "<=" "=" "<>" "<" ">"
+%nonassoc ">=" "<=" "=" "<>"
+%nonassoc ">"
 %left "+" "-"
 %left "*" "/"
 
@@ -176,8 +178,9 @@
 // We want the latter.
 %precedence CHUNKS
 %precedence TYPE
-//%nonassoc "do" "of" "var" "function" "primitive"
+
   // FIXME: Some code was deleted here (Other declarations).
+%precedence FUNCTION PRIMITIVE
 
 %start program
 
@@ -208,7 +211,7 @@ exp:
   | STRING
    /* Array and record creations. */
 
-  | typeid "[" exp "]" "of" exp
+  //| typeid "[" exp "]" "of" exp
   | typeid LBRACE list_id RBRACE
   | typeid LBRACE RBRACE
 
@@ -280,7 +283,6 @@ chunks:
         end
      which is why we end the recursion with a %empty. */
   %empty
-
 | tychunk chunks      
 | funchunk chunks
 | varchunk chunks
