@@ -78,6 +78,7 @@ space           [ \t]
 /*DONE*/
 int nb_comment = 0;
 std::string growing_string = "";
+long ouais = 0;
 }
 
 %%
@@ -136,10 +137,6 @@ std::string growing_string = "";
 "var"         return TOKEN(VAR      );
 "while"       return TOKEN(WHILE    );
 <<EOF>>       return TOKEN(EOF      );
-
-"/*" { growing_string.clear();
-           start(SC_COMMENT);
-}
 
 {int} {
         int val = 0;
@@ -200,7 +197,7 @@ tp.location_.end.column = 0;
          << tp.location_                                 \
          << "comment never end"                          \
          << misc::escape(text()) << "'\n";               \
-     } while (false)
+     } while (false);
      start(INITIAL);
 }
 
@@ -210,7 +207,7 @@ tp.location_.end.column = 0;
      << "EOF in comment"                     \
      << misc::escape(text()) << "'\n";       \
  } while (false);
-start(INITIAL);
+    start(INITIAL);
 }
 
 <SC_STRING> {
@@ -225,9 +222,9 @@ start(INITIAL);
 "\v" {growing_string = growing_string + '\v';}
 
 \\[0-7]{3} {
-        growing_string += strtol(text() + 1, 0, 8);
+        ouais += strtol(text() + 1, 0, 8);
         do {
-        if (growing_string > 255)
+        if (ouais > 255)
             tp.error_ << misc::error::error_type::scan        \
             << tp.location_                                   \
             << "wring octal\n"                                \
@@ -244,7 +241,6 @@ start(INITIAL);
 
 "\\." {
     do {
-        if (growing_string > 255)
             tp.error_ << misc::error::error_type::scan        \
             << tp.location_                                   \
             << "wring octal\n"                                \
@@ -257,4 +253,3 @@ start(INITIAL);
 }
 
 %%
-
