@@ -150,24 +150,27 @@ long ouais = 0;
 
 {space}       tp.location_.columns();
 
-"\r\n"       {
+/*lines*/
+\n       { tp.location_.lines();
+tp.location_.end.column = 0;
+}
+
+\r       { tp.location_.lines();
+tp.location_.end.column = 0;
+}
+
+\r\n       {
     tp.location_.lines();
     tp.location_.end.column = 0;
 }
 
-"\n\r"       { tp.location_.lines();
+\n\r       { tp.location_.lines();
 tp.location_.end.column = 0;
 }
 
-"\r"       { tp.location_.lines();
-tp.location_.end.column = 0;
-}
-
-"\n"       { tp.location_.lines();
-tp.location_.end.column = 0;
-}
 
 "/*" {
+    nb_comment++;
     growing_string.clear();
     start(SC_COMMENT);
 }
@@ -196,7 +199,8 @@ tp.location_.end.column = 0;
          tp.error_ << misc::error::error_type::scan        \
          << tp.location_                                 \
          << "comment never end"                          \
-         << misc::escape(text()) << "'\n";               \
+         << misc::escape(text()) << "'\n"               \
+         << nb_comment;                                 \
      } while (false);
      start(INITIAL);
 }
