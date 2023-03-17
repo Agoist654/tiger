@@ -17,7 +17,8 @@
 // In TC, we expect the GLR to resolve one Shift-Reduce and zero Reduce-Reduce
 // conflict at runtime. Use %expect and %expect-rr to tell Bison about it.
   // FIXME: Some code was deleted here (Other directives).
-
+%expect 1
+%expect-rr 0
 %define parse.error verbose
 %defines
 %debug
@@ -154,6 +155,20 @@
 
 
   // FIXME: Some code was deleted here (Priorities/associativities).
+//%precedence DO
+//%right "else" "then"
+//%precedence OF
+%precedence ELSE
+%precedence THEN DO
+%precedence ASSIGN
+%left "|"
+%left "&"
+%left ","
+%nonassoc ">=" "<=" "=" "<>"
+%nonassoc ">"
+%left "+" "-"
+%left "*" "/"
+
 
 // Solving conflicts on:
 // let type foo = bar
@@ -163,7 +178,9 @@
 // We want the latter.
 %precedence CHUNKS
 %precedence TYPE
+
   // FIXME: Some code was deleted here (Other declarations).
+%precedence FUNCTION PRIMITIVE
 
 %start program
 
@@ -177,16 +194,84 @@ program:
    
 ;
 
-exp:
-  INT
-   
-  // FIXME: Some code was deleted here (More rules).
+list_id: list_id "," list_id
+       | ID "=" exp
+       ;
 
+list_exp: list_exp "," list_exp
+        | exp
+;
+
+%token EXP "_exp";
+exps: %empty
+    | list_exp;
+exp:
+    NIL
+  | INT
+  | STRING
+   /* Array and record creations. */
+
+  //| typeid "[" exp "]" "of" exp
+  | typeid LBRACE list_id RBRACE
+  | typeid LBRACE RBRACE
+
+  /* Variables, field, elements of an array. */
+  | lvalue
+
+  /* Function call. */
+  | ID "(" ")"
+  | ID "(" list_exp ")"
+    
+  /* Operations. */
+  | exp "|" exp
+  | exp "&" exp 
+  | exp "<=" exp
+  | exp "=" exp
+  | exp "<>" exp
+  | exp ">" exp
+  | exp ">=" exp
+  | "-" exp
+  | exp "+" exp
+  | exp "-" exp
+  | exp "*" exp
+  | exp "/" exp
+  | "(" exps ")"
+
+  /* Assignment. */
+  | lvalue ":=" exp
+
+  /* Control structures. */
+  | "if" exp "then" exp
+  | "if" exp "then" exp "else" exp
+  | "while" exp "do" exp
+  | "for" ID ":=" exp "to" exp "do" exp
+  | "break"
+  | "let" chunks "in" exps "end"
+
+  /* Cast of an expression to a given type */
+  | "_cast" "(" exp "," ty ")"
+  /* An expression metavariable */
+  | "_exp" "(" INT ")"
+  ;
+
+lvalue:
+    ID
+  /* Record field access. */
+  | lvalue "." ID
+  /* Array subscript. */
+  | lvalue "[" exp "]"
+  /* A l-value metavariable
+   | "_lvalue" "(" INT ")"*/
+  ;
+
+
+//op: "+" | "-" | "*" | "/" | "=" | "<>" | ">" | "<" | ">=" | "<=" | "&" | "|" ;
 /*---------------.
 | Declarations.  |
 `---------------*/
 
 %token CHUNKS "_chunks";
+
 chunks:
   /* Chunks are contiguous series of declarations of the same type
      (TypeDec, FunctionDec...) to which we allow certain specfic behavior like
@@ -197,10 +282,11 @@ chunks:
             ..
         end
      which is why we end the recursion with a %empty. */
-  %empty                  
-| tychunk   chunks        
-  // FIXME: Some code was deleted here (More rules).
-;
+  %empty
+| tychunk chunks      
+| funchunk chunks
+| varchunk chunks
+|"import" STRING chunks;
 
 /*--------------------.
 | Type Declarations.  |
@@ -213,9 +299,30 @@ tychunk:
 | tydec tychunk       
 ;
 
+funchunk:
+        fundec %prec CHUNKS  
+    | fundec funchunk       
+;
+
+varchunk:
+        vardec
+
+;
+
+vardec:
+      "var" ID ":=" exp
+    | "var" ID  ":" typeid ":=" exp 
+;
+
+
 tydec:
   "type" ID "=" ty 
 ;
+
+fundec:
+      "function" ID "(" tyfields ")" ":" typeid "=" exp
+    | "primitive" ID "(" tyfields ")" ":" typeid
+  ;
 
 ty:
   typeid               
@@ -229,7 +336,7 @@ tyfields:
 ;
 
 tyfields.1:
-  tyfields.1 "," tyfield 
+  tyfields.1 "," tyfield
 | tyfield                
 ;
 
@@ -251,4 +358,5 @@ void
 parse::parser::error(const location_type& l, const std::string& m)
 {
   // FIXME: Some code was deleted here.
+  tp.error_ << misc::error::error_type::parse << l << " : "  << m; // tp.location_ replace l ?
 }
