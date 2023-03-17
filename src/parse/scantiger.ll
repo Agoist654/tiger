@@ -72,14 +72,12 @@ int             [0-9]+;
 string          [a-zA-Z]+;
 id              [a-z][a-z0-9]*;
 space           [ \t]
-line            "\r\n"
-                "\n"
-                "\n\r"
-                "\r"
+
 
 %class{
 // FIXME: Some code was deleted here (Local variables).
-
+int nb_comment = 0;
+std::string growing_string = "";
 }
 
 %%
@@ -142,15 +140,68 @@ line            "\r\n"
 "type"        return TOKEN(TYPE     );
 "var"         return TOKEN(VAR      );
 "while"       return TOKEN(WHILE    );
-<<<EOF>>>       return TOKEN(EOF      );
+<<EOF>>       return TOKEN(EOF      );
 
-{id}          return TOKEN_VAL(ID, tp.location_.text());
-{string}          return TOKEN_VAL(ID, tp.location_.text());
+"/*" { growing_string.clear();
+           start(SC_COMMENT);
+}
+
+"*/"         start(SC_COMMENT);
+
+{id}          return TOKEN_VAL(ID, text());
+
+{string}      return TOKEN_VAL(ID, text());
+
 {space}       tp.location_.columns();
-{line}        tp.location_.lines();
-              tp._location_.begin = 0;
+
+"\n\r"       {
+    tp.location_.lines();
+    tp.location_.end.column = 0;
+}
+
+"\n\r"       { tp.location_.lines();
+tp.location_.end.column = 0;
+}
+
+"\r"       { tp.location_.lines();
+tp.location_.end.column = 0;
+}
+
+"\n"       { tp.location_.lines();
+tp.location_.end.column = 0;
+}
+
+"/*" {
+    growing_string.clear();
+    start(SC_COMMENT);
+}
 
 
+<SC_COMMENT> {
+
+"/*" {nb_comment++;}
+[^*]*
+"*"+[^*/]*
+"*/" {
+     nb_comment--;
+     if (nb_comment == 0)
+     start(INITIAL);
+     else
+     {
+         tp.error_ << misc::error::error_type::scan        \
+         << tp.location_                                 \
+         << "comment never end"                          \
+         << misc::escape(text()) << "'\n";               \
+     } while (false)
+}
+
+<<EOF>> {
+     tp.error_ << misc::error::error_type::scan        \
+     << tp.location_                         \
+     << "EOF in comment"                     \
+     << misc::escape(text()) << "'\n";       \
+ } while (false)
+}
 
 %%
 
