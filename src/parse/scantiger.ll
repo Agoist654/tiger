@@ -38,7 +38,7 @@
 #include <parse/tiger-parser.hh>
 
   // FIXME: Some code was deleted here (Define YY_USER_ACTION to update locations).
-
+//DONE
 #define YY_USER_ACTION \
     tp.location_.columns(size());
 
@@ -66,7 +66,7 @@
 /* Abbreviations.  */
 
 /* FIXME: Some code was deleted here. */
-
+/*done*/
 
 int             [0-9]+;
 string          [a-zA-Z]+;
@@ -146,7 +146,6 @@ std::string growing_string = "";
            start(SC_COMMENT);
 }
 
-"*/"         start(SC_COMMENT);
 
 {id}          return TOKEN_VAL(ID, text());
 
@@ -154,7 +153,7 @@ std::string growing_string = "";
 
 {space}       tp.location_.columns();
 
-"\n\r"       {
+"\r\n"       {
     tp.location_.lines();
     tp.location_.end.column = 0;
 }
@@ -176,12 +175,21 @@ tp.location_.end.column = 0;
     start(SC_COMMENT);
 }
 
+"\"" {
+    growing_string.clear();
+    start(SC_STRING);;
+}
 
+
+/*sublexer*/
 <SC_COMMENT> {
 
 "/*" {nb_comment++;}
+
 [^*]*
+
 "*"+[^*/]*
+
 "*/" {
      nb_comment--;
      if (nb_comment == 0)
@@ -201,6 +209,16 @@ tp.location_.end.column = 0;
      << "EOF in comment"                     \
      << misc::escape(text()) << "'\n";       \
  } while (false)
+}
+
+<SC_STRING> {
+    "\a"
+    "\n" tp
+    
+
+
+
+
 }
 
 %%
