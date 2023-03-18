@@ -177,11 +177,9 @@ tp.location_.end.column = 0;
 tp.location_.end.column = 0;
 }
 
-
 "/*" {
+    std::cout << "comment match";
     nb_comment++;
-
-    std::cout << "comment mathc\n";
     growing_string.clear();
     start(SC_COMMENT);
 }
@@ -195,7 +193,27 @@ tp.location_.end.column = 0;
 /*sublexer*/
 <SC_COMMENT> {
 
-<<<EOF>>> {
+{space}       tp.location_.columns();
+
+/*lines*/
+\n       { tp.location_.lines();
+tp.location_.end.column = 0;
+}
+
+\r       { tp.location_.lines();
+tp.location_.end.column = 0;
+}
+
+\r\n       {
+    tp.location_.lines();
+    tp.location_.end.column = 0;
+}
+
+\n\r       { tp.location_.lines();
+tp.location_.end.column = 0;
+}
+
+<<EOF>> {
     std::cout << "end of file match\n";
      tp.error_ << misc::error::error_type::scan        \
      << tp.location_                         \
@@ -215,7 +233,6 @@ tp.location_.end.column = 0;
      if (nb_comment == 0)
      start(INITIAL);
 }
-
 }
 
 <SC_STRING> {
