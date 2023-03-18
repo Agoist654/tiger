@@ -55,7 +55,7 @@
       tp.error_ << misc::error::error_type::scan        \
                 << tp.location_                         \
                 << ": invalid identifier: `"            \
-                << misc::escape(text()) << "'\n";       \
+                << misc::escape(text()) << "\n";       \
   } while (false)
 
 %}
@@ -84,7 +84,7 @@ long ouais = 0;
 %%
 /* The rules. */
 /* FIXME: Some code was deleted here. */
-/*FIXED on going*/
+/*ONGOING*//*should be DONE*/
 
 "array"       return parser::make_ARRAY(tp.location_);
 "&"           return TOKEN(AND);
@@ -141,7 +141,17 @@ long ouais = 0;
 {int} {
         int val = 0;
     //FIXME:Some code was deleted here (Decode, and check the value).
-                return TOKEN_VAL(INT, val);
+        /*DONE*/
+        val = (int)strtol(text(), 0, 10);
+        if (val > 2147483647 || val < -2147483647)
+        do {                                                  \
+            if (!tp.enable_extensions_p_)                       \
+            tp.error_ << misc::error::error_type::scan        \
+            << tp.location_                         \
+            << ": invalid identifier: `"            \
+            << misc::escape(text()) << "\n";       \
+        } while (false);
+        return TOKEN_VAL(INT, val);
       }
 
 {id}          return TOKEN_VAL(ID, text());
@@ -199,7 +209,7 @@ tp.location_.end.column = 0;
          tp.error_ << misc::error::error_type::scan        \
          << tp.location_                                 \
          << "comment never end"                          \
-         << misc::escape(text()) << "'\n"               \
+         << misc::escape(text()) << "\n"               \
          << nb_comment;                                 \
      } while (false);
      start(INITIAL);
@@ -216,14 +226,27 @@ tp.location_.end.column = 0;
 
 <SC_STRING> {
 
-"\"" {start(INITIAL);}
-"\a" {growing_string = growing_string + '\a';}
+<<EOF>> do {
+     tp.error_ << misc::error::error_type::scan        \
+     << tp.location_                         \
+     << "EOF in string"                     \
+     << misc::escape(text()) << "\n";       \
+ } while (false);
+    start(INITIAL);}
+
+\\\"  {growing_string = growing_string + "\"";}
+\" {start(INITIAL);}
+\a {growing_string = growing_string + '\a';}
 "\b" {growing_string = growing_string + '\b';}
-"\f" {growing_string = growing_string + '\f';}
-"\n" {growing_string = growing_string + '\n';}
-"\r" {growing_string = growing_string + '\r';}
-"\t" {growing_string = growing_string + '\t';}
-"\v" {growing_string = growing_string + '\v';}
+\f {growing_string = growing_string + '\f';}
+\n {growing_string = growing_string + '\n';}
+\r {growing_string = growing_string + '\r';}
+\t {growing_string = growing_string + '\t';}
+\v {growing_string = growing_string + '\v';}
+
+\\\\ {growing_string = growing_string + "\\";
+      growing_string = growing_string + "\\";}
+
 
 \\[0-7]{3} {
         ouais += strtol(text() + 1, 0, 8);
@@ -231,8 +254,8 @@ tp.location_.end.column = 0;
         if (ouais > 255)
             tp.error_ << misc::error::error_type::scan        \
             << tp.location_                                   \
-            << "wring octal\n"                                \
-            << misc::escape(text()) << "'\n";                 \
+            << "wrong octal\n"                                \
+            << misc::escape(text()) << "\n";                 \
         } while (false);
         start(INITIAL);
 
@@ -243,17 +266,18 @@ tp.location_.end.column = 0;
 
 }
 
-"\\." {
+\\. {
     do {
             tp.error_ << misc::error::error_type::scan        \
             << tp.location_                                   \
-            << "wring octal\n"                                \
-            << misc::escape(text()) << "'\n";                 \
+            << "wring hexal\n"                                \
+            << misc::escape(text()) << "\n";                 \
         } while (false);
     start(INITIAL);
 }
 
-"." {growing_string = growing_string + text();}
+. {growing_string = growing_string + text();}
+
 }
 
 %%
