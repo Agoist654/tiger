@@ -76,6 +76,7 @@ space           [ \t]
 %class{
 // FIXME: Some code was deleted here (Local variables).
 /*DONE*/
+int nb_quote = 0;
 int nb_comment = 0;
 std::string growing_string = "";
 long ouais = 0;
@@ -144,13 +145,11 @@ long ouais = 0;
         /*DONE*/
         val = (int)strtol(text(), 0, 10);
         if (val > 2147483647 || val < -2147483647)
-        do {                                                  \
             if (!tp.enable_extensions_p_)                       \
             tp.error_ << misc::error::error_type::scan        \
             << tp.location_                         \
             << ": invalid identifier: `"            \
             << misc::escape(text()) << "\n";       \
-        } while (false);
         return TOKEN_VAL(INT, val);
       }
 
@@ -181,6 +180,8 @@ tp.location_.end.column = 0;
 
 "/*" {
     nb_comment++;
+
+    std::cout << "comment mathc\n";
     growing_string.clear();
     start(SC_COMMENT);
 }
@@ -194,7 +195,16 @@ tp.location_.end.column = 0;
 /*sublexer*/
 <SC_COMMENT> {
 
-"/*" {nb_comment++;}
+<<<EOF>>> {
+    std::cout << "end of file match\n";
+     tp.error_ << misc::error::error_type::scan        \
+     << tp.location_                         \
+     << "EOF in comment"                     \
+     << misc::escape(text()) << "\n";       \
+    start(INITIAL);
+}
+
+"/*" {nb_comment++; start(SC_COMMENT);}
 
 [^*]*
 
@@ -204,75 +214,56 @@ tp.location_.end.column = 0;
      nb_comment--;
      if (nb_comment == 0)
      start(INITIAL);
-     else
-     do {
-         tp.error_ << misc::error::error_type::scan        \
-         << tp.location_                                 \
-         << "comment never end"                          \
-         << misc::escape(text()) << "\n"               \
-         << nb_comment;                                 \
-     } while (false);
-     start(INITIAL);
 }
 
-<<EOF>> do {
-     tp.error_ << misc::error::error_type::scan        \
-     << tp.location_                         \
-     << "EOF in comment"                     \
-     << misc::escape(text()) << "'\n";       \
- } while (false);
-    start(INITIAL);
 }
 
 <SC_STRING> {
 
-<<EOF>> do {
-     tp.error_ << misc::error::error_type::scan        \
-     << tp.location_                         \
-     << "EOF in string"                     \
-     << misc::escape(text()) << "\n";       \
- } while (false);
-    start(INITIAL);}
+<<<EOF>>> {
+        tp.error_ << misc::error::error_type::scan        \
+        << tp.location_                         \
+        << "string unclosed\n";                     \
+        start(INITIAL);
+}
 
 \\\"  {growing_string = growing_string + "\"";}
-\" {start(INITIAL);}
-\a {growing_string = growing_string + '\a';}
-"\b" {growing_string = growing_string + '\b';}
-\f {growing_string = growing_string + '\f';}
-\n {growing_string = growing_string + '\n';}
-\r {growing_string = growing_string + '\r';}
-\t {growing_string = growing_string + '\t';}
-\v {growing_string = growing_string + '\v';}
+\" {
+    start(INITIAL);
+    return TOKEN_VAL(STRING, growing_string);
+}
+
+\\a {growing_string = growing_string + '\a';}
+\\b {growing_string = growing_string + '\b';}
+\\f {growing_string = growing_string + '\f';}
+\\n {growing_string = growing_string + '\n';}
+\\r {growing_string = growing_string + '\r';}
+\\t {growing_string = growing_string + '\t';}
+\\v {growing_string = growing_string + '\v';}
 
 \\\\ {growing_string = growing_string + "\\";
       growing_string = growing_string + "\\";}
 
 
 \\[0-7]{3} {
-        ouais += strtol(text() + 1, 0, 8);
-        do {
-        if (ouais > 255)
-            tp.error_ << misc::error::error_type::scan        \
-            << tp.location_                                   \
-            << "wrong octal\n"                                \
-            << misc::escape(text()) << "\n";                 \
-        } while (false);
-        start(INITIAL);
-
-    }
+    ouais += strtol(text() + 1, 0, 8);
+    if (ouais > 255)
+        tp.error_ << misc::error::error_type::scan        \
+        << tp.location_                                   \
+        << "wrong octal\n"                                \
+        << misc::escape(text()) << "\n";                 \
+    start(INITIAL);
+}
 
 \\x[0-9a-fA-F]{2}  {
   growing_string += strtol(text() + 2, 0, 16);
-
 }
 
 \\. {
-    do {
             tp.error_ << misc::error::error_type::scan        \
             << tp.location_                                   \
-            << "wring hexal\n"                                \
+            << "wrong escape\n"                                \
             << misc::escape(text()) << "\n";                 \
-        } while (false);
     start(INITIAL);
 }
 
