@@ -107,13 +107,13 @@ long ouais = 0;
 "for"         return TOKEN(FOR      );
 "function"    return TOKEN(FUNCTION );
 ">="          return TOKEN(GE       );
+"<="          return TOKEN(LE       );
 ">"           return TOKEN(GT       );
 "if"          return TOKEN(IF       );
 "import"      return TOKEN(IMPORT   );
 "in"          return TOKEN(IN       );
 "{"           return TOKEN(LBRACE   );
 "["           return TOKEN(LBRACK   );
-"<="          return TOKEN(LE       );
 "let"         return TOKEN(LET      );
 "("           return TOKEN(LPAREN   );
 
