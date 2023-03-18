@@ -137,7 +137,6 @@ long ouais = 0;
 "type"        return TOKEN(TYPE     );
 "var"         return TOKEN(VAR      );
 "while"       return TOKEN(WHILE    );
-<<EOF>>       return TOKEN(EOF      );
 
 {int} {
         int val = 0;
@@ -178,7 +177,7 @@ tp.location_.end.column = 0;
 }
 
 "/*" {
-    std::cout << "comment match";
+
     nb_comment++;
     growing_string.clear();
     start(SC_COMMENT);
@@ -214,7 +213,6 @@ tp.location_.end.column = 0;
 }
 
 <<EOF>> {
-    std::cout << "end of file match\n";
      tp.error_ << misc::error::error_type::scan        \
      << tp.location_                         \
      << "EOF in comment"                     \
@@ -228,7 +226,7 @@ tp.location_.end.column = 0;
 
 "*"+[^*/]*
 
-"*/" {
+"*"+"/" {
      nb_comment--;
      if (nb_comment == 0)
      start(INITIAL);
@@ -237,7 +235,7 @@ tp.location_.end.column = 0;
 
 <SC_STRING> {
 
-<<<EOF>>> {
+<<EOF>> {
         tp.error_ << misc::error::error_type::scan        \
         << tp.location_                         \
         << "string unclosed\n";                     \
@@ -288,4 +286,5 @@ tp.location_.end.column = 0;
 
 }
 
+<<EOF>>       return TOKEN(EOF      );
 %%
