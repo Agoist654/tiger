@@ -1,0 +1,5 @@
+src/version.lo: src/version.cc \
+ /run/current-system/sw/include/stdc-predef.h config.h authors.h
+/run/current-system/sw/include/stdc-predef.h:
+config.h:
+authors.h:

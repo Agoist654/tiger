@@ -71,6 +71,30 @@
 %token <int>            INT    "integer"
 
 
+/*--------------------------------.
+| Support for the non-terminals.  |
+`--------------------------------*/
+
+%code requires
+{
+# include <ast/fwd.hh>
+// Provide the declarations of the following classes for the
+// %destructor clauses below to work properly.
+# include <ast/exp.hh>
+# include <ast/var.hh>
+# include <ast/ty.hh>
+# include <ast/name-ty.hh>
+# include <ast/field.hh>
+# include <ast/field-init.hh>
+# include <ast/function-dec.hh>
+# include <ast/type-dec.hh>
+# include <ast/var-dec.hh>
+# include <ast/chunk.hh>
+# include <ast/chunk-list.hh>
+}
+
+  // FIXME: Some code was deleted here (Printers and destructors).
+
 /*-----------------------------------------.
 | Code output in the implementation file.  |
 `-----------------------------------------*/
@@ -80,6 +104,9 @@
 # include <parse/tweast.hh>
 # include <misc/separator.hh>
 # include <misc/symbol.hh>
+# include <ast/all.hh>
+# include <ast/libast.hh>
+# include <parse/tiger-driver.hh>
 
   namespace
   {
@@ -153,6 +180,17 @@
        WHILE        "while"
        EOF 0        "end of file"
 
+%type <ast::Exp*>             exp
+%type <ast::ChunkList*>       chunks
+
+%type <ast::TypeChunk*>       tychunk
+%type <ast::TypeDec*>         tydec
+%type <ast::NameTy*>          typeid
+%type <ast::Ty*>              ty
+
+%type <ast::Field*>           tyfield
+%type <ast::fields_type*>     tyfields tyfields.1
+  // FIXME: Some code was deleted here (More %types).
 
   // FIXME: Some code was deleted here (Priorities/associativities).
 //%precedence DO
@@ -188,15 +226,22 @@
 program:
   /* Parsing a source program.  */
   exp
-   
+   { tp.ast_ = $1; }
 | /* Parsing an imported file.  */
   chunks
-   
+   { tp.ast_ = $1; }
 ;
 
+<<<<<<< HEAD
 list_id: list_id "," list_id
        | ID "=" exp
        ;
+=======
+exp:
+  INT
+   { $$ = tp.td_.make_IntExp(@$, $1); }
+  // FIXME: Some code was deleted here (More rules).
+>>>>>>> 2025-tc-2.0
 
 list_exp: list_exp "," list_exp
         | exp
@@ -282,11 +327,18 @@ chunks:
             ..
         end
      which is why we end the recursion with a %empty. */
+<<<<<<< HEAD
   %empty
 | tychunk chunks      
 | funchunk chunks
 | varchunk chunks
 |"import" STRING chunks;
+=======
+  %empty                  { $$ = tp.td_.make_ChunkList(@$); }
+| tychunk   chunks        { $$ = $2; $$->push_front($1); }
+  // FIXME: Some code was deleted here (More rules).
+;
+>>>>>>> 2025-tc-2.0
 
 /*--------------------.
 | Type Declarations.  |
@@ -295,8 +347,8 @@ chunks:
 tychunk:
   /* Use `%prec CHUNKS' to do context-dependent precedence and resolve a
      shift-reduce conflict. */
-  tydec %prec CHUNKS  
-| tydec tychunk       
+  tydec %prec CHUNKS  { $$ = tp.td_.make_TypeChunk(@1); $$->push_front(*$1); }
+| tydec tychunk       { $$ = $2; $$->push_front(*$1); }
 ;
 
 funchunk:
@@ -316,7 +368,7 @@ vardec:
 
 
 tydec:
-  "type" ID "=" ty 
+  "type" ID "=" ty { $$ = tp.td_.make_TypeDec(@$, $2, $4); }
 ;
 
 fundec:
@@ -325,31 +377,36 @@ fundec:
   ;
 
 ty:
-  typeid               
-| "{" tyfields "}"     
-| "array" "of" typeid  
+  typeid               { $$ = $1; }
+| "{" tyfields "}"     { $$ = tp.td_.make_RecordTy(@$, $2); }
+| "array" "of" typeid  { $$ = tp.td_.make_ArrayTy(@$, $3); }
 ;
 
 tyfields:
-  %empty               
-| tyfields.1           
+  %empty               { $$ = tp.td_.make_fields_type(); }
+| tyfields.1           { $$ = $1; }
 ;
 
 tyfields.1:
+<<<<<<< HEAD
   tyfields.1 "," tyfield
 | tyfield                
+=======
+  tyfields.1 "," tyfield { $$ = $1; $$->emplace_back($3); }
+| tyfield                { $$ = tp.td_.make_fields_type($1); }
+>>>>>>> 2025-tc-2.0
 ;
 
 tyfield:
-  ID ":" typeid     
+  ID ":" typeid     { $$ = tp.td_.make_Field(@$, $1, $3); }
 ;
 
 %token NAMETY "_namety";
 typeid:
-  ID                    
+  ID                    { $$ = tp.td_.make_NameTy(@$, $1); }
   /* This is a metavariable. It it used internally by TWEASTs to retrieve
      already parsed nodes when given an input to parse. */
-| NAMETY "(" INT ")"    
+| NAMETY "(" INT ")"    { $$ = metavar<ast::NameTy>(tp, $3); }
 ;
 
 %%
