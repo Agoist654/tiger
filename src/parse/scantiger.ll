@@ -60,6 +60,7 @@
 
 %}
 
+
 %x SC_COMMENT SC_STRING
 
 /* Abbreviations.  */
