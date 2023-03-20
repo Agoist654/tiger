@@ -13,6 +13,7 @@ namespace parse
                                                      std::string string) const
   {
     // FIXME: Some code was deleted here (Constructor of StringExp).
+    return new ast::stringExp(location, string);
   }
 
   inline ast::ObjectExp*
@@ -20,6 +21,7 @@ namespace parse
                               ast::NameTy* type_name) const
   {
     // FIXME: Some code was deleted here (Constructor of Object).
+    return new ast::ObjectExp(location, type_name);
   }
 
   inline ast::CallExp* TigerDriver::make_CallExp(const location& location,
@@ -27,6 +29,7 @@ namespace parse
                                                  ast::exps_type* args) const
   {
     // FIXME: Some code was deleted here (Constructor of CallExp).
+    return new ast::CallExp(location, name, args);
   }
 
   inline ast::MethodCallExp*
@@ -36,6 +39,7 @@ namespace parse
                                   ast::Var* object) const
   {
     // FIXME: Some code was deleted here (Constructor of MethodCallExp).
+    return new ast::MethodCallExp(location, name, args, object);
   }
 
   inline ast::RecordExp*
@@ -44,6 +48,7 @@ namespace parse
                               ast::fieldinits_type* fields) const
   {
     // FIXME: Some code was deleted here (Constructor of RecordExp).
+    return new ast::RecordExp(location, type_name, fields);
   }
 
   inline ast::ArrayExp* TigerDriver::make_ArrayExp(const location& location,
@@ -52,6 +57,7 @@ namespace parse
                                                    ast::Exp* init) const
   {
     // FIXME: Some code was deleted here (Constructor of ArrayExp).
+    return new ast::ArrayExp(location, type_name, size, init);
   }
 
   inline ast::NilExp* TigerDriver::make_NilExp(const location& location) const
