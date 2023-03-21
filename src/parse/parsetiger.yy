@@ -17,7 +17,7 @@
 // In TC, we expect the GLR to resolve one Shift-Reduce and zero Reduce-Reduce
 // conflict at runtime. Use %expect and %expect-rr to tell Bison about it.
   // FIXME: Some code was deleted here (Other directives).
-%expect 0
+%expect 1
 %expect-rr 0
 %define parse.error verbose
 %defines
@@ -157,18 +157,19 @@
   // FIXME: Some code was deleted here (Priorities/associativities).
 //%precedence DO
 //%right "else" "then"
-//%precedence OF
-%precedence ELSE
-%precedence THEN DO
+//%precedence O
+%precedence "["
+%right DO
+%right ELSE
+%precedence THEN
 %precedence ASSIGN
 %left "|"
 %left "&"
-%left ","
+%left "," ";"
 %nonassoc ">=" "<=" "=" "<>"
 %nonassoc ">"
 %left "+" "-"
 %left "*" "/"
-
 
 // Solving conflicts on:
 // let type foo = bar
@@ -178,9 +179,13 @@
 // We want the latter.
 %precedence CHUNKS
 %precedence TYPE
+%precedence OF
+%precedence ID
+
+
 
   // FIXME: Some code was deleted here (Other declarations).
-%precedence FUNCTION PRIMITIVE
+%precedence PRIMITIVE
 
 %start program
 
@@ -198,7 +203,7 @@ list_id: list_id "," list_id
        | ID "=" exp
        ;
 
-list_exp: list_exp "," list_exp
+list_exp: list_exp ";" list_exp
         | exp
 ;
 
@@ -322,6 +327,9 @@ tydec:
 fundec:
       "function" ID "(" tyfields ")" ":" typeid "=" exp
     | "primitive" ID "(" tyfields ")" ":" typeid
+    | "function" ID "(" tyfields ")"  "=" exp
+    | "primitive" ID "(" tyfields ")"
+
   ;
 
 ty:
