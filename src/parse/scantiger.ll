@@ -68,7 +68,7 @@
 /*DONE*/
 
 int             [0-9]+
-string          [a-zA-Z]
+string          [a-zA-Z]+
 id              [[a-zA-Z][a-zA-Z0-9_]*|"_main"]
 space           [ \t]
 
