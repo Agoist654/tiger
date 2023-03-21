@@ -67,11 +67,11 @@
 /* FIXME: Some code was deleted here. */
 /*DONE*/
 
-int             [0-9]+;
-string          [a-zA-Z]+;
-id              [[a-zA-Z][a-zA-Z0-9_]*|"_main"];
+int             [0-9]+
+string          [a-zA-Z]+
+id              [a-zA-Z][a-zA-Z0-9_]*|"_main"
 space           [ \t]
-
+eol             (\n\r|\r\n|\n|\r)
 
 %class{
 // FIXME: Some code was deleted here (Local variables).
@@ -137,48 +137,38 @@ long ouais = 0;
 "type"        return TOKEN(TYPE     );
 "var"         return TOKEN(VAR      );
 "while"       return TOKEN(WHILE    );
-<<EOF>>       return TOKEN(EOF      );
+" _ "         tp.error_ << misc::error::error_type::scan        \
+            << tp.location_                         \
+            << ": invalid underscore: `"            \
+            << misc::escape(text()) << "\n";       \
 
 {int} {
         int val = 0;
     //FIXME:Some code was deleted here (Decode, and check the value).
         /*DONE*/
-    val = (int)strtol(text(), 0, 10);
-    if (val > 2147483647 || val < -2147483647)
-         if (!tp.enable_extensions_p_)                       \
-         tp.error_ << misc::error::error_type::scan        \
-         << tp.location_                         \
-         << ": invalid identifier: `"            \
-         << misc::escape(text()) << "\n";       \
-    return TOKEN_VAL(INT, val);
-}
+        val = (int)strtol(text(), 0, 10);
+        if (val > 2147483647 || val < -2147483647)
+            if (!tp.enable_extensions_p_)                       \
+            tp.error_ << misc::error::error_type::scan        \
+            << tp.location_                         \
+            << ": invalid identifier: `"            \
+            << misc::escape(text()) << "\n";       \
+        return TOKEN_VAL(INT, val);
+      }
 
-{id}          return TOKEN_VAL(ID, text());
 
 {string}      return TOKEN_VAL(ID, text());
 
 {space}       tp.location_.columns();
 
 /*lines*/
-\n       { tp.location_.lines();
-tp.location_.end.column = 0;
-}
 
-\r       { tp.location_.lines();
-tp.location_.end.column = 0;
-}
-
-\r\n       {
+{eol} {
     tp.location_.lines();
-    tp.location_.end.column = 0;
-}
-
-\n\r       { tp.location_.lines();
-tp.location_.end.column = 0;
-}
+      }
 
 "/*" {
-    std::cout << "comment match";
+
     nb_comment++;
     growing_string.clear();
     start(SC_COMMENT);
@@ -193,28 +183,19 @@ tp.location_.end.column = 0;
 /*sublexer*/
 <SC_COMMENT> {
 
-{space}       tp.location_.columns();
+"/*"         {nb_comment++;}
 
-/*lines*/
-\n       { tp.location_.lines();
-tp.location_.end.column = 0;
+"*/" {
+     nb_comment--;
+     if (nb_comment == 0)
+     start(INITIAL);
 }
 
-\r       { tp.location_.lines();
-tp.location_.end.column = 0;
-}
+{eol}
 
-\r\n       {
-    tp.location_.lines();
-    tp.location_.end.column = 0;
-}
-
-\n\r       { tp.location_.lines();
-tp.location_.end.column = 0;
-}
+.
 
 <<EOF>> {
-    std::cout << "end of file match\n";
      tp.error_ << misc::error::error_type::scan        \
      << tp.location_                         \
      << "EOF in comment"                     \
@@ -222,27 +203,9 @@ tp.location_.end.column = 0;
     start(INITIAL);
 }
 
-"/*" {nb_comment++; start(SC_COMMENT);}
-
-[^*]*
-
-"*"+[^*/]*
-
-"*/" {
-     nb_comment--;
-     if (nb_comment == 0)
-     start(INITIAL);
-}
 }
 
 <SC_STRING> {
-
-<<<EOF>>> {
-        tp.error_ << misc::error::error_type::scan        \
-        << tp.location_                         \
-        << "string unclosed\n";                     \
-        start(INITIAL);
-}
 
 \\\"  {growing_string = growing_string + "\"";}
 \" {
@@ -250,17 +213,33 @@ tp.location_.end.column = 0;
     return TOKEN_VAL(STRING, growing_string);
 }
 
-\\a {growing_string = growing_string + '\a';}
-\\b {growing_string = growing_string + '\b';}
-\\f {growing_string = growing_string + '\f';}
-\\n {growing_string = growing_string + '\n';}
-\\r {growing_string = growing_string + '\r';}
-\\t {growing_string = growing_string + '\t';}
-\\v {growing_string = growing_string + '\v';}
+\\r\\n       {
+    tp.location_.lines();
+    growing_string = growing_string + "\r\n";
+}
+
+\\n\\r       { tp.location_.lines();
+    growing_string = growing_string + "\n\r";
+}
+
+
+\\a {growing_string = growing_string + "\a";}
+\\b {growing_string = growing_string + "\b";}
+\\f {growing_string = growing_string + "\f";}
+\\n {
+     tp.location_.lines();
+     growing_string = growing_string + "\n";
+    }
+\\r {
+     tp.location_.lines();
+     growing_string = growing_string + "\r";}
+\\t {growing_string = growing_string + "\t";}
+\\v {growing_string = growing_string + "\v";}
 
 \\\\ {growing_string = growing_string + "\\";
       growing_string = growing_string + "\\";}
 
+{space}       tp.location_.columns();
 
 \\[0-7]{3} {
     ouais += strtol(text() + 1, 0, 8);
@@ -286,6 +265,26 @@ tp.location_.end.column = 0;
 
 . {growing_string = growing_string + text();}
 
+
+<<EOF>> {
+        tp.error_ << misc::error::error_type::scan        \
+        << tp.location_                         \
+        << "string unclosed\n";                     \
+        start(INITIAL);
 }
 
+}
+
+
+
+/*INITIAL*/
+/*all other character + eof*/
+
+.           tp.error_ << misc::error::error_type::scan        \
+            << tp.location_                                   \
+            << "invalid character\n"                                \
+            << misc::escape(text()) << "\n";                 \
+
+{id}          return TOKEN_VAL(ID, text());
+/*<<EOF>>       return TOKEN(EOF      );*/
 %%
