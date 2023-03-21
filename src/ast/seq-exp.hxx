@@ -10,4 +10,7 @@
 namespace ast
 {
   // FIXME: Some code was deleted here.
+  /*DONE*/
+  inline exps_type* SeqExp::exps_get() const { return exps_; }
+
 } // namespace ast

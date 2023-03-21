@@ -10,4 +10,13 @@
 namespace ast
 {
   // FIXME: Some code was deleted here.
+  /*DONE*/
+  RecordTy::RecordTy(const Location& location, fields_type* fields)
+          : Ty(location)
+          , fields_(fields)
+  {}
+
+    void RecordTy::accept(ConstVisitor& v) const { v(*this); }
+
+    void RecordTy::accept(Visitor& v) { v(*this); }
 } // namespace ast

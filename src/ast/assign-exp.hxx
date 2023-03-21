@@ -10,4 +10,7 @@
 namespace ast
 {
   // FIXME: Some code was deleted here.
+  /*DONE*/
+  inline Var* AssignExp::var_get() const { return var_; }
+  inline Exp* AssignExp::exp_get() const { return exp_; }
 } // namespace ast

@@ -22,6 +22,22 @@ namespace ast
   class MethodCallExp : public CallExp
   {
     // FIXME: Some code was deleted here.
+    /*DONE*/
+  public:
+      MethodCallExp(const Location& location, misc::symbol name, exps_type* args, Var* object);
+      MethodCallExp(const MethodCallExp&) = delete;
+      MethodCallExp& operator=(const MethodCallExp&) = delete;
+
+      void accept(ConstVisitor& v) const override;
+      void accept(Visitor& v) override;
+
+
+      misc::symbol name_get() const;
+      exps_type* args_get() const;
+      Var* object_get() const;
+
+  protected:
+      Var* object_;
   };
 } // namespace ast
 #include <ast/method-call-exp.hxx>

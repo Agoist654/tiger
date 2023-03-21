@@ -10,4 +10,13 @@
 namespace ast
 {
   // FIXME: Some code was deleted here.
+  /*DONE*/
+  SeqExp::SeqExp(const Location& location, exps_type* exps)
+          : Exp(location)
+          , exps_(exps)
+  {}
+
+    void SeqExp::accept(ConstVisitor& v) const { v(*this); }
+
+    void SeqExp::accept(Visitor& v) { v(*this); }
 } // namespace ast

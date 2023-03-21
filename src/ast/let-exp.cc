@@ -9,4 +9,14 @@
 namespace ast
 {
   // FIXME: Some code was deleted here.
+  /*DONE*/
+  LetExp::LetExp(const Location& location,  ChunkList* decs, Exp* body)
+          : Exp(location)
+          , decs_(decs)
+          , body_(body)
+  {}
+
+    void LetExp::accept(ConstVisitor& v) const { v(*this); }
+
+    void LetExp::accept(Visitor& v) { v(*this); }
 } // namespace ast

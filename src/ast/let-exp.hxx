@@ -10,4 +10,7 @@
 namespace ast
 {
   // FIXME: Some code was deleted here.
+  /*DONE*/
+  inline ChunkList* LetExp::decs_get() const { return decs_; }
+  inline Exp* LetExp::body_get() const { return body_; }
 } // namespace ast

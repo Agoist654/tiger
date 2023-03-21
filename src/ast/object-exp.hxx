@@ -10,4 +10,7 @@
 namespace ast
 {
   // FIXME: Some code was deleted here.
+  /*DONE*/
+  inline NameTy* ObjectExp::type_name_get() const { return type_name_; }
+
 } // namespace ast

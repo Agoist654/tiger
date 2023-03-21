@@ -9,4 +9,12 @@
 namespace ast
 {
   // FIXME: Some code was deleted here.
+  /*DONE*/
+  BreakExp::BreakExp(const Location& location)
+          : Exp(location)
+  {}
+
+    void BreakExp::accept(ConstVisitor& v) const { v(*this); }
+
+    void BreakExp::accept(Visitor& v) { v(*this); }
 } // namespace ast

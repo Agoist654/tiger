@@ -30,6 +30,32 @@ namespace ast
     void operator()(const SubscriptVar& e) override;
     void operator()(const CastExp& e) override;
     // FIXME: Some code was deleted here.
+    /*DONE*/
+    void operator()(const ArrayExp& e) override;
+    void operator()(const ArrayTy& e) override;
+    void operator()(const AssignExp& e) override;
+    void operator()(const BreakExp& e) override;
+    void operator()(const Dec& e);
+    void operator()(const Exp& e);
+    void operator()(const Field& e) override;
+    void operator()(const FieldInit& e) override;
+    void operator()(const ForExp& e) override;
+    void operator()(const FunctionDec& e) override;
+    void operator()(const IfExp& e) override;
+    void operator()(const IntExp& e) override;
+    void operator()(const LetExp& e) override;
+    void operator()(const NameTy& e) override;
+    void operator()(const NilExp& e) override;
+    void operator()(const OpExp& e) override;
+    void operator()(const RecordExp& e) override;
+    void operator()(const RecordTy& e) override;
+    void operator()(const SeqExp& e) override;
+    void operator()(const StringExp& e) override;
+    void operator()(const Ty& e);
+    void operator()(const TypeDec& e) override;
+    void operator()(const Var& e);
+    void operator()(const VarDec& e) override;
+    void operator()(const WhileExp& e) override;
     /// \}
 
   private:

@@ -143,15 +143,15 @@ long ouais = 0;
         int val = 0;
     //FIXME:Some code was deleted here (Decode, and check the value).
         /*DONE*/
-        val = (int)strtol(text(), 0, 10);
-        if (val > 2147483647 || val < -2147483647)
-            if (!tp.enable_extensions_p_)                       \
-            tp.error_ << misc::error::error_type::scan        \
-            << tp.location_                         \
-            << ": invalid identifier: `"            \
-            << misc::escape(text()) << "\n";       \
-        return TOKEN_VAL(INT, val);
-      }
+    val = (int)strtol(text(), 0, 10);
+    if (val > 2147483647 || val < -2147483647)
+         if (!tp.enable_extensions_p_)                       \
+         tp.error_ << misc::error::error_type::scan        \
+         << tp.location_                         \
+         << ": invalid identifier: `"            \
+         << misc::escape(text()) << "\n";       \
+    return TOKEN_VAL(INT, val);
+}
 
 {id}          return TOKEN_VAL(ID, text());
 
