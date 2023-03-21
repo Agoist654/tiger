@@ -69,7 +69,11 @@
 
 int             [0-9]+
 string          [a-zA-Z]+
+<<<<<<< Updated upstream
 id              [[a-zA-Z][a-zA-Z0-9_]*|"_main"]
+=======
+id              [a-zA-Z][a-zA-Z0-9_]*|"_main"
+>>>>>>> Stashed changes
 space           [ \t]
 
 
@@ -219,13 +223,6 @@ tp.location_.end.column = 0;
 
 <SC_STRING> {
 
-<<EOF>> {
-        tp.error_ << misc::error::error_type::scan        \
-        << tp.location_                         \
-        << "string unclosed\n";                     \
-        start(INITIAL);
-}
-
 \\\"  {growing_string = growing_string + "\"";}
 \" {
     start(INITIAL);
@@ -288,6 +285,13 @@ tp.location_.end.column = 0;
 }
 
 . {growing_string = growing_string + text();}
+
+<<EOF>> {
+        tp.error_ << misc::error::error_type::scan        \
+        << tp.location_                         \
+        << "string unclosed\n";                     \
+        start(INITIAL);
+}
 
 }
 
