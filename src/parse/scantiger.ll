@@ -60,7 +60,6 @@
 
 %}
 
-
 %x SC_COMMENT SC_STRING
 
 /* Abbreviations.  */
@@ -68,9 +67,9 @@
 /* FIXME: Some code was deleted here. */
 /*DONE*/
 
-int             [0-9]+;
-string          [a-zA-Z]+;
-id              [[a-zA-Z][a-zA-Z0-9_]*|"_main"];
+int             [0-9]+
+string          [a-zA-Z]
+id              [[a-zA-Z][a-zA-Z0-9_]*|"_main"]
 space           [ \t]
 
 
@@ -138,6 +137,10 @@ long ouais = 0;
 "type"        return TOKEN(TYPE     );
 "var"         return TOKEN(VAR      );
 "while"       return TOKEN(WHILE    );
+" _ "         tp.error_ << misc::error::error_type::scan        \
+            << tp.location_                         \
+            << ": invalid underscore: `"            \
+            << misc::escape(text()) << "\n";       \
 
 {int} {
         int val = 0;
@@ -153,27 +156,26 @@ long ouais = 0;
         return TOKEN_VAL(INT, val);
       }
 
-{id}          return TOKEN_VAL(ID, text());
 
 {string}      return TOKEN_VAL(ID, text());
 
 {space}       tp.location_.columns();
 
 /*lines*/
-\n       { tp.location_.lines();
+\\n       { tp.location_.lines();
 tp.location_.end.column = 0;
 }
 
-\r       { tp.location_.lines();
+\\r       { tp.location_.lines();
 tp.location_.end.column = 0;
 }
 
-\r\n       {
+\\r\\n       {
     tp.location_.lines();
     tp.location_.end.column = 0;
 }
 
-\n\r       { tp.location_.lines();
+\\n\\r       { tp.location_.lines();
 tp.location_.end.column = 0;
 }
 
@@ -193,25 +195,17 @@ tp.location_.end.column = 0;
 /*sublexer*/
 <SC_COMMENT> {
 
-{space}       tp.location_.columns();
+"/*"         {nb_comment++;}
 
-/*lines*/
-\n       { tp.location_.lines();
-tp.location_.end.column = 0;
+"*/" {
+     nb_comment--;
+     if (nb_comment == 0)
+     start(INITIAL);
 }
 
-\r       { tp.location_.lines();
-tp.location_.end.column = 0;
-}
+\\n
 
-\r\n       {
-    tp.location_.lines();
-    tp.location_.end.column = 0;
-}
-
-\n\r       { tp.location_.lines();
-tp.location_.end.column = 0;
-}
+.
 
 <<EOF>> {
      tp.error_ << misc::error::error_type::scan        \
@@ -221,17 +215,6 @@ tp.location_.end.column = 0;
     start(INITIAL);
 }
 
-"/*" {nb_comment++; start(SC_COMMENT);}
-
-[^*]*
-
-"*"+[^*/]*
-
-"*"+"/" {
-     nb_comment--;
-     if (nb_comment == 0)
-     start(INITIAL);
-}
 }
 
 <SC_STRING> {
@@ -249,17 +232,38 @@ tp.location_.end.column = 0;
     return TOKEN_VAL(STRING, growing_string);
 }
 
-\\a {growing_string = growing_string + '\a';}
-\\b {growing_string = growing_string + '\b';}
-\\f {growing_string = growing_string + '\f';}
-\\n {growing_string = growing_string + '\n';}
-\\r {growing_string = growing_string + '\r';}
-\\t {growing_string = growing_string + '\t';}
-\\v {growing_string = growing_string + '\v';}
+\\r\\n       {
+    tp.location_.lines();
+    tp.location_.end.column = 0;
+    growing_string = growing_string + "\r\n";
+}
+
+\\n\\r       { tp.location_.lines();
+    tp.location_.end.column = 0;
+    growing_string = growing_string + "\n\r";
+}
+
+
+\\a {growing_string = growing_string + "\a";}
+\\b {growing_string = growing_string + "\b";}
+\\f {growing_string = growing_string + "\f";}
+\\n {
+     tp.location_.lines();
+     tp.location_.end.column = 0;
+     tp.location_.end.column = 0;
+     growing_string = growing_string + "\n";
+    }
+\\r {
+     tp.location_.lines();
+     tp.location_.end.column = 0;
+     growing_string = growing_string + "\r";}
+\\t {growing_string = growing_string + "\t";}
+\\v {growing_string = growing_string + "\v";}
 
 \\\\ {growing_string = growing_string + "\\";
       growing_string = growing_string + "\\";}
 
+{space}       tp.location_.columns();
 
 \\[0-7]{3} {
     ouais += strtol(text() + 1, 0, 8);
@@ -287,5 +291,16 @@ tp.location_.end.column = 0;
 
 }
 
-<<EOF>>       return TOKEN(EOF      );
+
+
+/*INITIAL*/
+/*all other character + eof*/
+
+.           tp.error_ << misc::error::error_type::scan        \
+            << tp.location_                                   \
+            << "invalid character\n"                                \
+            << misc::escape(text()) << "\n";                 \
+
+{id}          return TOKEN_VAL(ID, text());
+/*<<EOF>>       return TOKEN(EOF      );*/
 %%
