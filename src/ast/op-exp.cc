@@ -67,4 +67,5 @@ std::string str(ast::OpExp::Oper oper)
             break;
         default:
             return "";
+    }
 }
