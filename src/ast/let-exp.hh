@@ -28,7 +28,7 @@ namespace ast
       ChunkList* decs_get() const;
       Exp* body_get() const;
   protected:
-      Chunklist* decs_;
+      ChunkList* decs_;
       Exp* body_;
   };
 } // namespace ast
