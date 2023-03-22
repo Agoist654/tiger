@@ -17,6 +17,12 @@ namespace ast
           , elseclause_(elseclause)
   {}
 
+  IfExp::IfExp(const Location& location, Exp* test, Exp* thenclause)
+          : Exp(location)
+          , test_(test)
+          , thenclause_(thenclause)
+  {}
+
   void IfExp::accept(ConstVisitor& v) const { v(*this); }
 
   void IfExp::accept(Visitor& v) { v(*this); }

@@ -124,7 +124,7 @@ namespace parse
                                                ast::Exp* body) const
   {
     // FIXME: Some code was deleted here (Constructor of LetExp).
-    return new ast::LetExp(location, decs, boby);
+    return new ast::LetExp(location, decs, body);
   }
 
   inline ast::OpExp* TigerDriver::make_OpExp(const location& location,

@@ -17,6 +17,7 @@ namespace ast
     /*DONE*/
   public:
       IfExp(const Location& location, Exp* test, Exp* thenclause, Exp* elseclause);
+      IfExp(const Location& location, Exp* test, Exp* thenclause);
       IfExp(const IfExp&) = delete;
       IfExp& operator=(const IfExp&) = delete;
 
