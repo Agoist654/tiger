@@ -164,10 +164,11 @@
 %type <ast::fields_type*>     tyfields tyfields.1 list_id
 %type <ast::Var*>             lvalue
 %type <ast::VarChunk*>        varchunk
-%type <ast::Vardec*>          vardec
+%type <ast::VarDec*>          vardec
 %type <ast::FunctionChunk*>   funchunk
 %type <ast::exps_type*>       exps list_exp
 %type <ast::FunctionDec*>     fundec
+
 
 
 
@@ -210,24 +211,23 @@
 %%
 program:
   /* Parsing a source program.  */
-  exp
+  exp                                   { tp.ast_ = $1; }
    
 | /* Parsing an imported file.  */
-  chunks
-   
+  chunks                                { tp_ast_ = $1; }
 ;
 
-list_id: list_id "," list_id
+list_id: list_id "," list_id            
        | ID "=" exp                     { $$ = tp.td_.make_FieldInit(@$, $1, $3); }
        ;
 
-list_exp: list_exp ";" list_exp
-        | exp
+list_exp: list_exp "," list_exp         { $$ = $3; $$->push_back($1); }
+        | exp                           { $$ = tp.td_.make_exps_type($1); }
 ;
 
 %token EXP "_exp";
-exps: exp ";" exps           { $$ = tp.td_.make_SeqExp(@$, $3); }
-    | exp                    { $$ = $1; }
+exps: exps ";" exps          { $$ = $3; $$->push_back($1); }
+    | exp                    { $$ = tp.td_.make_exps_type($1); }
     ;
 
 exp:
@@ -238,10 +238,10 @@ exp:
 
   | ID  "[" exp "]" "of" exp            { $$ = tp.td_.make_ArrayExp(@$, $1, $3, $6); }
   | typeid  LBRACE list_id RBRACE       { $$ = tp.td_.make_RecordExp(@$, $1, $3); }
-  | typeid LBRACE RBRACE
+  | typeid LBRACE RBRACE                { $$ = tp.td_.make_RecordExp(@$, $1, nullptr); }
 
   /* Variables, field, elements of an array. */
-  | lvalue                              { $$ = $1; }
+  | lvalue                              { $$ = std::get<ast::Var*>(@$); }
 
   /* Function call. */
   | ID "(" ")"          { $$ = tp.td_.make_CallExp(@$, $1, nullptr); }
@@ -249,21 +249,54 @@ exp:
 
     
   /* Operations. */
-  | exp "|" exp
-  | exp "&" exp 
+  | exp "|" exp         {
+                            $$ = parse(Tweast()
+                               << "if"
+                               << {
+                                   "_exp(0)";
+                                  }
+                               << "= 0 else 1 then"
+                               << {
+                                    "_exp(1)";
+                                  }
+                               << "<> 0 else 0");
+                          }
+
+
+  | exp "&" exp         { 
+                            $$ = parse(Tweast()
+                               << "if"
+                               << {
+                                   "_exp(0)";
+                                  }
+                               << "then"
+                               << {
+                                    "_exp(1)";
+                                  }
+                               << "<> 0 else 0");
+                          }
+
   | exp "<=" exp        { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::le, $3); }
   | exp "=" exp         { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::eq, $3); }
   | exp "<>" exp        { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::ne, $3); }
   | exp "<" exp         { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::lt, $3); }
   | exp ">" exp         { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::gt, $3); }
   | exp ">=" exp        { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::ge, $3); }
-  | "-" exp
+  | "-" exp             {
+                            $$ = parse(Tweast()
+                               << "0 -"
+                               << {
+                                    "_exp(0)";
+                                  };
+                        }
+
+
   | exp "+" exp         { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::add, $3); }
   | exp "-" exp         { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::sub, $3); }
   | exp "*" exp         { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::mul, $3); }
   | exp "/" exp         { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::div, $3); }
-  | "(" exps ")"
-  | "(" ")"
+  | "(" exps ")"        { $$ = tp.td_.make_SeqExp(@$, $2); }
+  | "(" ")"             { $$ = tp.td_.make_SeqExp(@$, nullptr); }
 
   /* Assignment. */
   | lvalue ":=" exp     { $$ = tp.td_.make_AssignExp(@$, $1, $3); }
@@ -282,17 +315,17 @@ exp:
   /* Cast of an expression to a given type */
   | "_cast" "(" exp "," ty ")"          { $$ = tp.td_.make_CastExp(@$, $3, $5); }
   /* An expression metavariable */
-  | "_exp" "(" INT ")"
+  | "_exp" "(" INT ")"                  { $$ = MetavarMap<ast::Exp>::(tp, $3); }
   ;
-
+%token LVALUE "_lvalue";
 lvalue:
     ID                                  { $$ = tp.td_.make_SimpleVar(@$, $1); }
   /* Record field access. */
   | lvalue "." ID                       { $$ = tp.td_.make_FieldVar(@$, $1, $3); }
   /* Array subscript. */
   | lvalue "[" exp "]"                  { $$ = tp.td_.make_SubscriptVar(@$, $1, $3); }
-  /* A l-value metavariable
-   | "_lvalue" "(" INT ")"*/
+  /* A l-value metavariable*/
+   | "_lvalue" "(" INT ")"              { $$ = metavar<ast::Var>(tp, $3);  }
   ;
 
 
@@ -313,11 +346,13 @@ chunks:
             ..
         end
      which is why we end the recursion with a %empty. */
-  %empty                                 { $$ = nullptr; }
-| tychunk chunks                         { $$ = tp.td_.make_ChunkList(@$); }
-| funchunk chunks                        { $$ = tp.td_.make_ChunkList(@$); }
-| varchunk chunks                        { $$ = tp.td_.make_ChunkList(@$); }
-|"import" STRING chunks                  { $$ = tp.td_.make_ChunkList(@$); }
+  %empty                                 { $$ = tp.td_make_ChunkList(@$); }
+| tychunk chunks                         { $$ = $2; $$->push_front($1); }
+| funchunk chunks                        { $$ = $2; $$->push_front($1); }
+| varchunk chunks                        { $$ = $2; $$->push_front($1); }
+|"import" STRING chunks                  { $$ = $3; $$->tp_.parse_import($2, @$);}
+/* A list of chunk metavariable */
+| "_chunks" "(" INT ")" chunks           { $$ = $5; $$->push_front(metavar<ast::ChunkList>(tp, $3)); }
 ;
 
 /*--------------------.
@@ -328,12 +363,13 @@ tychunk:
   /* Use `%prec CHUNKS' to do context-dependent precedence and resolve a
      shift-reduce conflict. */
   tydec %prec CHUNKS                    { $$ = tp.td_.make_TypeChunk(@$); }
-| tydec tychunk                         { $$ = tp.td_.make_TypeChunk(@$); }
+| tydec tychunk                         { $$ = $2; $$->push_front($1); }
 ;
 
 funchunk:
-        fundec %prec CHUNKS             { $$ = tp.td_.make_MethodChunk(@$); } 
-    | fundec funchunk                   { $$ = tp.td_.make_MethodChunk(@$); } 
+        fundec %prec CHUNKS            { $$ = tp_td_.make_FunctionChunk(@$); $$->push_front($1); }
+        | fundec funchunk              { $$ = $2; $$->push_front($1); }
+   
 ;
 
 varchunk:
@@ -342,7 +378,7 @@ varchunk:
 ;
 
 vardec:
-      "var" ID ":=" exp
+      "var" ID ":=" exp                 { $$ = tp.td_.make_VarDec(@$, $2, nullptr, $4); }
     | "var" ID  ":" typeid ":=" exp     { $$ = tp.td_.make_VarDec(@$, $2, $4, $6); }
 ;
 
@@ -371,25 +407,25 @@ ty:
 ;
 
 tyfields:
-  %empty               
-| tyfields.1                            { $$ = tp.td_.fieldinits_type($1); }
+  %empty                                { $$ = tp.td_.make_fields_type(); }
+| tyfields.1                            { $$ = $1; }
 ;
 
 tyfields.1:
-  tyfields.1 "," tyfield
-| tyfield                
+  tyfields.1 "," tyfield                { $$ = $1; $$->emplace_back($3); }
+| tyfield                               { $$ = tp.td_.make_fields_type($1); }
 ;
 
 tyfield:
-  ID ":" typeid                         { $$ = tp.td_.make_FieldInit(@$, $1, $3); } 
+  ID ":" typeid                         { $$ = tp.td_.make_Field(@$, $1, $3); }
 ;
 
 %token NAMETY "_namety";
 typeid:
-  ID                    
+      ID                                { $$ = tp.td_.make_NameTy(@$, $1); }
   /* This is a metavariable. It it used internally by TWEASTs to retrieve
      already parsed nodes when given an input to parse. */
-| NAMETY "(" INT ")"    
+| NAMETY "(" INT ")"                    { $$ = metavar<ast::NameTy>(tp, $3);  }
 ;
 
 %%
