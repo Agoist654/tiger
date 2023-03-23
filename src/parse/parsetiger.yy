@@ -214,10 +214,10 @@ program:
   exp                                   { tp.ast_ = $1; }
    
 | /* Parsing an imported file.  */
-  chunks                                { tp_ast_ = $1; }
+  chunks                                { tp.ast_ = $1; }
 ;
 
-list_id: list_id "," list_id            
+list_id: list_id "," list_id            { $$ = $3; $$->push_back($1); }
        | ID "=" exp                     { $$ = tp.td_.make_FieldInit(@$, $1, $3); }
        ;
 
@@ -236,12 +236,12 @@ exp:
   | STRING              { $$ = tp.td_.make_StringExp(@$, $1); }
    /* Array and record creations. */
 
-  | ID  "[" exp "]" "of" exp            { $$ = tp.td_.make_ArrayExp(@$, $1, $3, $6); }
-  | typeid  LBRACE list_id RBRACE       { $$ = tp.td_.make_RecordExp(@$, $1, $3); }
+  | ID  "[" exp "]" "of" exp            { $$ = tp.td_.make_ArrayExp(@$, tp.td_.make_NameTy(@$,$1), $3, $6); }
+  | typeid  LBRACE list_id RBRACE       { $$ = tp.td_.make_RecordTy(@$, $1, $3); }
   | typeid LBRACE RBRACE                { $$ = tp.td_.make_RecordExp(@$, $1, nullptr); }
 
   /* Variables, field, elements of an array. */
-  | lvalue                              { $$ = std::get<ast::Var*>(@$); }
+  | lvalue                              { $$ = $1; }
 
   /* Function call. */
   | ID "(" ")"          { $$ = tp.td_.make_CallExp(@$, $1, nullptr); }
@@ -261,7 +261,7 @@ exp:
                                   }
                                << "<> 0 else 0");
                           }
-
+ 
 
   | exp "&" exp         { 
                             $$ = parse(Tweast()
@@ -305,7 +305,7 @@ exp:
   | "if" exp "then" exp                 { $$ = tp.td_.make_IfExp(@$, $2, $4); }
   | "if" exp "then" exp "else" exp      { $$ = tp.td_.make_IfExp(@$, $2, $4, $6); }
   | "while" exp "do" exp                { $$ = tp.td_.make_WhileExp(@$, $2, $4); }
-  | "for" ID ":=" exp "to" exp "do" exp { $$ = tp.td_.make_ForExp(@$, $2,VARDEC ,$8); }
+  | "for" ID ":=" exp "to" exp "do" exp { $$ = tp.td_.make_ForExp(@$, $2, $6 ,$8); }
   | "break"                             { $$ = tp.td_.make_BreakExp(@$); }
   | "let" chunks "in" exps "end"        { $$ = tp.td_.make_LetExp(@$, $2, $4); }
   | "let" chunks "in" "end"             { $$ = tp.td_.make_LetExp(@$, $2, nullptr); }
@@ -346,11 +346,11 @@ chunks:
             ..
         end
      which is why we end the recursion with a %empty. */
-  %empty                                 { $$ = tp.td_make_ChunkList(@$); }
+  %empty                                 { $$ = tp.td_.make_ChunkList(@$); }
 | tychunk chunks                         { $$ = $2; $$->push_front($1); }
 | funchunk chunks                        { $$ = $2; $$->push_front($1); }
 | varchunk chunks                        { $$ = $2; $$->push_front($1); }
-|"import" STRING chunks                  { $$ = $3; $$->tp_.parse_import($2, @$);}
+|"import" STRING chunks                  { $$ = $3; $$->tp.parse_import($2, @$);}
 /* A list of chunk metavariable */
 | "_chunks" "(" INT ")" chunks           { $$ = $5; $$->push_front(metavar<ast::ChunkList>(tp, $3)); }
 ;
@@ -367,7 +367,7 @@ tychunk:
 ;
 
 funchunk:
-        fundec %prec CHUNKS            { $$ = tp_td_.make_FunctionChunk(@$); $$->push_front($1); }
+        fundec %prec CHUNKS            { $$ = tp.td_.make_FunctionChunk(@$); $$->push_front($1); }
         | fundec funchunk              { $$ = $2; $$->push_front($1); }
    
 ;
@@ -401,7 +401,7 @@ fundec:
   ;
 
 ty:
-  typeid                                { $$ = tp.td_.make_NameTy(@$, $1); }
+  typeid                                { $$ = $1; }
 | "{" tyfields "}"                      { $$ = tp.td_.make_RecordTy(@$, $2); }
 | "array" "of" typeid                   { $$ = tp.td_.make_ArrayTy(@$, $3); }
 ;
