@@ -51,6 +51,7 @@
 #include <misc/separator.hh>
 #include <misc/symbol.hh>
 #include <parse/fwd.hh>
+#include <ast/all.hh>
 
   // Pre-declare parse::parse to allow a ``reentrant'' parsing within
   // the parser.
