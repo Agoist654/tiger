@@ -40,7 +40,8 @@
   // FIXME: Some code was deleted here (Define YY_USER_ACTION to update locations).
 /*DONE*/
 #define YY_USER_ACTION \
-    tp.location_.columns(size());
+     tp.location_.step(); \
+    tp.location_.columns(size()); \
 
 
 #define TOKEN(Type)                             \
@@ -165,6 +166,7 @@ long ouais = 0;
 
 {eol} {
     tp.location_.lines();
+     tp.location_.step();
       }
 
 "/*" {
@@ -191,7 +193,10 @@ long ouais = 0;
      start(INITIAL);
 }
 
-{eol}
+{eol} {
+    tp.location_.lines();
+    tp.location_.step();
+    growing_string = growing_string + text();}
 
 .
 
@@ -213,26 +218,14 @@ long ouais = 0;
     return TOKEN_VAL(STRING, growing_string);
 }
 
-\\r\\n       {
-    tp.location_.lines();
-    growing_string = growing_string + "\r\n";
-}
-
-\\n\\r       { tp.location_.lines();
-    growing_string = growing_string + "\n\r";
-}
-
+{eol} {
+     tp.location_.lines();
+     tp.location_.step();
+     growing_string = growing_string + text();}
 
 \\a {growing_string = growing_string + "\a";}
 \\b {growing_string = growing_string + "\b";}
 \\f {growing_string = growing_string + "\f";}
-\\n {
-     tp.location_.lines();
-     growing_string = growing_string + "\n";
-    }
-\\r {
-     tp.location_.lines();
-     growing_string = growing_string + "\r";}
 \\t {growing_string = growing_string + "\t";}
 \\v {growing_string = growing_string + "\v";}
 
