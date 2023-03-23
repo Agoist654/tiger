@@ -51,7 +51,7 @@
 #include <misc/separator.hh>
 #include <misc/symbol.hh>
 #include <parse/fwd.hh>
-
+#include <ast/all.hh>
   // Pre-declare parse::parse to allow a ``reentrant'' parsing within
   // the parser.
   namespace parse
@@ -217,7 +217,7 @@ program:
   chunks                                { tp.ast_ = $1; }
 ;
 
-list_id: list_id "," list_id            { $$ = $3; $$->push_back($1); }
+list_id: list_id "," list_id            { $$ = $3; $$->push_back($1); }/* use for*/
        | ID "=" exp                     { $$ = tp.td_.make_FieldInit(@$, $1, $3); }
        ;
 
@@ -252,7 +252,7 @@ exp:
   | exp "|" exp         {
                             $$ = parse(Tweast()
                                << "if"
-                               << {
+                               << {   /* erreur ici*/
                                    "_exp(0)";
                                   }
                                << "= 0 else 1 then"
@@ -350,7 +350,7 @@ chunks:
 | tychunk chunks                         { $$ = $2; $$->push_front($1); }
 | funchunk chunks                        { $$ = $2; $$->push_front($1); }
 | varchunk chunks                        { $$ = $2; $$->push_front($1); }
-|"import" STRING chunks                  { $$ = $3; $$->tp.parse_import($2, @$);}
+|"import" STRING chunks                  { $$ = $3; tp.parse_import($2, @$);}
 /* A list of chunk metavariable */
 | "_chunks" "(" INT ")" chunks           { $$ = $5; $$->push_front(metavar<ast::ChunkList>(tp, $3)); }
 ;
