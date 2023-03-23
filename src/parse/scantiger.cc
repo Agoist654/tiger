@@ -99,7 +99,7 @@
       tp.error_ << misc::error::error_type::scan        \
                 << tp.location_                         \
                 << ": invalid identifier: `"            \
-                << misc::escape(text()) << "'\n";       \
+                << misc::escape(text()) << "\n";       \
   } while (false)
 
 
@@ -113,7 +113,7 @@
 #define INITIAL (0)
 #define SC_COMMENT (1)
 #define SC_STRING (2)
-#define YY_NUM_RULES (77)
+#define YY_NUM_RULES (79)
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -150,6 +150,7 @@ class Lexer : public FlexLexer {
 
 // FIXME: Some code was deleted here (Local variables).
 /*DONE*/
+int nb_quote = 0;
 int nb_comment = 0;
 std::string growing_string = "";
 long ouais = 0;
@@ -227,11 +228,11 @@ long ouais = 0;
 
 parse::parser::symbol_type parse::Lexer::lex(::parse::TigerParser& tp)
 {
-  static const char *REGEX_INITIAL = "(?m)((?:\\Qarray\\E))|((?:\\Q&\\E))|((?:\\Q:=\\E))|((?:\\Qbreak\\E))|((?:\\Q_cast\\E))|((?:\\Qclass\\E))|((?:\\Q:\\E))|((?:\\Q,\\E))|((?:\\Q/\\E))|((?:\\Qdo\\E))|((?:\\Q.\\E))|((?:\\Qelse\\E))|((?:\\Qend\\E))|((?:\\Q=\\E))|((?:\\Qextends\\E))|((?:\\Qfor\\E))|((?:\\Qfunction\\E))|((?:\\Q>=\\E))|((?:\\Q>\\E))|((?:\\Qif\\E))|((?:\\Qimport\\E))|((?:\\Qin\\E))|((?:\\Q{\\E))|((?:\\Q[\\E))|((?:\\Q<=\\E))|((?:\\Qlet\\E))|((?:\\Q(\\E))|((?:\\Q<\\E))|((?:\\Q-\\E))|((?:\\Qmethod\\E))|((?:\\Q<>\\E))|((?:\\Qnew\\E))|((?:\\Qnil\\E))|((?:\\Qof\\E))|((?:\\Q|\\E))|((?:\\Q+\\E))|((?:\\Qprimitive\\E))|((?:\\Q}\\E))|((?:\\Q]\\E))|((?:\\Q)\\E))|((?:\\Q;\\E))|((?:\\Qthen\\E))|((?:\\Q*\\E))|((?:\\Qto\\E))|((?:\\Qtype\\E))|((?:\\Qvar\\E))|((?:\\Qwhile\\E))|((?:[0-9]+;))|((?:[A-\\x5ba-z][0-9A-Z_a-z]*|(?:\\Q_main\\E)];))|((?:[A-Za-z]+;))|((?:[\\x09\\x20]))|(\\n)|(\\r)|(\\r\\n)|(\\n\\r)|((?:\\Q/*\\E))|((?:\\Q\"\\E))";
+  static const char *REGEX_INITIAL = "(?m)((?:\\Qarray\\E))|((?:\\Q&\\E))|((?:\\Q:=\\E))|((?:\\Qbreak\\E))|((?:\\Q_cast\\E))|((?:\\Qclass\\E))|((?:\\Q:\\E))|((?:\\Q,\\E))|((?:\\Q/\\E))|((?:\\Qdo\\E))|((?:\\Q.\\E))|((?:\\Qelse\\E))|((?:\\Qend\\E))|((?:\\Q=\\E))|((?:\\Qextends\\E))|((?:\\Qfor\\E))|((?:\\Qfunction\\E))|((?:\\Q>=\\E))|((?:\\Q<=\\E))|((?:\\Q>\\E))|((?:\\Qif\\E))|((?:\\Qimport\\E))|((?:\\Qin\\E))|((?:\\Q{\\E))|((?:\\Q[\\E))|((?:\\Qlet\\E))|((?:\\Q(\\E))|((?:\\Q<\\E))|((?:\\Q-\\E))|((?:\\Qmethod\\E))|((?:\\Q<>\\E))|((?:\\Qnew\\E))|((?:\\Qnil\\E))|((?:\\Qof\\E))|((?:\\Q|\\E))|((?:\\Q+\\E))|((?:\\Qprimitive\\E))|((?:\\Q}\\E))|((?:\\Q]\\E))|((?:\\Q)\\E))|((?:\\Q;\\E))|((?:\\Qthen\\E))|((?:\\Q*\\E))|((?:\\Qto\\E))|((?:\\Qtype\\E))|((?:\\Qvar\\E))|((?:\\Qwhile\\E))|((?:\\Q _ \\E))|((?:[0-9]+))|((?:[A-Za-z]+))|((?:[\\x09\\x20]))|((?:(?:\\n\\r|\\r\\n|\\n|\\r)))|((?:\\Q/*\\E))|((?:\\Q\"\\E))|(.)|((?:[A-Za-z][0-9A-Z_a-z]*|(?:\\Q_main\\E)))";
   static const reflex::Pattern PATTERN_INITIAL(REGEX_INITIAL);
-  static const char *REGEX_SC_COMMENT = "(?m)((?:\\Q/*\\E))|([^\\x2a]*)|((?:\\Q*\\E)+[^\\x2a/]*)|((?:\\Q*/\\E))";
+  static const char *REGEX_SC_COMMENT = "(?m)((?:\\Q/*\\E))|((?:\\Q*/\\E))|((?:(?:\\n\\r|\\r\\n|\\n|\\r)))|(.)";
   static const reflex::Pattern PATTERN_SC_COMMENT(REGEX_SC_COMMENT);
-  static const char *REGEX_SC_STRING = "(?m)((?:\\Q\"\\E))|((?:\\Q\\a\\E))|((?:\\Q\\b\\E))|((?:\\Q\\f\\E))|((?:\\Q\\n\\E))|((?:\\Q\\r\\E))|((?:\\Q\\t\\E))|((?:\\Q\\v\\E))|(\\\\[0-7]{3})|(\\\\x[0-9A-Fa-f]{2})|((?:\\Q\\\\.\\E))|((?:\\Q.\\E))";
+  static const char *REGEX_SC_STRING = "(?m)(\\\\\")|(\")|(\\\\r\\\\n)|(\\\\n\\\\r)|(\\\\a)|(\\\\b)|(\\\\f)|(\\\\n)|(\\\\r)|(\\\\t)|(\\\\v)|(\\\\\\\\)|((?:[\\x09\\x20]))|(\\\\[0-7]{3})|(\\\\x[0-9A-Fa-f]{2})|(\\\\.)|(.)";
   static const reflex::Pattern PATTERN_SC_STRING(REGEX_SC_STRING);
   if (!has_matcher())
   {
@@ -241,11 +242,11 @@ parse::parser::symbol_type parse::Lexer::lex(::parse::TigerParser& tp)
   switch (start())
   {
     case INITIAL:
-#line 86 "src/parse/scantiger.ll"
+#line 87 "src/parse/scantiger.ll"
 /* The rules. */
 /* FIXME: Some code was deleted here. */
-#line 89 "src/parse/scantiger.ll"
-/*FIXED on going*/
+#line 90 "src/parse/scantiger.ll"
+/*ONGOING*//*should be DONE*/
 
     break;
   }
@@ -260,10 +261,8 @@ parse::parser::symbol_type parse::Lexer::lex(::parse::TigerParser& tp)
           case 0:
             if (matcher().at_end())
             {
-              if (debug()) std::cerr << "--\033[1;35mEOF rule src/parse/scantiger.ll:139\033[0m start(" << start() << ")\n";
-#line 139 "src/parse/scantiger.ll"
-return TOKEN(EOF      );
-
+              if (debug()) std::cerr << "--\033[1;35mEOF\033[0m start(" << start() << ")\n";
+              yyterminate();
             }
             else
             {
@@ -271,382 +270,382 @@ return TOKEN(EOF      );
               output(matcher().input());
             }
             YY_BREAK
-          case 1: // rule src/parse/scantiger.ll:89: "array" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:89\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 89 "src/parse/scantiger.ll"
-return parser::make_ARRAY(tp.location_);
-            YY_BREAK
-          case 2: // rule src/parse/scantiger.ll:90: "&" :
+          case 1: // rule src/parse/scantiger.ll:90: "array" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:90\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 90 "src/parse/scantiger.ll"
-return TOKEN(AND);
+return parser::make_ARRAY(tp.location_);
             YY_BREAK
-          case 3: // rule src/parse/scantiger.ll:91: ":=" :
+          case 2: // rule src/parse/scantiger.ll:91: "&" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:91\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 91 "src/parse/scantiger.ll"
-return TOKEN(ASSIGN);
+return TOKEN(AND);
             YY_BREAK
-          case 4: // rule src/parse/scantiger.ll:92: "break" :
+          case 3: // rule src/parse/scantiger.ll:92: ":=" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:92\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 92 "src/parse/scantiger.ll"
-return TOKEN(BREAK    );
+return TOKEN(ASSIGN);
             YY_BREAK
-          case 5: // rule src/parse/scantiger.ll:93: "_cast" :
+          case 4: // rule src/parse/scantiger.ll:93: "break" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:93\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 93 "src/parse/scantiger.ll"
-return TOKEN(CAST     );
+return TOKEN(BREAK    );
             YY_BREAK
-          case 6: // rule src/parse/scantiger.ll:94: "class" :
+          case 5: // rule src/parse/scantiger.ll:94: "_cast" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:94\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 94 "src/parse/scantiger.ll"
-return TOKEN(CLASS    );
+return TOKEN(CAST     );
             YY_BREAK
-          case 7: // rule src/parse/scantiger.ll:95: ":" :
+          case 6: // rule src/parse/scantiger.ll:95: "class" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:95\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 95 "src/parse/scantiger.ll"
+return TOKEN(CLASS    );
+            YY_BREAK
+          case 7: // rule src/parse/scantiger.ll:96: ":" :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:96\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 96 "src/parse/scantiger.ll"
 return TOKEN(COLON    );
 
             YY_BREAK
-          case 8: // rule src/parse/scantiger.ll:97: "," :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:97\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 97 "src/parse/scantiger.ll"
-return TOKEN(COMMA    );
-            YY_BREAK
-          case 9: // rule src/parse/scantiger.ll:98: "/" :
+          case 8: // rule src/parse/scantiger.ll:98: "," :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:98\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 98 "src/parse/scantiger.ll"
-return TOKEN(DIVIDE   );
+return TOKEN(COMMA    );
             YY_BREAK
-          case 10: // rule src/parse/scantiger.ll:99: "do" :
+          case 9: // rule src/parse/scantiger.ll:99: "/" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:99\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 99 "src/parse/scantiger.ll"
-return TOKEN(DO       );
+return TOKEN(DIVIDE   );
             YY_BREAK
-          case 11: // rule src/parse/scantiger.ll:100: "." :
+          case 10: // rule src/parse/scantiger.ll:100: "do" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:100\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 100 "src/parse/scantiger.ll"
+return TOKEN(DO       );
+            YY_BREAK
+          case 11: // rule src/parse/scantiger.ll:101: "." :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:101\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 101 "src/parse/scantiger.ll"
 return TOKEN(DOT      );
 
             YY_BREAK
-          case 12: // rule src/parse/scantiger.ll:102: "else" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:102\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 102 "src/parse/scantiger.ll"
-return TOKEN(ELSE     );
-            YY_BREAK
-          case 13: // rule src/parse/scantiger.ll:103: "end" :
+          case 12: // rule src/parse/scantiger.ll:103: "else" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:103\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 103 "src/parse/scantiger.ll"
-return TOKEN(END      );
+return TOKEN(ELSE     );
             YY_BREAK
-          case 14: // rule src/parse/scantiger.ll:104: "=" :
+          case 13: // rule src/parse/scantiger.ll:104: "end" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:104\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 104 "src/parse/scantiger.ll"
-return TOKEN(EQ       );
+return TOKEN(END      );
             YY_BREAK
-          case 15: // rule src/parse/scantiger.ll:105: "extends" :
+          case 14: // rule src/parse/scantiger.ll:105: "=" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:105\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 105 "src/parse/scantiger.ll"
-return TOKEN(EXTENDS  );
+return TOKEN(EQ       );
             YY_BREAK
-          case 16: // rule src/parse/scantiger.ll:106: "for" :
+          case 15: // rule src/parse/scantiger.ll:106: "extends" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:106\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 106 "src/parse/scantiger.ll"
-return TOKEN(FOR      );
+return TOKEN(EXTENDS  );
             YY_BREAK
-          case 17: // rule src/parse/scantiger.ll:107: "function" :
+          case 16: // rule src/parse/scantiger.ll:107: "for" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:107\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 107 "src/parse/scantiger.ll"
-return TOKEN(FUNCTION );
+return TOKEN(FOR      );
             YY_BREAK
-          case 18: // rule src/parse/scantiger.ll:108: ">=" :
+          case 17: // rule src/parse/scantiger.ll:108: "function" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:108\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 108 "src/parse/scantiger.ll"
-return TOKEN(GE       );
+return TOKEN(FUNCTION );
             YY_BREAK
-          case 19: // rule src/parse/scantiger.ll:109: ">" :
+          case 18: // rule src/parse/scantiger.ll:109: ">=" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:109\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 109 "src/parse/scantiger.ll"
-return TOKEN(GT       );
+return TOKEN(GE       );
             YY_BREAK
-          case 20: // rule src/parse/scantiger.ll:110: "if" :
+          case 19: // rule src/parse/scantiger.ll:110: "<=" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:110\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 110 "src/parse/scantiger.ll"
-return TOKEN(IF       );
+return TOKEN(LE       );
             YY_BREAK
-          case 21: // rule src/parse/scantiger.ll:111: "import" :
+          case 20: // rule src/parse/scantiger.ll:111: ">" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:111\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 111 "src/parse/scantiger.ll"
-return TOKEN(IMPORT   );
+return TOKEN(GT       );
             YY_BREAK
-          case 22: // rule src/parse/scantiger.ll:112: "in" :
+          case 21: // rule src/parse/scantiger.ll:112: "if" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:112\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 112 "src/parse/scantiger.ll"
-return TOKEN(IN       );
+return TOKEN(IF       );
             YY_BREAK
-          case 23: // rule src/parse/scantiger.ll:113: "{" :
+          case 22: // rule src/parse/scantiger.ll:113: "import" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:113\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 113 "src/parse/scantiger.ll"
-return TOKEN(LBRACE   );
+return TOKEN(IMPORT   );
             YY_BREAK
-          case 24: // rule src/parse/scantiger.ll:114: "[" :
+          case 23: // rule src/parse/scantiger.ll:114: "in" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:114\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 114 "src/parse/scantiger.ll"
-return TOKEN(LBRACK   );
+return TOKEN(IN       );
             YY_BREAK
-          case 25: // rule src/parse/scantiger.ll:115: "<=" :
+          case 24: // rule src/parse/scantiger.ll:115: "{" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:115\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 115 "src/parse/scantiger.ll"
-return TOKEN(LE       );
+return TOKEN(LBRACE   );
             YY_BREAK
-          case 26: // rule src/parse/scantiger.ll:116: "let" :
+          case 25: // rule src/parse/scantiger.ll:116: "[" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:116\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 116 "src/parse/scantiger.ll"
-return TOKEN(LET      );
+return TOKEN(LBRACK   );
             YY_BREAK
-          case 27: // rule src/parse/scantiger.ll:117: "(" :
+          case 26: // rule src/parse/scantiger.ll:117: "let" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:117\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 117 "src/parse/scantiger.ll"
+return TOKEN(LET      );
+            YY_BREAK
+          case 27: // rule src/parse/scantiger.ll:118: "(" :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:118\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 118 "src/parse/scantiger.ll"
 return TOKEN(LPAREN   );
 
             YY_BREAK
-          case 28: // rule src/parse/scantiger.ll:119: "<" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:119\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 119 "src/parse/scantiger.ll"
-return TOKEN(LT       );
-            YY_BREAK
-          case 29: // rule src/parse/scantiger.ll:120: "-" :
+          case 28: // rule src/parse/scantiger.ll:120: "<" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:120\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 120 "src/parse/scantiger.ll"
-return TOKEN(MINUS    );
+return TOKEN(LT       );
             YY_BREAK
-          case 30: // rule src/parse/scantiger.ll:121: "method" :
+          case 29: // rule src/parse/scantiger.ll:121: "-" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:121\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 121 "src/parse/scantiger.ll"
-return TOKEN(METHOD   );
+return TOKEN(MINUS    );
             YY_BREAK
-          case 31: // rule src/parse/scantiger.ll:122: "<>" :
+          case 30: // rule src/parse/scantiger.ll:122: "method" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:122\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 122 "src/parse/scantiger.ll"
-return TOKEN(NE       );
+return TOKEN(METHOD   );
             YY_BREAK
-          case 32: // rule src/parse/scantiger.ll:123: "new" :
+          case 31: // rule src/parse/scantiger.ll:123: "<>" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:123\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 123 "src/parse/scantiger.ll"
-return TOKEN(NEW      );
+return TOKEN(NE       );
             YY_BREAK
-          case 33: // rule src/parse/scantiger.ll:124: "nil" :
+          case 32: // rule src/parse/scantiger.ll:124: "new" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:124\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 124 "src/parse/scantiger.ll"
-return TOKEN(NIL      );
+return TOKEN(NEW      );
             YY_BREAK
-          case 34: // rule src/parse/scantiger.ll:125: "of" :
+          case 33: // rule src/parse/scantiger.ll:125: "nil" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:125\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 125 "src/parse/scantiger.ll"
-return TOKEN(OF       );
+return TOKEN(NIL      );
             YY_BREAK
-          case 35: // rule src/parse/scantiger.ll:126: "|" :
+          case 34: // rule src/parse/scantiger.ll:126: "of" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:126\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 126 "src/parse/scantiger.ll"
-return TOKEN(OR       );
+return TOKEN(OF       );
             YY_BREAK
-          case 36: // rule src/parse/scantiger.ll:127: "+" :
+          case 35: // rule src/parse/scantiger.ll:127: "|" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:127\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 127 "src/parse/scantiger.ll"
-return TOKEN(PLUS     );
+return TOKEN(OR       );
             YY_BREAK
-          case 37: // rule src/parse/scantiger.ll:128: "primitive" :
+          case 36: // rule src/parse/scantiger.ll:128: "+" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:128\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 128 "src/parse/scantiger.ll"
-return TOKEN(PRIMITIVE);
+return TOKEN(PLUS     );
             YY_BREAK
-          case 38: // rule src/parse/scantiger.ll:129: "}" :
+          case 37: // rule src/parse/scantiger.ll:129: "primitive" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:129\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 129 "src/parse/scantiger.ll"
-return TOKEN(RBRACE   );
+return TOKEN(PRIMITIVE);
             YY_BREAK
-          case 39: // rule src/parse/scantiger.ll:130: "]" :
+          case 38: // rule src/parse/scantiger.ll:130: "}" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:130\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 130 "src/parse/scantiger.ll"
-return TOKEN(RBRACK   );
+return TOKEN(RBRACE   );
             YY_BREAK
-          case 40: // rule src/parse/scantiger.ll:131: ")" :
+          case 39: // rule src/parse/scantiger.ll:131: "]" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:131\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 131 "src/parse/scantiger.ll"
-return TOKEN(RPAREN   );
+return TOKEN(RBRACK   );
             YY_BREAK
-          case 41: // rule src/parse/scantiger.ll:132: ";" :
+          case 40: // rule src/parse/scantiger.ll:132: ")" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:132\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 132 "src/parse/scantiger.ll"
-return TOKEN(SEMI     );
+return TOKEN(RPAREN   );
             YY_BREAK
-          case 42: // rule src/parse/scantiger.ll:133: "then" :
+          case 41: // rule src/parse/scantiger.ll:133: ";" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:133\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 133 "src/parse/scantiger.ll"
-return TOKEN(THEN     );
+return TOKEN(SEMI     );
             YY_BREAK
-          case 43: // rule src/parse/scantiger.ll:134: "*" :
+          case 42: // rule src/parse/scantiger.ll:134: "then" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:134\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 134 "src/parse/scantiger.ll"
-return TOKEN(TIMES    );
+return TOKEN(THEN     );
             YY_BREAK
-          case 44: // rule src/parse/scantiger.ll:135: "to" :
+          case 43: // rule src/parse/scantiger.ll:135: "*" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:135\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 135 "src/parse/scantiger.ll"
-return TOKEN(TO       );
+return TOKEN(TIMES    );
             YY_BREAK
-          case 45: // rule src/parse/scantiger.ll:136: "type" :
+          case 44: // rule src/parse/scantiger.ll:136: "to" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:136\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 136 "src/parse/scantiger.ll"
-return TOKEN(TYPE     );
+return TOKEN(TO       );
             YY_BREAK
-          case 46: // rule src/parse/scantiger.ll:137: "var" :
+          case 45: // rule src/parse/scantiger.ll:137: "type" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:137\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 137 "src/parse/scantiger.ll"
-return TOKEN(VAR      );
+return TOKEN(TYPE     );
             YY_BREAK
-          case 47: // rule src/parse/scantiger.ll:138: "while" :
+          case 46: // rule src/parse/scantiger.ll:138: "var" :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:138\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 138 "src/parse/scantiger.ll"
+return TOKEN(VAR      );
+            YY_BREAK
+          case 47: // rule src/parse/scantiger.ll:139: "while" :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:139\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 139 "src/parse/scantiger.ll"
 return TOKEN(WHILE    );
             YY_BREAK
-          case 48: // rule src/parse/scantiger.ll:141: {int} :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:141\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+          case 48: // rule src/parse/scantiger.ll:140: " _ " :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:140\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
-#line 141 "src/parse/scantiger.ll"
+#line 140 "src/parse/scantiger.ll"
+tp.error_ << misc::error::error_type::scan        \
+            << tp.location_                         \
+            << ": invalid underscore: `"            \
+            << misc::escape(text()) << "\n";       \
+
+            YY_BREAK
+          case 49: // rule src/parse/scantiger.ll:145: {int} :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:145\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 145 "src/parse/scantiger.ll"
 {
         int val = 0;
     //FIXME:Some code was deleted here (Decode, and check the value).
-                return TOKEN_VAL(INT, val);
+        /*DONE*/
+        val = (int)strtol(text(), 0, 10);
+        if (val > 2147483647 || val < -2147483647)
+            if (!tp.enable_extensions_p_)                       \
+            tp.error_ << misc::error::error_type::scan        \
+            << tp.location_                         \
+            << ": invalid identifier: `"            \
+            << misc::escape(text()) << "\n";       \
+        return TOKEN_VAL(INT, val);
       }
 
+
             YY_BREAK
-          case 49: // rule src/parse/scantiger.ll:147: {id} :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:147\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+          case 50: // rule src/parse/scantiger.ll:160: {string} :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:160\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
-#line 147 "src/parse/scantiger.ll"
+#line 160 "src/parse/scantiger.ll"
 return TOKEN_VAL(ID, text());
 
             YY_BREAK
-          case 50: // rule src/parse/scantiger.ll:149: {string} :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:149\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 149 "src/parse/scantiger.ll"
-return TOKEN_VAL(ID, text());
-
-            YY_BREAK
-          case 51: // rule src/parse/scantiger.ll:151: {space} :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:151\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 151 "src/parse/scantiger.ll"
-tp.location_.columns();
-
-            YY_BREAK
-          case 52: // rule src/parse/scantiger.ll:154: \n :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:154\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 154 "src/parse/scantiger.ll"
-{ tp.location_.lines();
-tp.location_.end.column = 0;
-}
-
-            YY_BREAK
-          case 53: // rule src/parse/scantiger.ll:158: \r :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:158\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 158 "src/parse/scantiger.ll"
-{ tp.location_.lines();
-tp.location_.end.column = 0;
-}
-
-            YY_BREAK
-          case 54: // rule src/parse/scantiger.ll:162: \r\n :
+          case 51: // rule src/parse/scantiger.ll:162: {space} :
             if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:162\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
 #line 162 "src/parse/scantiger.ll"
+tp.location_.columns();
+
+            YY_BREAK
+          case 52: // rule src/parse/scantiger.ll:166: {eol} :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:166\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 166 "src/parse/scantiger.ll"
 {
     tp.location_.lines();
-    tp.location_.end.column = 0;
-}
+      }
 
             YY_BREAK
-          case 55: // rule src/parse/scantiger.ll:167: \n\r :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:167\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+          case 53: // rule src/parse/scantiger.ll:170: "/*" :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:170\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
-#line 167 "src/parse/scantiger.ll"
-{ tp.location_.lines();
-tp.location_.end.column = 0;
-}
-
-
-            YY_BREAK
-          case 56: // rule src/parse/scantiger.ll:172: "/*" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:172\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 172 "src/parse/scantiger.ll"
+#line 170 "src/parse/scantiger.ll"
 {
+
     nb_comment++;
     growing_string.clear();
     start(SC_COMMENT);
 }
 
             YY_BREAK
-          case 57: // rule src/parse/scantiger.ll:178: "\"" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:178\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+          case 54: // rule src/parse/scantiger.ll:177: "\"" :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:177\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
-#line 178 "src/parse/scantiger.ll"
+#line 177 "src/parse/scantiger.ll"
 {
     growing_string.clear();
     start(SC_STRING);;
 }
 
 
+            YY_BREAK
+          case 55: // rule src/parse/scantiger.ll:283: . :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:283\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 283 "src/parse/scantiger.ll"
+tp.error_ << misc::error::error_type::scan        \
+            << tp.location_                                   \
+            << "invalid character\n"                                \
+            << misc::escape(text()) << "\n";                 \
+
+            YY_BREAK
+          case 56: // rule src/parse/scantiger.ll:288: {id} :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:288\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 288 "src/parse/scantiger.ll"
+return TOKEN_VAL(ID, text());
             YY_BREAK
         }
         break;
@@ -657,9 +656,15 @@ tp.location_.end.column = 0;
           case 0:
             if (matcher().at_end())
             {
-              if (debug()) std::cerr << "--\033[1;35mEOF rule src/parse/scantiger.ll:139\033[0m start(" << start() << ")\n";
-#line 139 "src/parse/scantiger.ll"
-return TOKEN(EOF      );
+              if (debug()) std::cerr << "--\033[1;35mEOF rule src/parse/scantiger.ll:198\033[0m start(" << start() << ")\n";
+#line 198 "src/parse/scantiger.ll"
+{
+     tp.error_ << misc::error::error_type::scan        \
+     << tp.location_                         \
+     << "EOF in comment"                     \
+     << misc::escape(text()) << "\n";       \
+    start(INITIAL);
+}
 
             }
             else
@@ -668,45 +673,36 @@ return TOKEN(EOF      );
               output(matcher().input());
             }
             YY_BREAK
-          case 1: // rule src/parse/scantiger.ll:187: "/*" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:187\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+          case 1: // rule src/parse/scantiger.ll:186: "/*" :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:186\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
-#line 187 "src/parse/scantiger.ll"
+#line 186 "src/parse/scantiger.ll"
 {nb_comment++;}
 
             YY_BREAK
-          case 2: // rule src/parse/scantiger.ll:189: [^*]* :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:189\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+          case 2: // rule src/parse/scantiger.ll:188: "*/" :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:188\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
-#line 189 "src/parse/scantiger.ll"
-
-
-            YY_BREAK
-          case 3: // rule src/parse/scantiger.ll:191: "*"+[^*/]* :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:191\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 191 "src/parse/scantiger.ll"
-
-
-            YY_BREAK
-          case 4: // rule src/parse/scantiger.ll:193: "*/" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:193\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 193 "src/parse/scantiger.ll"
+#line 188 "src/parse/scantiger.ll"
 {
      nb_comment--;
      if (nb_comment == 0)
      start(INITIAL);
-     else
-     do {
-         tp.error_ << misc::error::error_type::scan        \
-         << tp.location_                                 \
-         << "comment never end"                          \
-         << misc::escape(text()) << "'\n"               \
-         << nb_comment;                                 \
-     } while (false);
-     start(INITIAL);
 }
+
+            YY_BREAK
+          case 3: // rule src/parse/scantiger.ll:194: {eol} :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:194\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 194 "src/parse/scantiger.ll"
+
+
+            YY_BREAK
+          case 4: // rule src/parse/scantiger.ll:196: . :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:196\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 196 "src/parse/scantiger.ll"
+
 
             YY_BREAK
         }
@@ -718,9 +714,14 @@ return TOKEN(EOF      );
           case 0:
             if (matcher().at_end())
             {
-              if (debug()) std::cerr << "--\033[1;35mEOF rule src/parse/scantiger.ll:139\033[0m start(" << start() << ")\n";
-#line 139 "src/parse/scantiger.ll"
-return TOKEN(EOF      );
+              if (debug()) std::cerr << "--\033[1;35mEOF rule src/parse/scantiger.ll:269\033[0m start(" << start() << ")\n";
+#line 269 "src/parse/scantiger.ll"
+{
+        tp.error_ << misc::error::error_type::scan        \
+        << tp.location_                         \
+        << "string unclosed\n";                     \
+        start(INITIAL);
+}
 
             }
             else
@@ -729,103 +730,149 @@ return TOKEN(EOF      );
               output(matcher().input());
             }
             YY_BREAK
-          case 1: // rule src/parse/scantiger.ll:219: "\"" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:219\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+          case 1: // rule src/parse/scantiger.ll:210: \\\" :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:210\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
-#line 219 "src/parse/scantiger.ll"
-{start(INITIAL);}
+#line 210 "src/parse/scantiger.ll"
+{growing_string = growing_string + "\"";}
             YY_BREAK
-          case 2: // rule src/parse/scantiger.ll:220: "\a" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:220\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+          case 2: // rule src/parse/scantiger.ll:211: \" :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:211\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
-#line 220 "src/parse/scantiger.ll"
-{growing_string = growing_string + '\a';}
-            YY_BREAK
-          case 3: // rule src/parse/scantiger.ll:221: "\b" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:221\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 221 "src/parse/scantiger.ll"
-{growing_string = growing_string + '\b';}
-            YY_BREAK
-          case 4: // rule src/parse/scantiger.ll:222: "\f" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:222\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 222 "src/parse/scantiger.ll"
-{growing_string = growing_string + '\f';}
-            YY_BREAK
-          case 5: // rule src/parse/scantiger.ll:223: "\n" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:223\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 223 "src/parse/scantiger.ll"
-{growing_string = growing_string + '\n';}
-            YY_BREAK
-          case 6: // rule src/parse/scantiger.ll:224: "\r" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:224\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 224 "src/parse/scantiger.ll"
-{growing_string = growing_string + '\r';}
-            YY_BREAK
-          case 7: // rule src/parse/scantiger.ll:225: "\t" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:225\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 225 "src/parse/scantiger.ll"
-{growing_string = growing_string + '\t';}
-            YY_BREAK
-          case 8: // rule src/parse/scantiger.ll:226: "\v" :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:226\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 226 "src/parse/scantiger.ll"
-{growing_string = growing_string + '\v';}
-
-            YY_BREAK
-          case 9: // rule src/parse/scantiger.ll:228: \\[0-7]{3} :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:228\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 228 "src/parse/scantiger.ll"
+#line 211 "src/parse/scantiger.ll"
 {
-        ouais += strtol(text() + 1, 0, 8);
-        do {
-        if (ouais > 255)
-            tp.error_ << misc::error::error_type::scan        \
-            << tp.location_                                   \
-            << "wring octal\n"                                \
-            << misc::escape(text()) << "'\n";                 \
-        } while (false);
-        start(INITIAL);
-
-    }
-
-            YY_BREAK
-          case 10: // rule src/parse/scantiger.ll:241: \\x[0-9a-fA-F]{2} :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:241\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
-            YY_USER_ACTION
-#line 241 "src/parse/scantiger.ll"
-{
-  growing_string += strtol(text() + 2, 0, 16);
-
+    start(INITIAL);
+    return TOKEN_VAL(STRING, growing_string);
 }
 
             YY_BREAK
-          case 11: // rule src/parse/scantiger.ll:246: "\\." :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:246\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+          case 3: // rule src/parse/scantiger.ll:216: \\r\\n :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:216\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
-#line 246 "src/parse/scantiger.ll"
+#line 216 "src/parse/scantiger.ll"
 {
-    do {
-            tp.error_ << misc::error::error_type::scan        \
-            << tp.location_                                   \
-            << "wring octal\n"                                \
-            << misc::escape(text()) << "'\n";                 \
-        } while (false);
+    tp.location_.lines();
+    growing_string = growing_string + "\r\n";
+}
+
+            YY_BREAK
+          case 4: // rule src/parse/scantiger.ll:221: \\n\\r :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:221\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 221 "src/parse/scantiger.ll"
+{ tp.location_.lines();
+    growing_string = growing_string + "\n\r";
+}
+
+
+            YY_BREAK
+          case 5: // rule src/parse/scantiger.ll:226: \\a :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:226\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 226 "src/parse/scantiger.ll"
+{growing_string = growing_string + "\a";}
+            YY_BREAK
+          case 6: // rule src/parse/scantiger.ll:227: \\b :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:227\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 227 "src/parse/scantiger.ll"
+{growing_string = growing_string + "\b";}
+            YY_BREAK
+          case 7: // rule src/parse/scantiger.ll:228: \\f :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:228\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 228 "src/parse/scantiger.ll"
+{growing_string = growing_string + "\f";}
+            YY_BREAK
+          case 8: // rule src/parse/scantiger.ll:229: \\n :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:229\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 229 "src/parse/scantiger.ll"
+{
+     tp.location_.lines();
+     growing_string = growing_string + "\n";
+    }
+            YY_BREAK
+          case 9: // rule src/parse/scantiger.ll:233: \\r :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:233\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 233 "src/parse/scantiger.ll"
+{
+     tp.location_.lines();
+     growing_string = growing_string + "\r";}
+            YY_BREAK
+          case 10: // rule src/parse/scantiger.ll:236: \\t :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:236\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 236 "src/parse/scantiger.ll"
+{growing_string = growing_string + "\t";}
+            YY_BREAK
+          case 11: // rule src/parse/scantiger.ll:237: \\v :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:237\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 237 "src/parse/scantiger.ll"
+{growing_string = growing_string + "\v";}
+
+            YY_BREAK
+          case 12: // rule src/parse/scantiger.ll:239: \\\\ :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:239\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 239 "src/parse/scantiger.ll"
+{growing_string = growing_string + "\\";
+      growing_string = growing_string + "\\";}
+
+            YY_BREAK
+          case 13: // rule src/parse/scantiger.ll:242: {space} :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:242\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 242 "src/parse/scantiger.ll"
+tp.location_.columns();
+
+            YY_BREAK
+          case 14: // rule src/parse/scantiger.ll:244: \\[0-7]{3} :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:244\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 244 "src/parse/scantiger.ll"
+{
+    ouais += strtol(text() + 1, 0, 8);
+    if (ouais > 255)
+        tp.error_ << misc::error::error_type::scan        \
+        << tp.location_                                   \
+        << "wrong octal\n"                                \
+        << misc::escape(text()) << "\n";                 \
     start(INITIAL);
 }
 
             YY_BREAK
-          case 12: // rule src/parse/scantiger.ll:256: "." :
-            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:256\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+          case 15: // rule src/parse/scantiger.ll:254: \\x[0-9a-fA-F]{2} :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:254\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
             YY_USER_ACTION
-#line 256 "src/parse/scantiger.ll"
+#line 254 "src/parse/scantiger.ll"
+{
+  growing_string += strtol(text() + 2, 0, 16);
+}
+
+            YY_BREAK
+          case 16: // rule src/parse/scantiger.ll:258: \\. :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:258\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 258 "src/parse/scantiger.ll"
+{
+            tp.error_ << misc::error::error_type::scan        \
+            << tp.location_                                   \
+            << "wrong escape\n"                                \
+            << misc::escape(text()) << "\n";                 \
+    start(INITIAL);
+}
+
+            YY_BREAK
+          case 17: // rule src/parse/scantiger.ll:266: . :
+            if (debug()) std::cerr << "--\033[1;35mrule src/parse/scantiger.ll:266\033[0m start(" << start() << ") " << matcher().lineno() << "," << matcher().columno() << ":\"\033[1m" << matcher().text() << "\033[0m\"\n";
+            YY_USER_ACTION
+#line 266 "src/parse/scantiger.ll"
 {growing_string = growing_string + text();}
+
+
             YY_BREAK
         }
         break;

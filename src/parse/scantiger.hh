@@ -102,7 +102,7 @@
       tp.error_ << misc::error::error_type::scan        \
                 << tp.location_                         \
                 << ": invalid identifier: `"            \
-                << misc::escape(text()) << "'\n";       \
+                << misc::escape(text()) << "\n";       \
   } while (false)
 
 
@@ -142,6 +142,7 @@ class Lexer : public FlexLexer {
 
 // FIXME: Some code was deleted here (Local variables).
 /*DONE*/
+int nb_quote = 0;
 int nb_comment = 0;
 std::string growing_string = "";
 long ouais = 0;
