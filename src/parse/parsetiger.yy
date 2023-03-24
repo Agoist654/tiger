@@ -318,7 +318,7 @@ exp:
   /* Cast of an expression to a given type */
   | "_cast" "(" exp "," ty ")"          { $$ = tp.td_.make_CastExp(@$, $3, $5); }
   /* An expression metavariable */
-  | "_exp" "(" INT ")"                  { $$ = metavar<ast::Exp>::(tp, $3); }
+  | "_exp" "(" INT ")"                  { $$ = metavar<ast::Exp>(tp, $3); }
   ;
 %token LVALUE "_lvalue";
 lvalue:
