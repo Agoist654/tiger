@@ -163,8 +163,8 @@
 %type <ast::Field*>           tyfield
 %type <ast::fields_type*>     tyfields tyfields.1 list_id
 %type <ast::Var*>             lvalue
-%type <ast::VarChunk*>        varchunk
-%type <ast::VarDec*>          vardec
+%type <ast::VarChunk*>        varchunk funfields funfields.1 
+%type <ast::VarDec*>          vardec funfield
 %type <ast::FunctionChunk*>   funchunk
 %type <ast::exps_type*>       exps list_exp
 %type <ast::FunctionDec*>     fundec
@@ -252,13 +252,13 @@ exp:
   | exp "|" exp         {
                             $$ = parse(Tweast()
                                << "if"
-                               <<    /* erreur ici*/
-                                   "_exp(0)"
-                                  
+                               <<{    /* erreur ici*/
+                                   "_exp(0)";
+                                  }
                                << "= 0 else 1 then"
-                               << 
-                                    "_exp(1)"
-                                  
+                               << {
+                                    "_exp(1)";
+                                  }
                                << "<> 0 else 0");
                           }
  
@@ -307,7 +307,7 @@ exp:
   | "while" exp "do" exp                { $$ = tp.td_.make_WhileExp(@$, $2, $4); }
   | "for" ID ":=" exp "to" exp "do" exp { $$ = tp.td_.make_ForExp(@$, $2, $6 ,$8); }
   | "break"                             { $$ = tp.td_.make_BreakExp(@$); }
-  | "let" chunks "in" exps "end"        { $$ = tp.td_.make_LetExp(@$, $2, $4); }
+  | "let" chunks "in" exps "end"        { $$ = tp.td_.make_LetExp(@$, $2, tp.td_.make_SeqExp(@4, $4)); }
   | "let" chunks "in" "end"             { $$ = tp.td_.make_LetExp(@$, $2, nullptr); }
 
 
@@ -363,12 +363,12 @@ tychunk:
   /* Use `%prec CHUNKS' to do context-dependent precedence and resolve a
      shift-reduce conflict. */
   tydec %prec CHUNKS                    { $$ = tp.td_.make_TypeChunk(@$); }
-| tydec tychunk                         { $$ = $2; $$->push_front($1); }
+| tydec tychunk                         { $$ = $2; $$->push_front(*$1); }
 ;
 
 funchunk:
-        fundec %prec CHUNKS            { $$ = tp.td_.make_FunctionChunk(@$); $$->push_front($1); }
-        | fundec funchunk              { $$ = $2; $$->push_front($1); }
+        fundec %prec CHUNKS            { $$ = tp.td_.make_FunctionChunk(@$); $$->push_front(*$1); }
+        | fundec funchunk              { $$ = $2; $$->push_front(*$1); }
    
 ;
 
@@ -388,13 +388,13 @@ tydec:
 ;
 
 fundec:
-      "function" ID "(" tyfields ")" ":" typeid "=" exp
+      "function" ID "(" funfields ")" ":" typeid "=" exp
                             { $$ = tp.td_.make_FunctionDec(@$, $2, $4, $7, $9); } 
-    | "primitive" ID "(" tyfields ")" ":" typeid
+    | "primitive" ID "(" funfields ")" ":" typeid
                             { $$ = tp.td_.make_FunctionDec(@$, $2, $4, $7, nullptr); }
-    | "function" ID "(" tyfields ")"  "=" exp
+    | "function" ID "(" funfields ")"  "=" exp
                             { $$ = tp.td_.make_FunctionDec(@$, $2, $4, nullptr, $7); }
-    | "primitive" ID "(" tyfields ")"
+    | "primitive" ID "(" funfields ")"
                             { $$ = tp.td_.make_FunctionDec(@$, $2, $4, nullptr, nullptr); }
 
 
@@ -420,19 +420,18 @@ tyfield:
   ID ":" typeid                         { $$ = tp.td_.make_Field(@$, $1, $3); }
 ;
 
-/*
-tyfields2:
-  %empty                                { $$ = tp.td_.make_fields_type(); }
-| tyfields.12                           { $$ = $1; }
+funfields:
+  %empty                                  { $$ = tp.td_.make_VarChunk(@$); }
+  | funfields.1                           { $$ = $1; }
 ;
-tyfields.12:
-  tyfields.12 "," tyfield2              { $$ = $1; $$->emplace_back($3); }
-| tyfield2                              { $$ = push_back($1); $$->tp.td_.make_VarChunk($@); }
+funfields.1:
+  funfields.1 "," funfield              { $$ = $1; $$->emplace_back(*$3); }
+| funfield                              { $$ = tp.td_.make_VarChunk(@$); $$->emplace_back(*$1); } 
 ;
-tyfield2:
+funfield:
   ID ":" typeid                         { $$ = tp.td_.make_VarDec(@$, $1, $3, nullptr); }
 ;
-*/
+
 
 %token NAMETY "_namety";
 typeid:
