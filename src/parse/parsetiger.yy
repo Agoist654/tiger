@@ -218,8 +218,8 @@ program:
   chunks                                { tp.ast_ = $1; }
 ;
 
-list_id: ID "=" exp "," list_id         { $$ = tp.td_.make_FieldInit(@$, $1, $3); $$->push_back($1); }/* use for*/
-       | ID "=" exp                     { $$ = tp.td_.make_fieldinits_type(@$); }
+list_id: ID "=" exp "," list_id         { $$->push_back(tp.td_.make_FieldInit(@$, $1, $3)); }/* use for*/
+       | ID "=" exp                     { $$ = tp.td_.make_fieldinits_type(@$); $$->push_back(tp.td_.make_FieldInit(@$, $1, $3)); }
        ;
 
 list_exp: exp "," list_exp              { $$ = tp.td_.make_exps_type($1); $$->emplace_back($1); }
@@ -227,7 +227,7 @@ list_exp: exp "," list_exp              { $$ = tp.td_.make_exps_type($1); $$->em
 ;
 
 %token EXP "_exp";
-exps: exps ";" exps          { $$ = $3; $$->push_back(*$1); }
+exps: exp ";" exps           { $$ = $3; $$->push_back($1); }
     | exp                    { $$ = tp.td_.make_exps_type($1); }
     ;
 
@@ -238,7 +238,7 @@ exp:
    /* Array and record creations. */
 
   | ID  "[" exp "]" "of" exp            { $$ = tp.td_.make_ArrayExp(@$, tp.td_.make_NameTy(@$,$1), $3, $6); }
-  | typeid  LBRACE list_id RBRACE       { $$ = tp.td_.make_RecordTy(@$, $1, $3); }
+  | typeid  LBRACE list_id RBRACE       { $$ = tp.td_.make_RecordExp(@$, $1, $3); }
   | typeid LBRACE RBRACE                { $$ = tp.td_.make_RecordExp(@$, $1, nullptr); }
 
   /* Variables, field, elements of an array. */
