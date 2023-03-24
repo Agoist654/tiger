@@ -218,10 +218,20 @@ program:
   chunks                                { tp.ast_ = $1; }
 ;
 
-list_id: ID "=" exp "," list_id         { $$->push_back(tp.td_.make_FieldInit(@$, $1, $3)); }/* use for*/
-       | ID "=" exp                     { $$ = tp.td_.make_fieldinits_type(@$); $$->push_back(tp.td_.make_FieldInit(@$, $1, $3)); }
+list_id: ID "=" exp "," list_id         { $$->push_back(tp.td_.make_FieldInit(@$, $1, $3)); }
+       | ID "=" exp                     { $$ = tp.td_.make_fieldinits_type(); $$->push_back(tp.td_.make_FieldInit(@$, $1, $3)); }
        ;
-
+/*
+list_id: list_id "," ID "=" exp {
+            $$ = $1;
+             ast::Field* newfield = tp.td_.make_FieldInit($3, $5);
+            $$->push_back(newfield);
+        }
+       | ID "=" exp {
+            $$ = tp.td_.make_FieldInit(@$, $1, $3);
+        }
+       ;
+*/
 list_exp: exp "," list_exp              { $$ = tp.td_.make_exps_type($1); $$->emplace_back($1); }
         | exp                           { $$ = tp.td_.make_exps_type($1); }
 ;
