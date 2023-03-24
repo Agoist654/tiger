@@ -161,7 +161,8 @@
 %type <ast::NameTy*>          typeid
 %type <ast::Ty*>              ty
 %type <ast::Field*>           tyfield
-%type <ast::fields_type*>     tyfields tyfields.1 list_id
+%type <ast::fields_type*>     tyfields tyfields.1
+%type <ast::fieldinits_type*> list_id
 %type <ast::Var*>             lvalue
 %type <ast::VarChunk*>        varchunk funfields funfields.1 
 %type <ast::VarDec*>          vardec funfield
@@ -217,16 +218,16 @@ program:
   chunks                                { tp.ast_ = $1; }
 ;
 
-list_id: list_id "," list_id            { $$ = $3; $$->push_back($1); }/* use for*/
-       | ID "=" exp                     { $$ = tp.td_.make_FieldInit(@$, $1, $3); }
+list_id: ID "=" exp "," list_id         { $$ = tp.td_.make_FieldInit(@$, $1, $3); $$->push_back($1); }/* use for*/
+       | ID "=" exp                     { $$ = tp.td_.make_fieldinits_type(@$); }
        ;
 
-list_exp: list_exp "," list_exp         { $$ = $3; $$->push_back($1); }
+list_exp: exp "," list_exp              { $$ = tp.td_.make_exps_type($1); $$->emplace_back($1); }
         | exp                           { $$ = tp.td_.make_exps_type($1); }
 ;
 
 %token EXP "_exp";
-exps: exps ";" exps          { $$ = $3; $$->push_back($1); }
+exps: exps ";" exps          { $$ = $3; $$->push_back(*$1); }
     | exp                    { $$ = tp.td_.make_exps_type($1); }
     ;
 
@@ -250,21 +251,21 @@ exp:
     
   /* Operations. */
   | exp "|" exp         {
-                            $$ = parse(Tweast()
+                            $$ = tp.enable_extensions().parse(Tweast()
                                << "if"
-                               <<{    /* erreur ici*/
-                                   "_exp(0)";
-                                  }
+                               <<    /* erreur ici*/
+                                   "_exp(0)"
+                                  
                                << "= 0 else 1 then"
-                               << {
-                                    "_exp(1)";
-                                  }
+                               << 
+                                    "_exp(1)"
+                                  
                                << "<> 0 else 0");
                           }
  
 
   | exp "&" exp         { 
-                            $$ = parse(Tweast()
+                            $$ = tp.enable_extensions().parse(Tweast()
                                << "if"
                                << 
                                    "_exp(0)"
@@ -283,11 +284,13 @@ exp:
   | exp ">" exp         { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::gt, $3); }
   | exp ">=" exp        { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::ge, $3); }
   | "-" exp             {
-                            $$ = parse(Tweast()
+                            $$ = tp.enable_extensions().parse(Tweast()
                                << "0 -"
-                               << {
-                                    "_exp(0)";
-                                  };
+                               <<
+                                    "_exp("
+                                << $2
+                                << ")" )
+                                  ;
                         }
 
 
@@ -305,7 +308,7 @@ exp:
   | "if" exp "then" exp                 { $$ = tp.td_.make_IfExp(@$, $2, $4); }
   | "if" exp "then" exp "else" exp      { $$ = tp.td_.make_IfExp(@$, $2, $4, $6); }
   | "while" exp "do" exp                { $$ = tp.td_.make_WhileExp(@$, $2, $4); }
-  | "for" ID ":=" exp "to" exp "do" exp { $$ = tp.td_.make_ForExp(@$, $2, $6 ,$8); }
+  | "for" ID ":=" exp "to" exp "do" exp { $$ = tp.td_.make_ForExp(@$, tp.td_.make_VarDec(@$, $2, nullptr, $4), $6 ,$8); }
   | "break"                             { $$ = tp.td_.make_BreakExp(@$); }
   | "let" chunks "in" exps "end"        { $$ = tp.td_.make_LetExp(@$, $2, tp.td_.make_SeqExp(@4, $4)); }
   | "let" chunks "in" "end"             { $$ = tp.td_.make_LetExp(@$, $2, nullptr); }
@@ -315,7 +318,7 @@ exp:
   /* Cast of an expression to a given type */
   | "_cast" "(" exp "," ty ")"          { $$ = tp.td_.make_CastExp(@$, $3, $5); }
   /* An expression metavariable */
-  | "_exp" "(" INT ")"                  { $$ = MetavarMap<ast::Exp>::(tp, $3); }
+  | "_exp" "(" INT ")"                  { $$ = metavar<ast::Exp>::(tp, $3); }
   ;
 %token LVALUE "_lvalue";
 lvalue:
@@ -352,7 +355,7 @@ chunks:
 | varchunk chunks                        { $$ = $2; $$->push_front($1); }
 |"import" STRING chunks                  { $$ = $3; tp.parse_import($2, @$);}
 /* A list of chunk metavariable */
-| "_chunks" "(" INT ")" chunks           { $$ = $5; $$->push_front(metavar<ast::ChunkList>(tp, $3)); }
+| "_chunks" "(" INT ")" chunks           { $$ = $5; $$->splice_back(*metavar<ast::ChunkList>(tp, $3)); }
 ;
 
 /*--------------------.
