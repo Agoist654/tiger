@@ -252,13 +252,13 @@ exp:
   | exp "|" exp         {
                             $$ = parse(Tweast()
                                << "if"
-                               << {   /* erreur ici*/
-                                   "_exp(0)";
-                                  }
+                               <<    /* erreur ici*/
+                                   "_exp(0)"
+                                  
                                << "= 0 else 1 then"
-                               << {
-                                    "_exp(1)";
-                                  }
+                               << 
+                                    "_exp(1)"
+                                  
                                << "<> 0 else 0");
                           }
  
@@ -266,13 +266,13 @@ exp:
   | exp "&" exp         { 
                             $$ = parse(Tweast()
                                << "if"
-                               << {
-                                   "_exp(0)";
-                                  }
+                               << 
+                                   "_exp(0)"
+                                  
                                << "then"
-                               << {
-                                    "_exp(1)";
-                                  }
+                               << 
+                                    "_exp(1)"
+                                  
                                << "<> 0 else 0");
                           }
 
@@ -419,6 +419,20 @@ tyfields.1:
 tyfield:
   ID ":" typeid                         { $$ = tp.td_.make_Field(@$, $1, $3); }
 ;
+
+/*
+tyfields2:
+  %empty                                { $$ = tp.td_.make_fields_type(); }
+| tyfields.12                           { $$ = $1; }
+;
+tyfields.12:
+  tyfields.12 "," tyfield2              { $$ = $1; $$->emplace_back($3); }
+| tyfield2                              { $$ = push_back($1); $$->tp.td_.make_VarChunk($@); }
+;
+tyfield2:
+  ID ":" typeid                         { $$ = tp.td_.make_VarDec(@$, $1, $3, nullptr); }
+;
+*/
 
 %token NAMETY "_namety";
 typeid:
