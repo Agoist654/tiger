@@ -109,3 +109,21 @@ tcsh/python/.deps/
 tcsh/python/swig.mk
 tcsh/run
 
+autom4te.cache/output.0
+autom4te.cache/traces.0
+lib/misc/.deps/test-deref.Po
+lib/misc/.deps/test-error.Po
+lib/misc/.deps/test-escape.Po
+lib/misc/.deps/test-graph.Po
+lib/misc/.deps/test-indent.Po
+lib/misc/.deps/test-scoped.Po
+lib/misc/.deps/test-separator.Po
+lib/misc/.deps/test-symbol.Po
+lib/misc/.deps/test-timer.Po
+lib/misc/.deps/test-unique.Po
+lib/misc/.deps/test-xalloc.Po
+lib/misc/.deps/test_variant-test-variant.Po
+src/object/.deps/test-parse.Po
+src/parse/.deps/parsetiger.Plo
+src/parse/.deps/src_parse_test_parse-test-parse.Po
+src/parse/.deps/test-tweast.Po
