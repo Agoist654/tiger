@@ -213,7 +213,7 @@ long ouais = 0;
 <SC_STRING> {
 
 \\\"  {growing_string = growing_string + "\"";}
-\" {
+"\"" {
     start(INITIAL);
     return TOKEN_VAL(STRING, growing_string);
 }
@@ -279,5 +279,5 @@ long ouais = 0;
             << misc::escape(text()) << "\n";                 \
 
 {id}          return TOKEN_VAL(ID, text());
-/*<<EOF>>       return TOKEN(EOF      );*/
+<<EOF>>       return TOKEN(EOF      );
 %%
