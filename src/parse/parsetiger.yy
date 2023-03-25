@@ -446,7 +446,6 @@ funfield:
   ID ":" typeid                         { $$ = tp.td_.make_VarDec(@$, $1, $3, nullptr); }
 ;
 
-
 %token NAMETY "_namety";
 typeid:
       ID                                { $$ = tp.td_.make_NameTy(@$, $1); }
