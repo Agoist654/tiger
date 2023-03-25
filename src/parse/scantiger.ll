@@ -72,7 +72,7 @@ int             [0-9]+
 string          [a-zA-Z]+
 id              [a-zA-Z][a-zA-Z0-9_]*|"_main"
 space           [ \t]
-eol             (\n\r|\r\n|\n|\r)
+eol             \n\r|\r\n|\n|\r
 
 %class{
 // FIXME: Some code was deleted here (Local variables).
@@ -87,6 +87,11 @@ long ouais = 0;
 /* The rules. */
 /* FIXME: Some code was deleted here. */
 /*ONGOING*//*should be DONE*/
+
+"_exp"    return TOKEN(EXP);
+"_lvalue" return TOKEN(LVALUE);
+"_chunks" return TOKEN(CHUNKS);
+"_namety" return TOKEN(NAMETY);
 
 "array"       return parser::make_ARRAY(tp.location_);
 "&"           return TOKEN(AND);
@@ -138,10 +143,10 @@ long ouais = 0;
 "type"        return TOKEN(TYPE     );
 "var"         return TOKEN(VAR      );
 "while"       return TOKEN(WHILE    );
-" _ "         tp.error_ << misc::error::error_type::scan        \
-            << tp.location_                         \
-            << ": invalid underscore: `"            \
-            << misc::escape(text()) << "\n";       \
+" _ "         tp.error_ << misc::error::error_type::scan        
+            << tp.location_                         
+            << ": invalid underscore: `"           
+            << misc::escape(text()) << "\n";       
 
 {int} {
         int val = 0;
@@ -149,11 +154,11 @@ long ouais = 0;
         /*DONE*/
         val = (int)strtol(text(), 0, 10);
         if (val > 2147483647 || val < -2147483647)
-            if (!tp.enable_extensions_p_)                       \
-            tp.error_ << misc::error::error_type::scan        \
-            << tp.location_                         \
-            << ": invalid identifier: `"            \
-            << misc::escape(text()) << "\n";       \
+            if (!tp.enable_extensions_p_)                       
+            tp.error_ << misc::error::error_type::scan        
+            << tp.location_                        
+            << ": invalid identifier: `"           
+            << misc::escape(text()) << "\n";       
         return TOKEN_VAL(INT, val);
       }
 
@@ -178,7 +183,7 @@ long ouais = 0;
 
 "\"" {
     growing_string.clear();
-    start(SC_STRING);;
+    start(SC_STRING);
 }
 
 
@@ -201,10 +206,10 @@ long ouais = 0;
 .
 
 <<EOF>> {
-     tp.error_ << misc::error::error_type::scan        \
-     << tp.location_                         \
-     << "EOF in comment"                     \
-     << misc::escape(text()) << "\n";       \
+     tp.error_ << misc::error::error_type::scan        
+     << tp.location_                        
+     << "EOF in comment"                    
+     << misc::escape(text()) << "\n";       
     start(INITIAL);
 }
 
@@ -213,7 +218,8 @@ long ouais = 0;
 <SC_STRING> {
 
 \\\"  {growing_string = growing_string + "\"";}
-\" {
+
+"\"" {
     start(INITIAL);
     return TOKEN_VAL(STRING, growing_string);
 }
@@ -223,6 +229,8 @@ long ouais = 0;
      tp.location_.step();
      growing_string = growing_string + text();}
 
+\\n {growing_string = growing_string + "\n";}
+\\r {growing_string = growing_string + "\r";}
 \\a {growing_string = growing_string + "\a";}
 \\b {growing_string = growing_string + "\b";}
 \\f {growing_string = growing_string + "\f";}
@@ -237,10 +245,10 @@ long ouais = 0;
 \\[0-7]{3} {
     ouais += strtol(text() + 1, 0, 8);
     if (ouais > 255)
-        tp.error_ << misc::error::error_type::scan        \
-        << tp.location_                                   \
-        << "wrong octal\n"                                \
-        << misc::escape(text()) << "\n";                 \
+        tp.error_ << misc::error::error_type::scan       
+        << tp.location_                                  
+        << "wrong octal\n"                               
+        << misc::escape(text()) << "\n";                 
     start(INITIAL);
 }
 
@@ -249,10 +257,10 @@ long ouais = 0;
 }
 
 \\. {
-            tp.error_ << misc::error::error_type::scan        \
-            << tp.location_                                   \
-            << "wrong escape\n"                                \
-            << misc::escape(text()) << "\n";                 \
+            tp.error_ << misc::error::error_type::scan       
+            << tp.location_                                  
+            << "wrong escape\n"                              
+            << misc::escape(text()) << "\n";                 
     start(INITIAL);
 }
 
@@ -260,9 +268,9 @@ long ouais = 0;
 
 
 <<EOF>> {
-        tp.error_ << misc::error::error_type::scan        \
-        << tp.location_                         \
-        << "string unclosed\n";                     \
+        tp.error_ << misc::error::error_type::scan        
+        << tp.location_                         
+        << "string unclosed\n";                     
         start(INITIAL);
 }
 
@@ -273,11 +281,11 @@ long ouais = 0;
 /*INITIAL*/
 /*all other character + eof*/
 
-.           tp.error_ << misc::error::error_type::scan        \
-            << tp.location_                                   \
-            << "invalid character\n"                                \
-            << misc::escape(text()) << "\n";                 \
+.           tp.error_ << misc::error::error_type::scan       
+            << tp.location_                                  
+            << "invalid character\n"                              
+            << misc::escape(text()) << "\n";                 
 
 {id}          return TOKEN_VAL(ID, text());
-/*<<EOF>>       return TOKEN(EOF      );*/
+<<EOF>>       return TOKEN(EOF      );
 %%

@@ -38,6 +38,7 @@ namespace parse::tasks
       task_error().exit();
 
     // FIXME: Some code was deleted here (Set `the_program' to the result of parsing).
+    ast::tasks::the_program.reset(result.first);
   }
 
   void library_display() { std::cout << l << '\n'; }
