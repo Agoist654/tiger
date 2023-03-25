@@ -88,6 +88,11 @@ long ouais = 0;
 /* FIXME: Some code was deleted here. */
 /*ONGOING*//*should be DONE*/
 
+"_exp"    return TOKEN(EXP);
+"_lvalue" return TOKEN(LVALUE);
+"_chunks" return TOKEN(CHUNKS);
+"_namety" return TOKEN(NAMETY);
+
 "array"       return parser::make_ARRAY(tp.location_);
 "&"           return TOKEN(AND);
 ":="          return TOKEN(ASSIGN);

@@ -330,6 +330,7 @@ exp:
   /* An expression metavariable */
   | "_exp" "(" INT ")"                  { $$ = metavar<ast::Exp>(tp, $3); }
   ;
+
 %token LVALUE "_lvalue";
 lvalue:
     ID                                  { $$ = tp.td_.make_SimpleVar(@$, $1); }
