@@ -232,7 +232,6 @@ list_id: list_id "," ID "=" exp {
         }
        ;
 */
-
 list_exp: exp "," list_exp              { $$ = tp.td_.make_exps_type($1); $$->emplace_back($1); }
         | exp                           { $$ = tp.td_.make_exps_type($1); }
 ;
