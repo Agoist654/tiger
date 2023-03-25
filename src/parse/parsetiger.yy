@@ -263,13 +263,13 @@ exp:
   | exp "|" exp         {
                             $$ = tp.enable_extensions().parse(Tweast()
                                << "if"
-                               <<    /* erreur ici*/
-                                   "_exp(0)"
-                                  
+                               <<{    /* erreur ici*/
+                                   "_exp(0)";
+                                  }
                                << "= 0 else 1 then"
-                               << 
-                                    "_exp(1)"
-                                  
+                               << {
+                                    "_exp(1)";
+                                  }
                                << "<> 0 else 0");
                           }
  
