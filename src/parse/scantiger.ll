@@ -218,7 +218,6 @@ long ouais = 0;
 <SC_STRING> {
 
 \\\"  {growing_string = growing_string + "\"";}
-
 "\"" {
     start(INITIAL);
     return TOKEN_VAL(STRING, growing_string);
