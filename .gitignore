@@ -41,13 +41,11 @@ autom4te.cache/requests
 autom4te.cache/traces.1
 autom4te.cache/traces.2
 build-aux/bin/bison++
->>>>>>> submission2
 config.h
 config.h.in
 config.log
 config.status
 configure
-<<<<<<< HEAD
 lib/misc/.deps/
 lib/misc/.dirstamp
 lib/misc/.libs/
@@ -204,3 +202,7 @@ src/object/.deps/test-parse.Po
 src/parse/.deps/parsetiger.Plo
 src/parse/.deps/src_parse_test_parse-test-parse.Po
 src/parse/.deps/test-tweast.Po
+
+
+*.*o
+.*

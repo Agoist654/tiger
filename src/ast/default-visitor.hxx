@@ -90,7 +90,7 @@ namespace ast
   {
       // FIXME: Some code was deleted here.
       /*DONE*/
-      for (auto& v : *e.exps_get())
+      for (auto& v : e.exps_get())
       {
           v->accept(*this);
       }

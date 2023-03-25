@@ -23,7 +23,8 @@ namespace ast
       void accept(Visitor& v) override;
 
 
-      exps_type* exps_get() const;
+      //exps_type* exps_get() const;
+      exps_type& exps_get() const;
 
   protected:
       exps_type* exps_;

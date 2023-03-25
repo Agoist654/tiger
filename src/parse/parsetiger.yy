@@ -237,7 +237,7 @@ list_exp: exp "," list_exp              { $$ = tp.td_.make_exps_type($1); $$->em
 ;
 
 %token EXP "_exp";
-exps: exp ";" exps           { $$ = $3; $$->push_back($1); }
+exps: exps ";" exp           { $$ = $1; $$->push_back($exp); }
     | exp                    { $$ = tp.td_.make_exps_type($1); }
     ;
 
@@ -309,7 +309,7 @@ exp:
   | exp "*" exp         { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::mul, $3); }
   | exp "/" exp         { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::div, $3); }
   | "(" exps ")"        { $$ = tp.td_.make_SeqExp(@$, $2); }
-  | "(" ")"             { $$ = tp.td_.make_SeqExp(@$, nullptr); }
+  | "(" ")"             { $$ = tp.td_.make_SeqExp(@$, tp.td_.make_exps_type()); }
 
   /* Assignment. */
   | lvalue ":=" exp     { $$ = tp.td_.make_AssignExp(@$, $1, $3); }

@@ -92,7 +92,7 @@ namespace ast
 
   void PrettyPrinter::operator()(const FunctionDec& e)
   {
-      ostr_ << "function " << e.name_get() << "(" << e.formals_get() << ")" << " : " << e.result_get() << " =" << misc::incendl << e.body_get() << misc::decendl;
+      ostr_ << "function " << e.name_get() << "(" << e.formals_get() << ")" << " : " << e.result_get() << " =" << misc::incendl << *e.body_get() << misc::decendl;
   }
 
   void PrettyPrinter::operator()(const IfExp& e)
@@ -146,7 +146,7 @@ namespace ast
 
   void PrettyPrinter::operator()(const SeqExp& e)
   {
-      ostr_ << "(" << misc::incendl << e.exps_get() << misc::decendl <<")";
+      ostr_ << "(" << misc::incendl << misc::separate(e.exps_get(), ";\n") << misc::decendl <<")";
   }
 
   void PrettyPrinter::operator()(const StringExp& e)
