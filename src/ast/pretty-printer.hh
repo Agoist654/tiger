@@ -35,6 +35,7 @@ namespace ast
     void operator()(const ArrayTy& e) override;
     void operator()(const AssignExp& e) override;
     void operator()(const BreakExp& e) override;
+    void operator()(const CallExp& e) override;
     void operator()(const Dec& e);
     void operator()(const Exp& e);
     void operator()(const Field& e) override;

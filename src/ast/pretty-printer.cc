@@ -75,6 +75,11 @@ namespace ast
       ostr_ << "break";
   }
 
+  void PrettyPrinter::operator()(const CallExp& e)
+  {
+      ostr_ << e.name_get() << "(" << misc::separate(*e.args_get(), ",") << ")";
+  }
+
   void PrettyPrinter::operator()(const Field& e)
   {
       ostr_ << e.name_get() << " : " << e.type_name_get();
@@ -154,7 +159,7 @@ namespace ast
 
   void PrettyPrinter::operator()(const StringExp& e)
   {
-      ostr_ << e.value_get();
+      ostr_ << "\"" << misc::escape(e.value_get()) << "\"";
   }
 
   void PrettyPrinter::operator()(const TypeDec& e)
