@@ -97,12 +97,14 @@ namespace ast
 
   void PrettyPrinter::operator()(const FunctionDec& e)
   {
+          ostr_ << "function " << e.name_get() << "(" << e.formals_get() << ")" ;
       if (e.result_get() != nullptr)
-          ostr_ << "function " << e.name_get() << "(" << e.formals_get() << ")" << " : " << e.result_get() << " =" << misc::incendl << *e.body_get() << misc::decendl;
+          ostr_ << " : " << e.result_get() ;
+      if (e.body_get() != nullptr)
+          ostr_ << " =" << misc::incendl << *e.body_get() << misc::decendl;
       else
-          ostr_ << "function " << e.name_get() << "(" << e.formals_get() << ")" << " =" << misc::incendl << *e.body_get() << misc::decendl;
+          ostr_ << misc::iendl;
   }
-
   void PrettyPrinter::operator()(const IfExp& e)
   {
       ostr_ << "if " << e.test_get() << " then" << misc::incendl << e.thenclause_get() << misc::decendl;
@@ -119,7 +121,12 @@ namespace ast
 
   void PrettyPrinter::operator()(const LetExp& e)
   {
-      ostr_ << "let" << misc::incendl << e.decs_get() << misc::decendl << "in" << misc::incendl << e.body_get() << misc::decendl << "end";
+      ostr_ << "let" << misc::incendl;
+      if (e.decs_get() != nullptr)
+          ostr_ <<*e.body_get()/* *e.decs_get() */<< misc::decendl << "in" << misc::incendl;
+      if (e.body_get() != nullptr)
+          ostr_ << *e.body_get();
+      ostr_ << misc::decendl << "end";
   }
 
   void PrettyPrinter::operator()(const NameTy& e)
@@ -154,7 +161,10 @@ namespace ast
 
   void PrettyPrinter::operator()(const SeqExp& e)
   {
-      ostr_ << "(" << misc::incendl << misc::separate(e.exps_get(), ";\n") << misc::decendl <<")";
+      if (!e.exps_get().empty())
+          ostr_ << "(" << misc::incendl << misc::separate(e.exps_get(), ";") << misc::resetindent << misc::incendl <<")";
+      else
+          ostr_ << misc::resetindent  << misc::incindent << misc::incendl << "()";
   }
 
   void PrettyPrinter::operator()(const StringExp& e)

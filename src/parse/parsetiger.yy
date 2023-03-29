@@ -218,7 +218,7 @@ program:
   chunks                                { tp.ast_ = $1; }
 ;
 
-list_id: ID "=" exp "," list_id         { $$->push_back(tp.td_.make_FieldInit(@$, $1, $3)); }
+list_id: ID "=" exp "," list_id         { $$ = tp.td_.make_fieldinits_type(); $$->emplace_back(tp.td_.make_FieldInit(@$, $1, $3)); }
        | ID "=" exp                     { $$ = tp.td_.make_fieldinits_type(); $$->push_back(tp.td_.make_FieldInit(@$, $1, $3)); }
        ;
 /*
@@ -237,7 +237,7 @@ list_exp: exp "," list_exp              { $$ = tp.td_.make_exps_type($1); $$->em
 ;
 
 %token EXP "_exp";
-exps: exps ";" exp           { $$ = $1; $$->push_back($exp); }
+exps: exp ";" exps           { $$ = $3; $$->insert($$->begin(), $1); }
     | exp                    { $$ = tp.td_.make_exps_type($1); }
     ;
 
@@ -262,29 +262,32 @@ exp:
   /* Operations. */
   | exp "|" exp         {
                             $$ = tp.enable_extensions().parse(Tweast()
-                               << "if"
-                               <<    /* erreur ici*/
-                                   "_exp(0)"
+                               << "if "
+                              // <<   "_exp( "
+                               << $1
+                               //<<" ) "
                                   
-                               << "= 0 else 1 then"
-                               << 
-                                    "_exp(1)"
+                               << " <> 0 then 1 else "
+                               //<< " _exp( "
+                               << $3
+                               //<< " ) "
                                   
-                               << "<> 0 else 0");
+                               << " <> 0 else 0");
                           }
  
 
   | exp "&" exp         { 
                             $$ = tp.enable_extensions().parse(Tweast()
-                               << "if"
-                               << 
-                                   "_exp(0)"
+                               << "if "
+                               //<< "_exp( "
+                               << $1
+                               //<< ") "
+                               << "then "
+                               //<< "_exp("
+                               << $3
+                               //<< ")"
                                   
-                               << "then"
-                               << 
-                                    "_exp(1)"
-                                  
-                               << "<> 0 else 0");
+                               << " <> 0 else 0");
                           }
 
   | exp "<=" exp        { $$ = tp.td_.make_OpExp(@$, $1, ast::OpExp::Oper::le, $3); }
@@ -296,11 +299,10 @@ exp:
   | "-" exp             {
                             $$ = tp.enable_extensions().parse(Tweast()
                                << "0 -"
-                               <<
-                                    "_exp("
+                               //<< "_exp("
                                 << $2
-                                << ")" )
-                                  ;
+                                //<< ")" 
+                                ) ;
                         }
 
 
@@ -366,7 +368,7 @@ chunks:
 | varchunk chunks                        { $$ = $2; $$->push_front($1); }
 |"import" STRING chunks                  { $$ = $3; tp.parse_import($2, @$);}
 /* A list of chunk metavariable */
-| "_chunks" "(" INT ")" chunks           { $$ = $5; $$->splice_back(*metavar<ast::ChunkList>(tp, $3)); }
+| "_chunks" "(" INT ")" chunks           { $$ = $5; $$->splice_front(*metavar<ast::ChunkList>(tp, $3)); }
 ;
 
 /*--------------------.
@@ -387,8 +389,8 @@ funchunk:
 ;
 
 varchunk:
-        vardec                          { $$ = tp.td_.make_VarChunk(@$); }
-
+        vardec /*%prec CHUNKS*/                         { $$ = tp.td_.make_VarChunk(@$); }
+        /*| vardec varchunk                           {$$ = $2; $$->push_front(*$1);}*/
 ;
 
 vardec:
@@ -445,6 +447,7 @@ funfields.1:
 funfield:
   ID ":" typeid                         { $$ = tp.td_.make_VarDec(@$, $1, $3, nullptr); }
 ;
+
 
 %token NAMETY "_namety";
 typeid:
