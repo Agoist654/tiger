@@ -260,18 +260,18 @@ exp:
     
   /* Operations. */
   | exp "|" exp         {
-                            $$ = tp.enable_extensions().parse(Tweast()
-                               << "if ("
+                            $$ = parse::parse(Tweast()
+                               << "if "
                               // <<   "_exp( "
                                << $1
                                //<<" ) "
                                   
-                               << " <> 0) then 1 else "
+                               << " then 1 else "
                                //<< " _exp( "
                                << $3
                                //<< " ) "
                                   
-                               << " <> 0 else 0");
+                               << " <> 0");
                           }
  
 

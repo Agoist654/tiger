@@ -8,6 +8,7 @@
 #include <ast/exp.hh>
 #include <ast/function-dec.hh>
 #include <misc/symbol.hh>
+#include <misc/unique.hh>
 
 namespace ast
 {
@@ -27,9 +28,14 @@ namespace ast
       misc::symbol name_get() const;
       exps_type* args_get() const;
 
+      TypeDec* def_get() const;
+      void def_set(TypeDec* def);
+
   protected:
       misc::symbol name_;
       exps_type* args_;
+      TypeDec* def_ = nullptr;
+
   };
 } // namespace ast
 #include <ast/call-exp.hxx>

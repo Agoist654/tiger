@@ -48,11 +48,15 @@ namespace ast
     Exp* init_get();
     /** \} */
 
+    TypeDec* def_get() const;
+    void def_set(TypeDec* new_def);
+
   protected:
     /// Optional type of the declared variable.
     NameTy* type_name_;
     /// The initial value (expression) assigned to the variable.
     Exp* init_;
+    TypeDec* def_;
   };
 } // namespace ast
 #include <ast/var-dec.hxx>

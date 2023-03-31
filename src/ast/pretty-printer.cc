@@ -90,7 +90,7 @@ namespace ast
 
   void PrettyPrinter::operator()(const FieldInit& e)
   {
-      ostr_ << e.name_get() << " := " << e.init_get();
+      ostr_ << e.name_get() << " = " << e.init_get() << " ";
   }
 
   void PrettyPrinter::operator()(const ForExp& e)
@@ -105,7 +105,7 @@ namespace ast
   void PrettyPrinter::operator()(const FunctionDec& e)
   {
       ostr_ << "function " << e.name_get();
-      ostr_ << "(" << misc::separate(e.formals_get(), ":") << ")";
+      ostr_ << "(" << misc::separate(e.formals_get(), ",") << ")";
       if (e.result_get() != nullptr)
           ostr_ << " : " << *e.result_get() ;
       if (e.body_get() != nullptr)
@@ -155,7 +155,7 @@ namespace ast
 
   void PrettyPrinter::operator()(const OpExp& e)
   {
-      ostr_ << e.left_get() << " " << str(e.oper_get()) << " " << e.right_get();
+      ostr_ << "(" << e.left_get() << ") " << str(e.oper_get()) << " " << "(" << e.right_get() << ")";
   }
 
   void PrettyPrinter::operator()(const RecordExp& e)

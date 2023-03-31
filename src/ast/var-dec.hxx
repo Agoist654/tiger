@@ -16,4 +16,6 @@ namespace ast
   inline const Exp* VarDec::init_get() const { return init_; }
   inline Exp* VarDec::init_get() { return init_; }
 
+  inline TypeDec* VarDec::def_get() const { return def_; }
+  inline void VarDec::def_set(TypeDec* def) { def_ = def; }
 } // namespace ast
