@@ -57,10 +57,18 @@
                 << tp.location_                         \
                 << ": invalid identifier: `"            \
                 << misc::escape(text()) << "\n";       \
+  } while (false)                                          
+#define CHECK_OBJECT_EXTENSION()                        \
+    do{                                                 \
+        if (!tp.enable_object_extensions_p_)            \
+      tp.error_ << misc::error::error_type::scan        \
+                << tp.location_                         \
+                << ": invalid identifier: `"            \
+                << misc::escape(text()) << "\n";       \
   } while (false)
-
 %}
 
+ 
 %x SC_COMMENT SC_STRING
 
 /* Abbreviations.  */
@@ -98,7 +106,7 @@ long ouais = 0;
 ":="          return TOKEN(ASSIGN);
 "break"       return TOKEN(BREAK    );
 "_cast"       return TOKEN(CAST     );
-"class"       return TOKEN(CLASS    );
+"class"       {CHECK_OBJECT_EXTENSION(); return TOKEN(CLASS    );}
 ":"           return TOKEN(COLON    );
 
 ","           return TOKEN(COMMA    );
@@ -109,7 +117,7 @@ long ouais = 0;
 "else"        return TOKEN(ELSE     );
 "end"         return TOKEN(END      );
 "="           return TOKEN(EQ       );
-"extends"     return TOKEN(EXTENDS  );
+"extends"     {CHECK_OBJECT_EXTENSION();  return TOKEN(EXTENDS  );}
 "for"         return TOKEN(FOR      );
 "function"    return TOKEN(FUNCTION );
 ">="          return TOKEN(GE       );
@@ -125,9 +133,9 @@ long ouais = 0;
 
 "<"           return TOKEN(LT       );
 "-"           return TOKEN(MINUS    );
-"method"      return TOKEN(METHOD   );
+"method"      {CHECK_OBJECT_EXTENSION(); return TOKEN(METHOD   ); }
 "<>"          return TOKEN(NE       );
-"new"         return TOKEN(NEW      );
+"new"         {CHECK_OBJECT_EXTENSION(); return TOKEN(NEW      );}
 "nil"         return TOKEN(NIL      );
 "of"          return TOKEN(OF       );
 "|"           return TOKEN(OR       );
@@ -240,7 +248,7 @@ long ouais = 0;
 \\\\ {growing_string = growing_string + "\\";
       growing_string = growing_string + "\\";}
 
-{space}      { growing_string = growing_string + text();tp.location_.columns();}
+{space}       tp.location_.columns();
 
 \\[0-7]{3} {
     ouais += strtol(text() + 1, 0, 8);

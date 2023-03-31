@@ -155,7 +155,7 @@
 
 
 %type <ast::Exp*>             exp
-%type <ast::ChunkList*>       chunks
+%type <ast::ChunkList*>       chunks classfields
 %type <ast::TypeChunk*>       tychunk
 %type <ast::TypeDec*>         tydec
 %type <ast::NameTy*>          typeid
@@ -170,6 +170,8 @@
 %type <ast::exps_type*>       exps list_exp
 %type <ast::FunctionDec*>     fundec
 
+%type <ast::MethodChunk*>     methchunk
+%type <ast::MethodDec*>       methdec
 
 
 
@@ -202,7 +204,7 @@
 %precedence TYPE
 
   // FIXME: Some code was deleted here (Other declarations).
-%precedence FUNCTION PRIMITIVE
+%precedence FUNCTION PRIMITIVE CLASS METHOD
 %precedence OF
 
 
@@ -455,6 +457,44 @@ typeid:
      already parsed nodes when given an input to parse. */
 | NAMETY "(" INT ")"                    { $$ = metavar<ast::NameTy>(tp, $3);  }
 ;
+
+
+/* Object syntax (additional) */
+exp:
+  /* Object creation. */
+  "new" typeid                         { $$ = tp.td_.make_ObjectExp(@$, $2); }
+
+  /* Method call. */
+  | lvalue "." ID "(" list_exp  ")"    { $$ = tp.td_.make_MethodCallExp(@$, $3, $5, $1); }
+  | lvalue "." ID "("  ")"             { $$ = tp.td_.make_MethodCallExp(@$, $3, tp.td_.make_exps_type() , $1); }
+  ;
+
+
+/* Class definition (alternative form). */
+tydec: "class" ID "extends" typeid  "{" classfields "}" { $$ = tp.td_.make_TypeDec(@$, $2,tp.td_.make_ClassTy(@$, $4, tp.td_.make_ChunkList(@6))); }
+
+     | "class" ID "{" classfields "}"                   { $$ = tp.td_.make_TypeDec(@$, $2,tp.td_.make_ClassTy(@$, nullptr , tp.td_.make_ChunkList(@4))); } 
+     ;
+
+classfields: %empty                                     { $$ = tp.td_.make_ChunkList(@$); }
+            /* Attribute declaration (varchunk). */
+            | varchunk classfields                      { $$ = $2 ; $$->push_front($1); }
+             /* Method declaration (methchunk). */
+            | methchunk classfields                      { $$ = $2; $$->push_front($1); }
+            ;
+
+methchunk: methdec %prec CHUNKS                         { $$ = tp.td_.make_MethodChunk(@$); }
+        | methdec methchunk                             { $$ = $2; $$->push_front(*$1); }
+        ;
+
+methdec: "method" ID "(" tyfields ")" ":" typeid "=" exp
+                    { $$ = tp.td_.make_MethodDec(@$, $2,  tp.td_.make_VarChunk(@4), $7, $9); }
+        | "method" ID "(" tyfields ")"  "=" exp         
+                    { $$ = tp.td_.make_MethodDec(@$, $2,  tp.td_.make_VarChunk(@4), nullptr, $7); }
+
+
+
+
 %%
 
 void
