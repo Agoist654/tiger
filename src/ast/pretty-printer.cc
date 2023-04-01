@@ -104,14 +104,17 @@ namespace ast
 
   void PrettyPrinter::operator()(const FunctionDec& e)
   {
-      ostr_ << "function " << e.name_get();
-      ostr_ << "(" << misc::separate(e.formals_get(), ",") << ")";
+   if (e.body_get() != nullptr)
+      ostr_ << "function " << e.name_get() << "(" << misc::separate(e.formals_get(), ",") << ")";
+      else
+          ostr_ << "primitive " << e.name_get() << "(" << misc::separate(e.formals_get(), ",") << ")";
       if (e.result_get() != nullptr)
           ostr_ << " : " << *e.result_get() ;
       if (e.body_get() != nullptr)
           ostr_ << " =" << misc::incendl << *e.body_get() << misc::incendl;
       else
           ostr_ << misc::iendl;
+
   }
   void PrettyPrinter::operator()(const IfExp& e)
   {
