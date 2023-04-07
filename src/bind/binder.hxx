@@ -57,14 +57,18 @@ namespace bind
         {
             //check_main(e);
             redefinition(*m.find(dec->name_get())->second, *dec);
-            std::cout << "test";
-            //error noticed but not properly handled
             return;
         }
         m[dec->name_get()] = dec;
         visit_dec_header(*dec);
+        //visit_dec_body(*dec);
+    }
+
+    for (auto& dec : e.decs_get())
+    {
         visit_dec_body(*dec);
     }
+
   }
 
 
