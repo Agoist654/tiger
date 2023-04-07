@@ -164,20 +164,25 @@ namespace bind
   void Binder::operator()(ast::ForExp& e)
   {
       //scope_begin();
+      e.def_set(&e);
       forvector_.emplace_back(&e);
       operator()(e.vardec_get());
 //      super_type::operator()(e.hi_get());
       super_type::operator()(e.body_get());
       //scope_end();
+
+      forvector_.pop_back();
   }
 
   void Binder::operator()(ast::WhileExp& e)
   {
+      e.def_set(&e);
       //scope_begin();
       forvector_.emplace_back(&e);
 //      super_type::operator()(e.hi_get());
       super_type::operator()(e.body_get());
       //scope_end();
+      forvector_.pop_back();
   }
 
 
@@ -185,8 +190,13 @@ namespace bind
   {
       if (forvector_.size() == 0)
       {
-
+        undeclared("break ouside any loop", e);
       }
+      else
+        {
+          def_set(forvector_.back());
+        }
+
   }
 
 
