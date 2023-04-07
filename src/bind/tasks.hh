@@ -21,12 +21,12 @@ namespace bind::tasks
     TASK_DECLARE("B|bindings-display",
                  "show details of variable and function bindings in AST",
                  bindings_display,
-                 "binding-compute");
+                 "");
     DISJUNCTIVE_TASK_DECLARE("bound",
                  "ensures binding has been computed "
                  "at least one way, executes binding-compute"
                  "if not.",
-                 "binding-compute"
+                 "bindings-compute"
                  "object-bindings-compute"
                  "combine-types-compute");
     /*TASK_DECLARE("rename",

@@ -77,7 +77,7 @@ namespace bind
       {
           // FIXME: Some code was deleted here.
           check_main(e);
-          //funscope_.put(e.name_get(), &e);
+          funscope_.put(e.name_get(), &e);
 
           e.formals_get().accept(*this);
           if(e.result_get())
@@ -97,6 +97,7 @@ namespace bind
   template <>
       inline void Binder::visit_dec_header<ast::TypeDec>(ast::TypeDec& e)
       {
+          std::cout << "enter TYPEDEC HEADER " << e.name_get();
           typescope_.put(e.name_get(), &e);
       }
 

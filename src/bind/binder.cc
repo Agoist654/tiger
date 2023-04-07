@@ -139,15 +139,18 @@ namespace bind
   }
 
   void Binder::operator()(ast::TypeDec& e)
-  {
+  {     
+      std::cout << " NEVER SEEN";
       typescope_.put(e.name_get(), &e);
       e.def_set(&e);
   }
 
   void Binder::operator()(ast::NameTy& e)
   {
+      std::cout << "ENTER NAMETY " << e.name_get() << "\n";
       if (typescope_.get_back_map().contains(e.name_get()))
-      {
+      { 
+          std::cout << "found";
           e.def_set(typescope_.get_back_map().find(e.name_get())->second);
       }
 

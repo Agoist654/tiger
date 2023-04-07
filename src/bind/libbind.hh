@@ -13,4 +13,5 @@
 namespace bind
 {
     void bindings_compute(ast::Ast& tree);
+    void bindings_display(ast::Ast& tree);
 }

@@ -35,7 +35,7 @@ namespace ast
   {
     ostr_ << e.name_get();
     if (bindings_display(ostr_))
-      ostr_ << " /* " << e.def_get() << " */";
+      ostr_ << " /* " << e.def_get() << " */ ";
   }
 
   void PrettyPrinter::operator()(const FieldVar& e)
@@ -84,7 +84,7 @@ namespace ast
       ostr_ << "break";
 
       if (bindings_display(ostr_))
-        ostr_<< " /* " << e.def_get() << " */";
+        ostr_<< " /* " << e.def_get() << " */ ";
   }
 
   void PrettyPrinter::operator()(const CallExp& e)
@@ -118,7 +118,7 @@ namespace ast
   {
       ostr_ << "for ";
       if (bindings_display(ostr_))
-        ostr_<< " /* " << &e << " */";
+        ostr_<< " /* " << &e << " */ ";
       ostr_ << e.vardec_get().name_get() << " := ";
       if (e.vardec_get().init_get() != nullptr)
           ostr_ << *e.vardec_get().init_get() << " to ";
@@ -140,7 +140,7 @@ namespace ast
       {
           ostr_ << "primitive " << e.name_get();
           if (bindings_display(ostr_))
-              ostr_<< " /* " << &e << " */";
+              ostr_<< " /* " << &e << " */ ";
           ostr_ << "(" << misc::separate(e.formals_get(), ",") << ")";
       }
 
@@ -183,13 +183,13 @@ namespace ast
       ostr_ << e.name_get();
 
       if (bindings_display(ostr_))
-        ostr_<< " /* " << e.def_get() << " */";
+        ostr_<< " /* " << e.def_get() << " */ ";
 
       if (e.def_get() != nullptr)
       {
           ostr_ << " := " << e.def_get();
           if (bindings_display(ostr_))
-              ostr_<< " /* " << &e/*.def_get()*/ << " */";
+              ostr_<< " /* " << &e/*.def_get()*/ << " */ ";
       }
   }
 
@@ -240,9 +240,10 @@ namespace ast
 
   void PrettyPrinter::operator()(const TypeDec& e)
   {
+      ostr_ << "type " << e.name_get() ;
       if (bindings_display(ostr_))
-          ostr_<< " /* " << &e << " */";
-      ostr_ << "type " << e.name_get() << " = " << e.ty_get() << misc::iendl;
+          ostr_<< " /* " << &e << " */ ";
+         ostr_ << " = " << e.ty_get() << misc::iendl;
   }
 
   void PrettyPrinter::operator()(const VarDec& e)
@@ -251,7 +252,7 @@ namespace ast
           ostr_<< "var ";
       ostr_ << e.name_get();
       if (bindings_display(ostr_))
-        ostr_<< " /* " << &e/*.name_get()*/ << " */";
+        ostr_<< " /* " << &e/*.name_get()*/ << " */ ";
 
       if (e.type_name_get() != nullptr)
           ostr_ << " : " << *e.type_name_get();
@@ -263,7 +264,7 @@ namespace ast
   {
       ostr_ << "while ";
       if (bindings_display(ostr_))
-        ostr_<< " /* " << &e << " */";
+        ostr_<< " /* " << &e << " */ ";
       ostr_ << e.test_get() << " do" << misc::incendl << e.body_get() << misc::decendl;
   }
 
