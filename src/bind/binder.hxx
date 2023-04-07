@@ -17,7 +17,6 @@ namespace bind
     template <typename T>
         inline void Binder::redefinition(const T& e1, const T& e2)
         {
-            std::cout << "redef";
                 error_ << misc::error::error_type::bind << "redefinition" << '\n';
                 error_ << misc::error::error_type::bind << "first definition" << '\n';
                 error_.exit();
@@ -27,8 +26,15 @@ namespace bind
     template <typename T>
         inline void Binder::undeclared(const std::string& k, const T& e) 
         {
-            error_ << /*meite e.loc_get() << ": undeclared identifier: "*/ 
-            misc::error::error_type::bind << k;
+            error_ << misc::error::error_type::bind << k;
+            error_.exit();
+        }
+
+
+        inline void Binder::undeclared(const std::string& k, const ast::CallExp& e)
+        {
+            error_ << misc::error::error_type::bind << k << e.name_get() << "\n";
+            error_.exit();
         }
 
 
@@ -94,14 +100,13 @@ namespace bind
       {
           // FIXME: Some code was deleted here.
           scope_begin();
-          e.body_get()->accept(*this);
+          super_type::operator()(e);
           scope_end();
       }
 
   template <>
       inline void Binder::visit_dec_header<ast::TypeDec>(ast::TypeDec& e)
       {
-          std::cout << "enter TYPEDEC HEADER " << e.name_get();
           typescope_.put(e.name_get(), &e);
       }
 
@@ -121,8 +126,7 @@ namespace bind
   template <>
       inline void Binder::visit_dec_body<ast::VarDec>(ast::VarDec& e)
       { 
-          if(e.init_get())
-            e.init_get()->accept(*this);
+          super_type::operator()(e);
       }
 } // namespace bind
 

@@ -112,6 +112,7 @@ namespace ast
       /*DONE*/
       e.test_get()->accept(*this);
       e.thenclause_get()->accept(*this);
+      if (e.elseclause_get() != nullptr)
       e.elseclause_get()->accept(*this);
     }
 
@@ -217,7 +218,9 @@ namespace ast
     // FIXME: Some code was deleted here.
       /*DONE*/
       e.formals_get().accept(*this);
+      if (e.result_get() != nullptr)
       e.result_get()->accept(*this);
+      if (e.body_get() != nullptr)
       e.body_get()->accept(*this);
   }
 

@@ -52,7 +52,7 @@ namespace ast
   {
     unsigned long old_parent_id = node_html_header(e, "ArrayTy");
     node_html_ports({"base_type"});
-    footer_and_link(old_parent_id);    
+    footer_and_link(old_parent_id);
     dump("base_type", e.base_type_get());
     parent_id = old_parent_id;
   }

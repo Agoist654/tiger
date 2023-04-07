@@ -203,6 +203,29 @@ src/parse/.deps/parsetiger.Plo
 src/parse/.deps/src_parse_test_parse-test-parse.Po
 src/parse/.deps/test-tweast.Po
 
+lib/misc/.deps/contract.Plo
+lib/misc/.deps/deref.Plo
+lib/misc/.deps/error.Plo
+lib/misc/.deps/escape.Plo
+lib/misc/.deps/file-library.Plo
+lib/misc/.deps/indent.Plo
+lib/misc/.deps/symbol.Plo
+lib/misc/.deps/timer.Plo
+src/.deps/common.Plo
+src/.deps/tc.Po
+src/parse/parsetiger.stamp
+src/task/.deps/argument-task.Plo
+src/task/.deps/boolean-task.Plo
+src/task/.deps/disjunctive-task.Plo
+src/task/.deps/function-task.Plo
+src/task/.deps/int-task.Plo
+src/task/.deps/multiple-string-task.Plo
+src/task/.deps/simple-task.Plo
+src/task/.deps/string-task.Plo
+src/task/.deps/task-register.Plo
+src/task/.deps/task.Plo
+src/task/.deps/tasks.Po
+
 
 *.*o
 .*

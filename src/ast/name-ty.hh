@@ -38,6 +38,7 @@ namespace ast
     misc::symbol name_get() const;
     /// Set the name of the type.
     void name_set(misc::symbol);
+
     /// Return definition site.
     const TypeDec* def_get() const;
     /// Return definition site.

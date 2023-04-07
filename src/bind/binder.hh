@@ -143,6 +143,7 @@ namespace bind
     /// \param k   the kind of this node (function, variable, type)
     /// \param e   the node using an undefined name
     template <typename T> void undeclared(const std::string& k, const T& e);
+    void undeclared(const std::string& k, const ast::CallExp& e);
 
     /// Report a symbol redefinition.
     ///

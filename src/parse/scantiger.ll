@@ -249,7 +249,10 @@ long ouais = 0;
 \\\\ {growing_string = growing_string + "\\";
       growing_string = growing_string + "\\";}
 
-{space}       tp.location_.columns();
+{space}       {
+                growing_string = growing_string + text();
+                tp.location_.columns();
+              }
 
 \\[0-7]{3} {
     ouais += strtol(text() + 1, 0, 8);

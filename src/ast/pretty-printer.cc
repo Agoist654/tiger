@@ -185,12 +185,12 @@ namespace ast
       if (bindings_display(ostr_))
         ostr_<< " /* " << e.def_get() << " */ ";
 
-      if (e.def_get() != nullptr)
-      {
-          ostr_ << " := " << e.def_get();
-          if (bindings_display(ostr_))
-              ostr_<< " /* " << &e/*.def_get()*/ << " */ ";
-      }
+//      if (e.def_get() != nullptr)
+//      {
+//          ostr_ << " := " << e.def_get();
+//          if (bindings_display(ostr_))
+//              ostr_<< " /* " << &e/*.def_get()*/ << " */ ";
+//      }
   }
 
   void PrettyPrinter::operator()(const NilExp& e)
