@@ -28,13 +28,14 @@ namespace ast
       misc::symbol name_get() const;
       exps_type* args_get() const;
 
-      TypeDec* def_get() const;
-      void def_set(TypeDec* def);
+      const FunctionDec* def_get() const;
+      FunctionDec* def_get();
+      void def_set(FunctionDec* def);
 
   protected:
       misc::symbol name_;
       exps_type* args_;
-      TypeDec* def_ = nullptr;
+      FunctionDec* def_ = nullptr;
 
   };
 } // namespace ast

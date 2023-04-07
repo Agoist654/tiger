@@ -20,6 +20,22 @@ namespace misc
   template <typename Key, typename Data> class scoped_map
   {
     // FIXME: Some code was deleted here.
+    /*ONGOING*/
+  public:
+    scoped_map<Key, Data> Scoped_map() {scope_ = std::vector<std::map<Key, Data>>();}
+    ~scoped_map() = default;
+    void put(const Key& key, const Data& value);
+    Data get(const Key& key) const;
+    std::ostream& dump(std::ostream& ostr) const;
+    void scope_begin();
+    void scope_end();
+
+    //
+    std::map<Key, Data> get_back_map() const;
+    std::vector<std::map<Key, Data>> get_vector() const;
+
+  private:
+      std::vector<std::map<Key, Data>> scope_;
   };
 
   template <typename Key, typename Data>

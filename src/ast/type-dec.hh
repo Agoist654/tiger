@@ -7,7 +7,6 @@
 
 #include <ast/dec.hh>
 #include <ast/ty.hh>
-
 namespace ast
 {
   /// TypeDec.
@@ -40,9 +39,19 @@ namespace ast
     Ty& ty_get();
     /** \} */
 
+    /// Return definition site.
+    TypeDec* def_get() ;
+    const TypeDec* def_get() const ;
+    /// Set definition site.
+    void def_set(TypeDec*);
+    /** \} */
+
+
   protected:
     /// Type definition.
     Ty* ty_;
+
+    TypeDec* def_ = nullptr;
   };
 } // namespace ast
 #include <ast/type-dec.hxx>

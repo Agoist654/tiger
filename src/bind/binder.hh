@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include <unordered_map>
 
 #include <ast/default-visitor.hh>
 #include <ast/object-visitor.hh>
@@ -48,6 +47,8 @@ namespace bind
    ** all the methods that `do nothing but walk', it derives
    ** from \c ast::DefaultVisitor.
    **/
+
+   // FIXME/*DONE: Some code was deleted here.
   class Binder
     : public ast::DefaultVisitor
     , public ast::ObjectVisitor
@@ -63,9 +64,24 @@ namespace bind
 
     /* The visiting methods. */
     void operator()(ast::LetExp& e) override;
-    // FIXME: Some code was deleted here.
+    /*process*/
+    void operator()(ast::Ast& e) override;
+    void operator()(ast::BreakExp& e) override;
+    void operator()(ast::CallExp& e) override;
+    void operator()(ast::VarChunk& e) override;
+    void operator()(ast::VarDec& e) override;
+    void operator()(ast::TypeChunk& e) override;
+    void operator()(ast::FunctionChunk& e) override;
+    void operator()(ast::ForExp& e) override;
+    void operator()(ast::NameTy& e) override;
+    void operator()(ast::SimpleVar& e) override;
+    void operator()(ast::WhileExp& e) override;
+    void operator()(ast::IfExp& e) override;
+    void operator()(ast::TypeDec& e) override;
+    void operator()(ast::ChunkList & e) override;
 
-    // ---------------- //
+
+       // ---------------- //
     // Visiting /Dec/.  //
     // ---------------- //
 
@@ -101,16 +117,16 @@ namespace bind
 
     /// Check a set of definitions: unique names, browse headers, then
     /// bodies.
+
+    // FIXME/*DONE: Some code was deleted here.
     template <class D> void chunk_visit(ast::Chunk<D>& e);
 
-    /// Check a Function or Type declaration header.
+    /* Check a Function or Type declaration header.*/
     template <class D> void visit_dec_header(D& e);
 
-    /// Check a Function or Type declaration body.
+    /* Check a Function or Type declaration body.*/
     template <class D> void visit_dec_body(D& e);
-
-    // FIXME: Some code was deleted here.
-    /// \}
+       /// \}
 
     /// \name Error handling
     /// \{
@@ -144,8 +160,12 @@ namespace bind
 
     /// Binding errors handler.
     misc::error error_;
+    misc::scoped_map<misc::symbol, ast::VarDec*> varscope_;
+    misc::scoped_map<misc::symbol, ast::FunctionDec*> funscope_;
+    misc::scoped_map<misc::symbol, ast::TypeDec*> typescope_;
 
-    // FIXME: Some code was deleted here (More members).
+    std::vector<ast::Exp*> forvector_;
+    // FIXME/*DONE: Some code was deleted here (More members).
   };
 
 } // namespace bind

@@ -58,6 +58,7 @@
                 << ": invalid identifier: `"            \
                 << misc::escape(text()) << "\n";       \
   } while (false)                                          
+
 #define CHECK_OBJECT_EXTENSION()                        \
     do{                                                 \
         if (!tp.enable_object_extensions_p_)            \

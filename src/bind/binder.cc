@@ -22,6 +22,22 @@ namespace bind
   void Binder::check_main(const ast::FunctionDec& e)
   {
     // FIXME: Some code was deleted here.
+
+    for (auto map : funscope_.get_vector())
+    {
+        if (map.contains("_main"))
+            redefinition(*map.find("_main")->second,e); 
+    }
+
+    /*if (!e.result_get() || e.result_get()->type_get() != ast::Namty::INT)
+    {
+        error_ << e.loc_get() << ": la fonction doit retourner un entier" << std::endl;
+    }
+    if (e.formals_get().size() == 0)
+    {
+        error_ << misc::error::error_type::bind << e.loc_get() << ": error: function main cannot have parameters" << std::endl;
+    }*/
+
   }
 
   /*----------------.
@@ -31,11 +47,24 @@ namespace bind
   void Binder::scope_begin()
   {
     // FIXME: Some code was deleted here.
+      if (varscope_.get_vector().size() != 0)
+          varscope_.get_vector().push_back(varscope_.get_vector().back());
+      if (funscope_.get_vector().size() != 0)
+          funscope_.get_vector().push_back(funscope_.get_vector().back());
+      if (typescope_.get_vector().size() != 0)
+          typescope_.get_vector().push_back(typescope_.get_vector().back()); //push n'est pas coder dans scoped_map
   }
 
   void Binder::scope_end()
   {
     // FIXME: Some code was deleted here.
+
+      if (varscope_.get_vector().size() != 0)
+          varscope_.get_vector().pop_back();
+      if (funscope_.get_vector().size() != 0)
+          funscope_.get_vector().pop_back();
+      if (typescope_.get_vector().size() != 0)
+          typescope_.get_vector().pop_back(); //push n'est pas coder dans scoped_map
   }
 
   /*---------.
@@ -43,27 +72,163 @@ namespace bind
   `---------*/
 
   // FIXME: Some code was deleted here.
-
   void Binder::operator()(ast::LetExp& e)
   {
-    // FIXME: Some code was deleted here.
+      // FIXME: Some code was deleted here.
+      //scope_begin(); // on cree une nouvelle scope pour letexp
+      super_type::operator()(*e.decs_get());
+      //scope_begin();
+      if (e.body_get())
+      super_type::operator()(*e.body_get());
+      //scope_end();
+      scope_end();
   }
 
+  // FIXME: Some code was deleted here.
+  void Binder::operator()(ast::Ast& e)
+  {
+      super_type::operator()(e);
+  }
+
+  void Binder::operator()(ast::CallExp& e)
+  {
+      if (!funscope_.get_back_map().contains(e.name_get()))
+      {
+          undeclared("undeclared function:", e);
+      }
+      else
+      {
+          e.def_set(funscope_.get_back_map().find(e.name_get())->second);
+          if (e.args_get())
+          {
+              for (auto& v : *e.args_get())
+              {
+                  super_type::operator()(v);
+              }
+          }
+      }
+  }
+
+  void Binder::operator()(ast::VarDec& e)
+  {
+      e.def_set(&e);
+      varscope_.put(e.name_get(), &e);
+  }
+
+  void Binder::operator()(ast::SimpleVar& e)
+  {
+      if (!varscope_.get_back_map().contains(e.name_get()))
+      {
+          undeclared("undeclared var: ", e.name_get());
+          return;
+      }
+
+      e.def_set(varscope_.get_back_map().find(e.name_get())->second);
+  }
+
+  void Binder::operator()(ast::IfExp& e)
+  {
+      super_type::operator()(e.thenclause_get());
+
+      if (e.elseclause_get() != nullptr)
+      {
+          super_type::operator()(e.elseclause_get());
+      }
+  }
+
+  void Binder::operator()(ast::TypeDec& e)
+  {
+      typescope_.put(e.name_get(), &e);
+      e.def_set(&e);
+  }
+
+  void Binder::operator()(ast::NameTy& e)
+  {
+      if (typescope_.get_back_map().contains(e.name_get()))
+      {
+          e.def_set(typescope_.get_back_map().find(e.name_get())->second);
+      }
+
+      else
+      {
+          if (e.name_get() != "int" && e.name_get() != "string")
+          {
+              undeclared("undeclared type", e);
+          }
+
+          else
+              e.def_set(nullptr);
+      }
+  }
+
+
+
+  void Binder::operator()(ast::ForExp& e)
+  {
+      //scope_begin();
+      forvector_.emplace_back(&e);
+      operator()(e.vardec_get());
+//      super_type::operator()(e.hi_get());
+      super_type::operator()(e.body_get());
+      //scope_end();
+  }
+
+  void Binder::operator()(ast::WhileExp& e)
+  {
+      //scope_begin();
+      forvector_.emplace_back(&e);
+//      super_type::operator()(e.hi_get());
+      super_type::operator()(e.body_get());
+      //scope_end();
+  }
+
+
+  void Binder::operator()(ast::BreakExp& e)
+  {
+      if (forvector_.size() == 0)
+      {
+
+      }
+  }
+
+
+    
+    void Binder::operator()(ast::ChunkList & e)
+    {   
+        typescope_.scope_begin();
+        varscope_.scope_begin();
+        funscope_.scope_begin();
+        for ( auto& x : e.chunks_get())
+            x->accept(*this);
+    }
   /*-------------------.
   | Visiting VarChunk. |
   `-------------------*/
 
-  // FIXME: Some code was deleted here.
 
+  void Binder::operator()(ast::VarChunk& e)
+  {
+      chunk_visit(e);
+  }
   /*------------------------.
   | Visiting FunctionChunk. |
   `------------------------*/
 
   // FIXME: Some code was deleted here.
+   void Binder::operator()(ast::FunctionChunk& e)
+   {
+      chunk_visit(e);
+   }
+
 
   /*--------------------.
   | Visiting TypeChunk. |
   `--------------------*/
   // FIXME: Some code was deleted here.
+  
+  void Binder::operator()(ast::TypeChunk& e)
+  {
+      chunk_visit(e);
+  }
 
 } // namespace bind

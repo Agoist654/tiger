@@ -13,66 +13,111 @@ namespace bind
   | Error handling.  |
   `-----------------*/
 
-  // FIXME: Some code was deleted here (Error reporting).
-  template <typename T>
-  void redefinition(const T& e1, const T& e2)
-  {
-     {
-	std::cerr << "redefinition: " << e1 << std::endl;
-	std::cerr << "first definition: " << e2 << std::endl; //regarder tp.error_ de scantiger.ll
-     }// utiliser misc::error
-  }
-  void error(const ast::Ast& loc, const std::string& msg);
-  void check_main(const ast::FunctionDec& e);
-  template <typename T> void undeclared(const std::string& k, const T& e);
+    // FIXME: Some code was deleted here (Error reporting).
+    template <typename T>
+        inline void Binder::redefinition(const T& e1, const T& e2)
+        {
+            std::cout << "redef";
+                error_ << misc::error::error_type::bind << "redefinition" << '\n';
+                error_ << misc::error::error_type::bind << "first definition" << '\n';
+        }
+
+
+    template <typename T>
+        inline void Binder::undeclared(const std::string& k, const T& e) 
+        {
+            error_ << /*meite e.loc_get() << ": undeclared identifier: "*/ 
+            misc::error::error_type::bind << k;
+        }
 
 
 
   /*----------------------------.
   | Visiting /ChunkInterface/.  |
   `----------------------------*/
+    /*
+    void GenDefaultVisitor<Const>::operator()(const_t<ChunkList>& e)
+    {
+        for ( auto& x : e.chunks_get())
+            x->accept(*this);
+    }*/
 
-  template <class D> void Binder::chunk_visit(ast::Chunk<D>& e)
+  template <class D>
+    void Binder::chunk_visit(ast::Chunk<D>& e)
   {
     // Shorthand.
     using chunk_type = ast::Chunk<D>;
     // FIXME: Some code was deleted here (Two passes: once on headers, then on bodies).
-    scope_begin();
-    for (auto& dec : e.declarations) 
+    std::map<misc::symbol, D*> m;
+
+    for (auto& dec : e.decs_get())
     {
-        visit(dec);
+        if (m.contains(dec->name_get()))
+        {
+            //check_main(e);
+            redefinition(*m.find(dec->name_get())->second, *dec);
+            std::cout << "test";
+            //error noticed but not properly handled
+            return;
+        }
+        m[dec->name_get()] = dec;
+        visit_dec_header(*dec);
+        visit_dec_body(*dec);
     }
-    visit(e.body);
-    scope_end();
   }
+
 
   /* These specializations are in bind/binder.hxx, so that derived
      visitors can use them (otherwise, they wouldn't see them).  */
 
   // Insert the prototype of the function in the environment.
   template <>
-  inline void Binder::visit_dec_header<ast::FunctionDec>(ast::FunctionDec& e)
-  {
-    // FIXME: Some code was deleted here.
-    auto fd = funscope_.get(e.name_get());
-    //use visit_chunk at e.formal
-    if (fd == nullptr) // on check si les formals de FunctionDec existe deja dans notre scop 
-    {
-	  //error ici je rajoute juste des fonction 
-    	funscope_.put(e.name_get(), e);
-    }
-  }
+      inline void Binder::visit_dec_header<ast::FunctionDec>(ast::FunctionDec& e)
+      {
+          // FIXME: Some code was deleted here.
+          check_main(e);
+          funscope_.put(e.name_get(), &e);
+
+          e.formals_get().accept(*this);
+          if(e.result_get())
+            e.result_get()->accept(*this);
+      }
 
   // Compute the bindings of this function's body.
   template <>
-  inline void Binder::visit_dec_body<ast::FunctionDec>(ast::FunctionDec& e)
+      inline void Binder::visit_dec_body<ast::FunctionDec>(ast::FunctionDec& e)
+      {
+          // FIXME: Some code was deleted here.
+          scope_begin();
+          e.body_get()->accept(*this);
+          scope_end();
+      }
+
+  template <>
+      inline void Binder::visit_dec_header<ast::TypeDec>(ast::TypeDec& e)
+      {
+          typescope_.put(e.name_get(), &e);
+      }
+
+  template <>
+      inline void Binder::visit_dec_body<ast::TypeDec>(ast::TypeDec& e)
+      {
+          e.ty_get().accept(*this);
+      }
+
+
+  template <>
+  inline void Binder::visit_dec_header<ast::VarDec>(ast::VarDec& e)
   {
-    // FIXME: Some code was deleted here.
-    scope_begin();
-    e.formals_get().accept(*this);
-    e.result_get()->accept(*this);
-    e.body_get()->accept(*this);
-    scope_end();
+      varscope_.put(e.name_get(), &e);
   }
 
+  template <>
+      inline void Binder::visit_dec_body<ast::VarDec>(ast::VarDec& e)
+      { 
+          if(e.init_get())
+            e.init_get()->accept(*this);
+      }
 } // namespace bind
+
+
