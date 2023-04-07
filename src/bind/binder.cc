@@ -161,8 +161,6 @@ namespace bind
       }
   }
 
-
-
   void Binder::operator()(ast::ForExp& e)
   {
       //scope_begin();

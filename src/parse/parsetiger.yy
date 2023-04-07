@@ -178,6 +178,7 @@
 
 
 
+
   // FIXME: Some code was deleted here (Priorities/associativities).
 //%precedence DO
 //%right "else" "then"
@@ -204,7 +205,7 @@
 %precedence TYPE
 
   // FIXME: Some code was deleted here (Other declarations).
-%precedence FUNCTION PRIMITIVE CLASS METHOD
+%precedence FUNCTION PRIMITIVE METHOD CLASS
 %precedence OF
 
 
@@ -279,13 +280,13 @@ exp:
 
   | exp "&" exp         { 
                             $$ = tp.enable_extensions().parse(Tweast()
-                               << "if " << "("
+                               << "if "  
                                //<< "_exp( "
                                << $1
                                //<< ") "
-                               << ")" << "then "
+                               <<   "then "
                                //<< "_exp("
-                               << "(" << $3 << ")" 
+                               <<   $3 
                                //<< ")"
                                << " <> 0 else 0");
                             //std::cout << "the PARSER then clause: \n\n" << $3.thenclause_get() << "\n\n";
@@ -476,6 +477,10 @@ tydec: "class" ID "extends" typeid  "{" classfields "}" { $$ = tp.td_.make_TypeD
      | "class" ID "{" classfields "}"                   { $$ = tp.td_.make_TypeDec(@$, $2,tp.td_.make_ClassTy(@$, nullptr , tp.td_.make_ChunkList(@4))); } 
      ;
 
+ty: "class" "{" classfields "}"                                 { $$ = tp.td_.make_ClassTy(@$, nullptr, tp.td_.make_ChunkList(@$));}
+    | "class" "extends" typeid "{" classfields "}"              { $$ = tp.td_.make_ClassTy(@$, $3, tp.td_.make_ChunkList(@4));}
+    ;
+
 classfields: %empty                                     { $$ = tp.td_.make_ChunkList(@$); }
             /* Attribute declaration (varchunk). */
             | varchunk classfields                      { $$ = $2 ; $$->push_front($1); }
@@ -491,8 +496,6 @@ methdec: "method" ID "(" tyfields ")" ":" typeid "=" exp
                     { $$ = tp.td_.make_MethodDec(@$, $2,  tp.td_.make_VarChunk(@4), $7, $9); }
         | "method" ID "(" tyfields ")"  "=" exp         
                     { $$ = tp.td_.make_MethodDec(@$, $2,  tp.td_.make_VarChunk(@4), nullptr, $7); }
-
-
 
 
 %%
