@@ -81,6 +81,7 @@ namespace bind
     void operator()(ast::ChunkList & e) override;
 
 
+    int nb_main = 0;
        // ---------------- //
     // Visiting /Dec/.  //
     // ---------------- //

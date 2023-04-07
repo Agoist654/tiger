@@ -16,4 +16,9 @@ namespace bind
         Binder binding_compute;
         binding_compute(tree);
     }
+    void bindings_display(ast::Ast& tree)
+    {
+        Binder binding_display;
+        binding_display(tree);
+    }
 }

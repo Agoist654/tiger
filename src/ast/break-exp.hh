@@ -21,6 +21,15 @@ namespace ast
 
       void accept(ConstVisitor& v) const override;
       void accept(Visitor& v) override;
+
+      const Exp* def_get() const;
+      Exp* def_get();
+      void def_set(Exp* def);
+
+  protected:
+      Exp* def_ = nullptr;
+
   };
+
 } // namespace ast
 #include <ast/break-exp.hxx>

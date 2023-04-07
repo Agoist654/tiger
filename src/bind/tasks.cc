@@ -15,8 +15,8 @@
 
 namespace bind::tasks
 {
-	void bindings_compute() { bind::bindings_compute(*ast::tasks::the_program); }
-	void bindings_display() { ast::bindings_display(std::cout) = true; }
+    void bindings_compute() { bind::bindings_compute(*ast::tasks::the_program); }
+    void bindings_display() { ast::bindings_display(std::cout) = true; }
 }
 //void rename() { bind::new_name_compute(*ast::tasks::the_program); }
 

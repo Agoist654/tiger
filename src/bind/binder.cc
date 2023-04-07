@@ -21,13 +21,16 @@ namespace bind
 
   void Binder::check_main(const ast::FunctionDec& e)
   {
-    // FIXME: Some code was deleted here.
+      // FIXME: Some code was deleted here.
 
-    for (auto map : funscope_.get_vector())
-    {
-        if (map.contains("_main"))
-            redefinition(*map.find("_main")->second,e); 
-    }
+      if (e.name_get() == "_main" && nb_main == 1)
+      {
+          redefinition(*funscope_.get_back_map().find("_main")->second, e);
+      }
+      if (nb_main == 0 && e.name_get() == "_main")
+          nb_main = 1;
+
+  }
 
     /*if (!e.result_get() || e.result_get()->type_get() != ast::Namty::INT)
     {
@@ -38,7 +41,6 @@ namespace bind
         error_ << misc::error::error_type::bind << e.loc_get() << ": error: function main cannot have parameters" << std::endl;
     }*/
 
-  }
 
   /*----------------.
   | Symbol tables.  |
@@ -194,7 +196,7 @@ namespace bind
       }
       else
         {
-          def_set(forvector_.back());
+          e.def_set(forvector_.back());
         }
 
   }

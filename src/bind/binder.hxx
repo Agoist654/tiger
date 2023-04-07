@@ -20,6 +20,7 @@ namespace bind
             std::cout << "redef";
                 error_ << misc::error::error_type::bind << "redefinition" << '\n';
                 error_ << misc::error::error_type::bind << "first definition" << '\n';
+                error_.exit();
         }
 
 
@@ -76,7 +77,7 @@ namespace bind
       {
           // FIXME: Some code was deleted here.
           check_main(e);
-          funscope_.put(e.name_get(), &e);
+          //funscope_.put(e.name_get(), &e);
 
           e.formals_get().accept(*this);
           if(e.result_get())
