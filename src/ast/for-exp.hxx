@@ -19,4 +19,8 @@ namespace ast
   inline const Exp& ForExp::body_get() const { return *body_; }
   inline Exp& ForExp::body_get() { return *body_; }
 
+  inline const Exp* ForExp::def_get() const { return def_; }
+  inline Exp* ForExp::def_get() { return def_; }
+  inline void ForExp::def_set(Exp* def) { def_ = def; }
+
 } // namespace ast

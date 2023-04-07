@@ -16,4 +16,8 @@ namespace ast
   inline const Exp& WhileExp::body_get() const { return *body_; }
   inline Exp& WhileExp::body_get() { return *body_; }
 
+  inline const Exp* WhileExp::def_get() const { return def_; }
+  inline Exp* WhileExp::def_get() { return def_; }
+  inline void WhileExp::def_set(Exp* def) { def_ = def; }
+
 } // namespace ast

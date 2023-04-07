@@ -48,6 +48,11 @@ namespace ast
     Exp& body_get();
     /** \} */
 
+    const Exp* def_get() const;
+    Exp* def_get();
+    void def_set(Exp* def);
+
+
   protected:
     /// Implicit variable declaration.
     VarDec* vardec_;
@@ -55,6 +60,8 @@ namespace ast
     Exp* hi_;
     /// Instructions executed in the loop.
     Exp* body_;
+
+    Exp* def_ = nullptr;
   };
 } // namespace ast
 #include <ast/for-exp.hxx>

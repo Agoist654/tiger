@@ -43,11 +43,21 @@ namespace ast
     Exp& body_get();
     /** \} */
 
+
+
+    const Exp* def_get() const;
+    Exp* def_get();
+    void def_set(Exp* def);
+
+
+
   protected:
     /// Exit condition of the loop.
     Exp* test_;
     /// Instructions executed in the loop.
     Exp* body_;
+
+    Exp* def_ = nullptr;
   };
 } // namespace ast
 #include <ast/while-exp.hxx>
