@@ -88,10 +88,6 @@ namespace bind
           // FIXME: Some code was deleted here.
           check_main(e);
           funscope_.put(e.name_get(), &e);
-
-          e.formals_get().accept(*this);
-          if(e.result_get())
-            e.result_get()->accept(*this);
       }
 
   // Compute the bindings of this function's body.
