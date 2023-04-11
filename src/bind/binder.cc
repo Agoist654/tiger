@@ -49,12 +49,17 @@ namespace bind
   void Binder::scope_begin()
   {
     // FIXME: Some code was deleted here.
-      if (varscope_.get_vector().size() != 0)
+      /*if (varscope_.get_vector().size() != 0)
           varscope_.get_vector().push_back(varscope_.get_vector().back());
       if (funscope_.get_vector().size() != 0)
           funscope_.get_vector().push_back(funscope_.get_vector().back());
       if (typescope_.get_vector().size() != 0)
-          typescope_.get_vector().push_back(typescope_.get_vector().back()); //push n'est pas coder dans scoped_map
+          typescope_.get_vector().push_back(typescope_.get_vector().back());*/ //push n'est pas coder dans scoped_map
+        varscope_.scope_begin();
+        funscope_.scope_begin();
+        typescope_.scope_begin();
+
+
   }
 
   void Binder::scope_end()
@@ -67,6 +72,10 @@ namespace bind
           funscope_.get_vector().pop_back();
       if (typescope_.get_vector().size() != 0)
           typescope_.get_vector().pop_back(); //push n'est pas coder dans scoped_map
+        /*varscope_.scope_end();
+        funscope_.scope_end();
+        typescope_.scope_end();*/
+
   }
 
   /*---------.
@@ -200,9 +209,10 @@ namespace bind
     
     void Binder::operator()(ast::ChunkList & e)
     {   
-        typescope_.scope_begin();
+        /*typescope_.scope_begin();
         varscope_.scope_begin();
-        funscope_.scope_begin();
+        funscope_.scope_begin();*/
+        scope_begin();
         for ( auto& x : e.chunks_get())
             x->accept(*this);
     }

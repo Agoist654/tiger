@@ -10,6 +10,10 @@
 #include <ast/default-visitor.hh>
 #include <ast/non-object-visitor.hh>
 
+#include <misc/fwd.hh>
+#include <misc/scoped-map.hh>
+
+
 namespace bind
 {
   /// Perform identifier renaming within an AST (in place),
@@ -54,11 +58,32 @@ namespace bind
     /// \name Visiting definition sites.
     /// \{
     // FIXME: Some code was deleted here.
+    void operator()(ast::VarChunk& e) override;
+    void operator()(ast::VarDec& e) override;
+    void operator()(ast::TypeChunk& e) override;
+    void operator()(ast::FunctionChunk& e) override;
+    void operator()(ast::TypeDec& e) override;
+    void operator()(ast::ChunkList & e) override;
+
     /// \}
 
     /// \name Visiting usage sites.
     /// \{
-    // FIXME: Some code was deleted here.
+    // FIXME: Some code was deleted here
+    void operator()(ast::CallExp& e) override;
+    void operator()(ast::NameTy& e) override;
+    void operator()(ast::SimpleVar& e) override;
+
+
+    template <class D> void chunk_visit(ast::Chunk<D>& e);
+
+    /* Check a Function or Type declaration header.*/
+    template <class D> void visit_dec_header(D& e);
+
+    /* Check a Function or Type declaration body.*/
+    template <class D> void visit_dec_body(D& e);
+
+    new_names_type 
     /// \}
 
   private:
@@ -68,6 +93,12 @@ namespace bind
     using new_names_type = std::map<const ast::Dec*, misc::symbol>;
     /// Dictionary mapping old declarations to their new names.
     new_names_type new_names_;
+
+
+    misc::scoped_map<misc::symbol, ast::VarDec*> varscope_;
+    misc::scoped_map<misc::symbol, ast::FunctionDec*> funscope_;
+    misc::scoped_map<misc::symbol, ast::TypeDec*> typescope_;
+
     /// \}
   };
 
