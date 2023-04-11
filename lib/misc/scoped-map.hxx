@@ -50,10 +50,7 @@ namespace misc
   void scoped_map<Key, Data>::scope_begin()
   {
       if (scope_.empty())
-      {
-          std::map<Key, Data> m;
-          scope_.push_back(m);
-      }
+          scope_.emplace_back();
 
       else
         scope_.push_back(scope_.back());

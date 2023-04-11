@@ -66,15 +66,15 @@ namespace bind
   {
     // FIXME: Some code was deleted here.
 
-      if (varscope_.get_vector().size() != 0)
+      /*if (varscope_.get_vector().size() != 0)
           varscope_.get_vector().pop_back();
       if (funscope_.get_vector().size() != 0)
           funscope_.get_vector().pop_back();
       if (typescope_.get_vector().size() != 0)
-          typescope_.get_vector().pop_back(); //push n'est pas coder dans scoped_map
-        /*varscope_.scope_end();
+          typescope_.get_vector().pop_back(); *///push n'est pas coder dans scoped_map
+        varscope_.scope_end();
         funscope_.scope_end();
-        typescope_.scope_end();*/
+        typescope_.scope_end();
 
   }
 
@@ -86,7 +86,7 @@ namespace bind
   void Binder::operator()(ast::LetExp& e)
   {
       // FIXME: Some code was deleted here.
-      //scope_begin(); // on cree une nouvelle scope pour letexp
+      scope_begin(); // on cree une nouvelle scope pour letexp
       super_type::operator()(*e.decs_get());
       //scope_begin();
       if (e.body_get())

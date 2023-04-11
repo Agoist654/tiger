@@ -29,8 +29,8 @@ namespace bind::tasks
                  "bindings-compute"
                  "object-bindings-compute"
                  "combine-types-compute");
-    /*TASK_DECLARE("rename",
+    TASK_DECLARE("rename",
                  "rename all symbols so all ids are unique",
                  rename,
-                 "bindings-compute");*/
+                 "bindings-compute");
 }

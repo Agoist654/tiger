@@ -21,4 +21,9 @@ namespace bind
         Binder binding_display;
         binding_display(tree);
     }
+    void rename(ast::Ast& tree)
+    {
+        Binder rename;
+        rename(tree);
+    }
 }
