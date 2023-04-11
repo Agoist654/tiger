@@ -31,9 +31,22 @@ namespace bind
         }
 
 
+        inline void Binder::undeclared(const std::string& k, const ast::NameTy& e)
+        {
+            error_ << misc::error::error_type::bind << e.location_get()  << k << e.name_get() << "\n";
+            error_.exit();
+        }
+
+        inline void Binder::undeclared(const std::string& k, const ast::SimpleVar& e)
+        {
+            error_ << misc::error::error_type::bind << e.location_get()  << k << e.name_get() << "\n";
+            error_.exit();
+        }
+
+
         inline void Binder::undeclared(const std::string& k, const ast::CallExp& e)
         {
-            error_ << misc::error::error_type::bind << k << e.name_get() << "\n";
+            error_ << misc::error::error_type::bind << e.location_get()  << k << e.name_get() << "\n";
             error_.exit();
         }
 
@@ -109,7 +122,8 @@ namespace bind
   template <>
       inline void Binder::visit_dec_body<ast::TypeDec>(ast::TypeDec& e)
       {
-          e.ty_get().accept(*this);
+          //e.ty_get().accept(*this);
+          super_type::operator()(e);
       }
 
 

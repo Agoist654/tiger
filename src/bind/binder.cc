@@ -143,7 +143,7 @@ namespace bind
       {
           if (e.name_get() != "int" && e.name_get() != "string")
           {
-              undeclared("undeclared type", e);
+              undeclared("undeclared type: ", e);
           }
 
           else
@@ -189,8 +189,6 @@ namespace bind
 
   }
 
-
-    
     void Binder::operator()(ast::ChunkList & e)
     {   
         typescope_.scope_begin();

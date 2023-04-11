@@ -144,6 +144,8 @@ namespace bind
     /// \param e   the node using an undefined name
     template <typename T> void undeclared(const std::string& k, const T& e);
     void undeclared(const std::string& k, const ast::CallExp& e);
+    void undeclared(const std::string& k, const ast::NameTy& e);
+    void undeclared(const std::string& k, const ast::SimpleVar& e);
 
     /// Report a symbol redefinition.
     ///
