@@ -472,13 +472,13 @@ exp:
 
 
 /* Class definition (alternative form). */
-tydec: "class" ID "extends" typeid  "{" classfields "}" { $$ = tp.td_.make_TypeDec(@$, $2,tp.td_.make_ClassTy(@$, $4, tp.td_.make_ChunkList(@6))); }
+tydec: "class" ID "extends" typeid  "{" classfields "}" { $$ = tp.td_.make_TypeDec(@$, $2,tp.td_.make_ClassTy(@$, $4, $6)); }
 
-     | "class" ID "{" classfields "}"                   { $$ = tp.td_.make_TypeDec(@$, $2,tp.td_.make_ClassTy(@$, nullptr , tp.td_.make_ChunkList(@4))); } 
+     | "class" ID "{" classfields "}"                   { $$ = tp.td_.make_TypeDec(@$, $2,tp.td_.make_ClassTy(@$, tp.td_.make_NameTy(@$, "Object"), $4)); } 
      ;
 
-ty: "class" "{" classfields "}"                                 { $$ = tp.td_.make_ClassTy(@$, nullptr, tp.td_.make_ChunkList(@$));}
-    | "class" "extends" typeid "{" classfields "}"              { $$ = tp.td_.make_ClassTy(@$, $3, tp.td_.make_ChunkList(@4));}
+ty: "class" "{" classfields "}"                                 { $$ = tp.td_.make_ClassTy(@$, nullptr, $3);}
+    | "class" "extends" typeid "{" classfields "}"              { $$ = tp.td_.make_ClassTy(@$, $3, $5);}
     ;
 
 classfields: %empty                                     { $$ = tp.td_.make_ChunkList(@$); }
@@ -488,7 +488,7 @@ classfields: %empty                                     { $$ = tp.td_.make_Chunk
             | methchunk classfields                      { $$ = $2; $$->push_front($1); }
             ;
 
-methchunk: methdec %prec CHUNKS                         { $$ = tp.td_.make_MethodChunk(@$); }
+methchunk: methdec %prec CHUNKS                         { $$ = tp.td_.make_MethodChunk(@$); $$->push_front(*$1);  }
         | methdec methchunk                             { $$ = $2; $$->push_front(*$1); }
         ;
 
