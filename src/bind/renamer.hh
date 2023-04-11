@@ -64,12 +64,15 @@ namespace bind
     void operator()(ast::FunctionChunk& e) override;
     void operator()(ast::TypeDec& e) override;
     void operator()(ast::ChunkList & e) override;
+    void operator()(ast::FunctionDec& e) override;
+
 
     /// \}
 
     /// \name Visiting usage sites.
     /// \{
-    // FIXME: Some code was deleted here
+    // FIXME: Some code was deleted here.
+
     void operator()(ast::CallExp& e) override;
     void operator()(ast::NameTy& e) override;
     void operator()(ast::SimpleVar& e) override;
@@ -83,8 +86,15 @@ namespace bind
     /* Check a Function or Type declaration body.*/
     template <class D> void visit_dec_body(D& e);
 
-    new_names_type 
+    void compute_put_map(ast::Dec* e);
     /// \}
+
+    virtual void scope_begin();
+    /// Close the latest var, fun, and type scope.
+    virtual void scope_end();
+    /** \} */
+
+     std::map<const ast::Dec*, misc::symbol> new_names_get();
 
   private:
     /// \name New names.

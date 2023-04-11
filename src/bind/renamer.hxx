@@ -9,6 +9,7 @@
 
 namespace bind
 {
+    using new_names_type = std::map<const ast::Dec*, misc::symbol>;
   // FIXME: Some code was deleted here.
   template <typename Def> misc::symbol new_name_compute(const Def& e)
   {
@@ -24,9 +25,18 @@ namespace bind
   }*/
 
 
+
+  inline new_names_type new_names_get(){ return new_names_; }
+
+
+
   template <class E, class Def> void Renamer::visit(E& e, const Def* def)
   {
     // FIXME: Some code was deleted here.
+
+      if (&e == def)
+          misc::symbol new_name = new_name_compute(e.name_get);
+      new_name_get()[e] = new_name;
   }
 
    /*----------------------------.
@@ -76,10 +86,10 @@ namespace bind
       inline void Renamer::visit_dec_header<ast::FunctionDec>(ast::FunctionDec& e)
       {
           // FIXME: Some code was deleted here.
-          check_main(e);
+
+          misc::symbol new_name = new_name_compute(e.name_get);
+          new_name_get()[e] = new_name;
           funscope_.put(e.name_get(), &e);
-
-
       }
 
   // Compute the bindings of this function's body.
@@ -104,7 +114,6 @@ namespace bind
           e.ty_get().accept(*this);
       }
 
-
   template <>
   inline void Renamer::visit_dec_header<ast::VarDec>(ast::VarDec& e)
   {
@@ -113,7 +122,7 @@ namespace bind
 
   template <>
       inline void Renamer::visit_dec_body<ast::VarDec>(ast::VarDec& e)
-      { 
+      {
           super_type::operator()(e);
       }
 
