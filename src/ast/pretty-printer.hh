@@ -57,6 +57,13 @@ namespace ast
     void operator()(const Var& e);
     void operator()(const VarDec& e) override;
     void operator()(const WhileExp& e) override;
+
+    void operator()(const MethodDec& e) override;
+    void operator()(const ObjectExp& e) override;
+    void operator()(const ClassTy& e);
+
+
+
     /// \}
 
   private:

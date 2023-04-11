@@ -268,4 +268,42 @@ namespace ast
       ostr_ << e.test_get() << " do" << misc::incendl << e.body_get() << misc::decendl;
   }
 
+  //Object part
+  void PrettyPrinter::operator()(const ObjectExp& e)
+  {
+        ostr_ <<  "new " << *e.type_name_get();
+  }
+
+  void PrettyPrinter::operator()(const ClassTy& e)
+  {     
+     
+        ostr_ <<  misc::iendl << "class extends " << e.super_get();
+        ostr_ << misc::iendl << "{" <<  misc::incendl << e.chunks_get(); 
+        ostr_ <<  "}";
+
+  }
+
+
+  void PrettyPrinter::operator()(const MethodDec& e)
+  {
+
+      if (e.body_get() != nullptr)
+      {
+          ostr_ << "method " << e.name_get();
+          if (bindings_display(ostr_))
+              ostr_<< " /* " << &e << " */";
+          ostr_ << "(" << misc::separate(e.formals_get(), ",") << ")";
+      }
+
+      if (e.result_get() != nullptr)
+          ostr_ << " : " << *e.result_get() ;
+      if (e.body_get() != nullptr)
+          ostr_ << " =" << misc::incendl << *e.body_get() << misc::incendl;
+      else
+          ostr_ << misc::iendl;
+
+  }
+
+  
+
 } // namespace ast
