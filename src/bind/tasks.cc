@@ -6,11 +6,16 @@
 //// FIXME: Some code was deleted here.
 /////*ONGOING*/
 //
+
 #include <ast/libast.hh>
 #include <ast/tasks.hh>
+
 #define DEFINE_TASKS 1
+
 #include <bind/tasks.hh>
+
 #undef DEFINE_TASKS
+
 #include <bind/libbind.hh>
 
 namespace bind::tasks

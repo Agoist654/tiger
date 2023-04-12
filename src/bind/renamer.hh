@@ -10,10 +10,6 @@
 #include <ast/default-visitor.hh>
 #include <ast/non-object-visitor.hh>
 
-#include <misc/fwd.hh>
-#include <misc/scoped-map.hh>
-
-
 namespace bind
 {
   /// Perform identifier renaming within an AST (in place),
@@ -37,7 +33,10 @@ namespace bind
     ///
     /// Take into account the fact that _main and primitive are
     /// not to be renamed.
+
+
     template <typename Def> misc::symbol new_name_compute(const Def& e);
+    //misc::symbol new_name_compute(const ast::Dec& e);
 
     /// \brief Get the new name of this declaration, possibly create it.
     ///
@@ -58,14 +57,9 @@ namespace bind
     /// \name Visiting definition sites.
     /// \{
     // FIXME: Some code was deleted here.
-    void operator()(ast::VarChunk& e) override;
     void operator()(ast::VarDec& e) override;
-    void operator()(ast::TypeChunk& e) override;
-    void operator()(ast::FunctionChunk& e) override;
     void operator()(ast::TypeDec& e) override;
-    void operator()(ast::ChunkList & e) override;
     void operator()(ast::FunctionDec& e) override;
-
 
     /// \}
 
@@ -78,25 +72,10 @@ namespace bind
     void operator()(ast::SimpleVar& e) override;
 
 
-    template <class D> void chunk_visit(ast::Chunk<D>& e);
-
-    /* Check a Function or Type declaration header.*/
-    template <class D> void visit_dec_header(D& e);
-    template <class D> void visit_dec_header(const D& e);
-
-    /* Check a Function or Type declaration body.*/
-    template <class D> void visit_dec_body(D& e);
-    template <class D> void visit_dec_body(const D& e);
-
     /// \}
-
-    virtual void scope_begin();
-    /// Close the latest var, fun, and type scope.
-    virtual void scope_end();
-    /** \} */
-
      std::map<const ast::Dec*, misc::symbol> new_names_get();
-
+     template<typename Def>
+     void new_names_set(const Def& e, misc::symbol new_name);
   private:
     /// \name New names.
     /// \{
