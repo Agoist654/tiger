@@ -24,21 +24,25 @@ namespace type
   void Named::accept(ConstVisitor& v) const
   {
     // FIXME: Some code was deleted here.
+    v(*this);
   }
 
   void Named::accept(Visitor& v)
   {
     // FIXME: Some code was deleted here.
+      v(*this);
   }
 
   bool Named::sound() const
   {
     // FIXME: Some code was deleted here (Sound).
+
   }
 
   bool Named::compatible_with(const Type& other) const
   {
     // FIXME: Some code was deleted here (Special implementation of "compatible_with" for Named).
+    return this->actual() == other.actual();
   }
 
 } // namespace type

@@ -44,6 +44,8 @@ namespace type
     /** \} */
 
     // FIXME: Some code was deleted here (Special implementation of "compatible_with" for Function).
+    ///*DONE*/
+    bool compatible_with(const Type& other) override;
 
   protected:
     /// Formals' types.

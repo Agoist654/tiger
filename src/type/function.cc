@@ -26,5 +26,11 @@ namespace type
   void Function::accept(Visitor& v) { v(*this); }
 
   // FIXME: Some code was deleted here.
+  ///*DONE*/
+  bool compatible_with(const Type& other)
+  {
+      return this->result_ == other.actual();
+  }
+
 
 } // namespace type

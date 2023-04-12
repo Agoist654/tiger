@@ -25,22 +25,68 @@ namespace type
   const Type* Class::attr_type(misc::symbol key) const
   {
     // FIXME: Some code was deleted here.
+    /*notes : attrs_ est std::vector<Attribute>
+     * meths_ est std::vector<const Method*>
+     * subclasses_ est std::vector<const Class*> */
+    ///DONE
+    for (Attribute att : this->attrs_get())
+    {
+        if (att.name_get() == key)
+            return att.type_get();
+    }
   }
 
   const Type* Class::meth_type(misc::symbol key) const
   {
     // FIXME: Some code was deleted here.
+    ///DONE
+      for (Method* met : this->meths_get())
+      {
+          if (met->name_get() == key)
+              return met->type_get();
+      }
   }
 
   // FIXME: Some code was deleted here (Find common super class).
+  ///DONE
+  const Class* common_root(const Class& other) const
+  {
+      Class* tracker = this;
+      std::set<Class*> supers;
+      while (tracker != nullptr)
+      {
+          supers.insert(tracker->super_get());
+          tracker = tracker->super_get();
+      }
+      tracker = &*other;
+      while (supers.insert(tracker).second)
+          tracker = tracker->super_get();
+      return tracker;
+  }
 
   // FIXME: Some code was deleted here (Super class soundness test).
+  ///DONE
+  bool sound() const
+  {
+      for (Class* sub : this->subclasses_get())
+      {
+          if (sub == this)
+              return false;
+      }
+      return true;
+  }
 
   // FIXME: Some code was deleted here (Special implementation of "compatible_with" for Class).
+  ///DONE
+  bool compatible_with(const Type& other)
+  {
+      return this->id_get() == other.id_get();
+  }
 
   const Class& Class::object_instance()
   {
     // FIXME: Some code was deleted here.
+    ///
   }
 
   unsigned Class::fresh_id()
