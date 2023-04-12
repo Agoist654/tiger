@@ -24,13 +24,19 @@ namespace bind
     {
         if (e.name_get() == "_main" || e.body_get() == nullptr) //TODO: add primitive case later
             return e.name_get();
-        return misc::symbol::fresh(e.name_get());
+        misc::symbol new_name = misc::symbol::fresh(e.name_get());
+        //if (dynamic_cast<const ast::Dec*>(&e) != nullptr)
+            new_names_set(e, new_name);
+        return new_name;
     }
     template <> inline misc::symbol Renamer::new_name_compute(const ast::NameTy& e)
     {
         if (e.name_get() == "string" || e.name_get() == "int" )
             return e.name_get();
-        return misc::symbol::fresh(e.name_get());
+        misc::symbol new_name = misc::symbol::fresh(e.name_get());
+        //if (dynamic_cast<const ast::Dec*>(&e) != nullptr)
+            new_names_set(e, new_name);
+        return new_name;
     }
 
 
