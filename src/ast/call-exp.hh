@@ -25,7 +25,9 @@ namespace ast
       void accept(ConstVisitor& v) const override;
       void accept(Visitor& v) override;
 
+      void name_set(misc::symbol name);
       misc::symbol name_get() const;
+      void name_get(misc::symbol name);
       exps_type* args_get() const;
 
       const FunctionDec* def_get() const;

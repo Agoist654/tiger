@@ -15,101 +15,63 @@ namespace bind
   {}
 
   // FIXME: Some code was deleted here.
-
-  void Renamer::scope_begin()
+/*
+  void Renamer::compute_put_map(ast::VarDec const& e)
   {
-      /*if (varscope_.get_vector().size() != 0)
-          varscope_.get_vector().push_back(varscope_.get_vector().back());
-      if (funscope_.get_vector().size() != 0)
-          funscope_.get_vector().push_back(funscope_.get_vector().back());
-      if (typescope_.get_vector().size() != 0)
-          typescope_.get_vector().push_back(typescope_.get_vector().back());*/ //push n'est pas coder dans scoped_map
-        varscope_.scope_begin();
-        funscope_.scope_begin();
-        typescope_.scope_begin();
-
-
+    varscope_.put(e->name_get(), &e);
   }
 
-  void Renamer::scope_end()
+  void Renamer::compute_put_map(ast::FunctionDec* e)
   {
-      if (varscope_.get_vector().size() != 0)
-          varscope_.get_vector().pop_back();
-      if (funscope_.get_vector().size() != 0)
-          funscope_.get_vector().pop_back();
-      if (typescope_.get_vector().size() != 0)
-          typescope_.get_vector().pop_back(); //push n'est pas coder dans scoped_map
-        /*varscope_.scope_end();
-        funscope_.scope_end();
-        typescope_.scope_end();*/
-
-  }
-
-  void compute_put_map(ast::VarDec* e)
-  {
-    varscope_.put(e.name_get(), &e);
-  }
-
-  void compute_put_map(ast::FunctionDec* e)
-  {
-    misc::symbol new_name = new_name_compute(e.name_get);
+    misc::symbol new_name = new_name_compute(e->name_get());
     new_name_get()[e] = new_name;
-    funscope_.put(e.name_get(), &e);
+    funscope_.put(e->name_get(), &e);
   }
 
 
-  void compute_put_map(ast::TypeDec* e)
+  void Renamer::compute_put_map(ast::TypeDec* e)
   {
-    misc::symbol new_name = new_name_compute(e.name_get);
+    misc::symbol new_name = new_name_compute(e->name_get());
     new_name_get()[e] = new_name;
-    typescope_.put(e.name_get(), &e);
+    typescope_.put(e->name_get(), &e);
   }
 
-
+*/
   /*process*/
-  void operator()(ast::CallExp& e)
+  void Renamer::operator()(ast::CallExp& e)
   {
     //because of recursive
 
-    super_type::operator()(e);
+//    super_type::operator()(e);
+    visit(e, e.def_get());
   }
 
 
-  void operator()(ast::FunctionDec& e)
+  void Renamer::operator()(ast::FunctionDec& e)
   {
-      compute_put_map(e);
+    visit(e, e.def_get());
   }
 
 
-  void operator()(ast::TypeDec& e)
+  void Renamer::operator()(ast::TypeDec& e)
   {
-      compute_put_map(e);
+    visit(e, e.def_get());
   }
 
-  void operator()(ast::VarDec& e)
+  void Renamer::operator()(ast::VarDec& e)
   {
-      compute_put_map(e);
+    visit(e, e.def_get());
   }
 
-  void operator()(ast::NameTy& e)
+  void Renamer::operator()(ast::NameTy& e)
   {
-      name_set(typescope_.get_vector().get_back_map()->first)
+      //name_set(typescope_.get_vector().get_back_map()->first)
+      visit(e,e.def_get());
   }
 
-  void operator()(ast::SimpleVar& e)
-  {}
-
-  void operator()(ast::ChunkList & e)
-  {}
-
-  void operator()(ast::TypeChunk& e)
-  {}
-
-  void operator()(ast::VarChunk& e)
+  void Renamer::operator()(ast::SimpleVar& e)
   {
+      visit(e,e.def_get());
   }
-
-  void operator()(ast::FunctionChunk& e)
-  {}
 
 } // namespace bind

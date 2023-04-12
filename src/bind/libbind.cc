@@ -9,6 +9,8 @@
 
 #include <bind/libbind.hh>
 #include <bind/binder.hh>
+#include <bind/renamer.hh>
+
 namespace bind
 {
     void bindings_compute(ast::Ast& tree)
@@ -16,14 +18,17 @@ namespace bind
         Binder binding_compute;
         binding_compute(tree);
     }
+
     void bindings_display(ast::Ast& tree)
     {
         Binder binding_display;
         binding_display(tree);
     }
+
     void rename(ast::Ast& tree)
     {
-        Binder rename;
+        Renamer rename;
         rename(tree);
     }
+
 }

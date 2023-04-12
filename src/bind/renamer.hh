@@ -82,11 +82,12 @@ namespace bind
 
     /* Check a Function or Type declaration header.*/
     template <class D> void visit_dec_header(D& e);
+    template <class D> void visit_dec_header(const D& e);
 
     /* Check a Function or Type declaration body.*/
     template <class D> void visit_dec_body(D& e);
+    template <class D> void visit_dec_body(const D& e);
 
-    void compute_put_map(ast::Dec* e);
     /// \}
 
     virtual void scope_begin();
@@ -103,11 +104,6 @@ namespace bind
     using new_names_type = std::map<const ast::Dec*, misc::symbol>;
     /// Dictionary mapping old declarations to their new names.
     new_names_type new_names_;
-
-
-    misc::scoped_map<misc::symbol, ast::VarDec*> varscope_;
-    misc::scoped_map<misc::symbol, ast::FunctionDec*> funscope_;
-    misc::scoped_map<misc::symbol, ast::TypeDec*> typescope_;
 
     /// \}
   };

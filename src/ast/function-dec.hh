@@ -57,6 +57,10 @@ namespace ast
     void body_set(Exp*);
     /** \} */
 
+    FunctionDec* def_get();
+    const FunctionDec* def_get() const;
+   void def_set(FunctionDec* def);
+
   protected:
     /// Formal arguments.
     VarChunk* formals_;
@@ -64,6 +68,8 @@ namespace ast
     NameTy* result_;
     /// Instructions.
     Exp* body_;
+
+    FunctionDec* def_ = nullptr;
   };
 } // namespace ast
 #include <ast/function-dec.hxx>
