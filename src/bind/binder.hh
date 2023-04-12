@@ -157,6 +157,7 @@ namespace bind
     /** \name Handling the environment
      ** \{ */
     /// Open a new var, fun, and type scope.
+
     virtual void scope_begin();
     /// Close the latest var, fun, and type scope.
     virtual void scope_end();

@@ -8,10 +8,11 @@
 #pragma once
 
 #include <ast/fwd.hh>
-#include <misc/error.hh>
+//#include <misc/error.hh>
 
 namespace bind
 {
     void bindings_compute(ast::Ast& tree);
     void bindings_display(ast::Ast& tree);
+    void rename(ast::Ast& tree);
 }

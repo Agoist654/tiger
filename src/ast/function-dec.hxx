@@ -20,4 +20,8 @@ namespace ast
   inline Exp* FunctionDec::body_get() { return body_; }
   inline void FunctionDec::body_set(Exp* body) { body_ = body; }
 
+  inline const FunctionDec* FunctionDec::def_get() const { return def_; }
+  inline FunctionDec* FunctionDec::def_get() { return def_; }
+  inline void FunctionDec::def_set(FunctionDec* def) { def_ = def; }
+
 } // namespace ast

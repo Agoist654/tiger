@@ -33,7 +33,10 @@ namespace bind
     ///
     /// Take into account the fact that _main and primitive are
     /// not to be renamed.
+
+
     template <typename Def> misc::symbol new_name_compute(const Def& e);
+    //misc::symbol new_name_compute(const ast::Dec& e);
 
     /// \brief Get the new name of this declaration, possibly create it.
     ///
@@ -54,13 +57,25 @@ namespace bind
     /// \name Visiting definition sites.
     /// \{
     // FIXME: Some code was deleted here.
+    void operator()(ast::VarDec& e) override;
+    void operator()(ast::TypeDec& e) override;
+    void operator()(ast::FunctionDec& e) override;
+
     /// \}
 
     /// \name Visiting usage sites.
     /// \{
     // FIXME: Some code was deleted here.
-    /// \}
 
+    void operator()(ast::CallExp& e) override;
+    void operator()(ast::NameTy& e) override;
+    void operator()(ast::SimpleVar& e) override;
+
+
+    /// \}
+     std::map<const ast::Dec*, misc::symbol> new_names_get();
+     template<typename Def>
+     void new_names_set(const Def& e, misc::symbol new_name);
   private:
     /// \name New names.
     /// \{
@@ -68,6 +83,7 @@ namespace bind
     using new_names_type = std::map<const ast::Dec*, misc::symbol>;
     /// Dictionary mapping old declarations to their new names.
     new_names_type new_names_;
+
     /// \}
   };
 
