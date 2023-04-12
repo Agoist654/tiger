@@ -32,16 +32,6 @@ namespace bind
 
   }
 
-    /*if (!e.result_get() || e.result_get()->type_get() != ast::Namty::INT)
-    {
-        error_ << e.loc_get() << ": la fonction doit retourner un entier" << std::endl;
-    }
-    if (e.formals_get().size() == 0)
-    {
-        error_ << misc::error::error_type::bind << e.loc_get() << ": error: function main cannot have parameters" << std::endl;
-    }*/
-
-
   /*----------------.
   | Symbol tables.  |
   `----------------*/
@@ -49,12 +39,6 @@ namespace bind
   void Binder::scope_begin()
   {
     // FIXME: Some code was deleted here.
-      /*if (varscope_.get_vector().size() != 0)
-          varscope_.get_vector().push_back(varscope_.get_vector().back());
-      if (funscope_.get_vector().size() != 0)
-          funscope_.get_vector().push_back(funscope_.get_vector().back());
-      if (typescope_.get_vector().size() != 0)
-          typescope_.get_vector().push_back(typescope_.get_vector().back());*/ //push n'est pas coder dans scoped_map
         varscope_.scope_begin();
         funscope_.scope_begin();
         typescope_.scope_begin();
@@ -65,13 +49,6 @@ namespace bind
   void Binder::scope_end()
   {
     // FIXME: Some code was deleted here.
-
-      /*if (varscope_.get_vector().size() != 0)
-          varscope_.get_vector().pop_back();
-      if (funscope_.get_vector().size() != 0)
-          funscope_.get_vector().pop_back();
-      if (typescope_.get_vector().size() != 0)
-          typescope_.get_vector().pop_back(); *///push n'est pas coder dans scoped_map
         varscope_.scope_end();
         funscope_.scope_end();
         typescope_.scope_end();
@@ -86,12 +63,10 @@ namespace bind
   void Binder::operator()(ast::LetExp& e)
   {
       // FIXME: Some code was deleted here.
-      scope_begin(); // on cree une nouvelle scope pour letexp
+      scope_begin();
       super_type::operator()(*e.decs_get());
-      //scope_begin();
       if (e.body_get())
       super_type::operator()(*e.body_get());
-      //scope_end();
       scope_end();
   }
 
@@ -169,13 +144,10 @@ namespace bind
 
   void Binder::operator()(ast::ForExp& e)
   {
-      //scope_begin();
       e.def_set(&e);
       forvector_.emplace_back(&e);
       operator()(e.vardec_get());
-//      super_type::operator()(e.hi_get());
       super_type::operator()(e.body_get());
-      //scope_end();
 
       forvector_.pop_back();
   }
@@ -183,11 +155,8 @@ namespace bind
   void Binder::operator()(ast::WhileExp& e)
   {
       e.def_set(&e);
-      //scope_begin();
       forvector_.emplace_back(&e);
-//      super_type::operator()(e.hi_get());
       super_type::operator()(e.body_get());
-      //scope_end();
       forvector_.pop_back();
   }
 
@@ -207,15 +176,7 @@ namespace bind
 
 
     void Binder::operator()(ast::ChunkList & e)
-/*<<<<<<< HEAD
     {
-        typescope_.scope_begin();
-=======
-    {   
-        /*typescope_.scope_begin();
->>>>>>> tc3-bind-david
-        varscope_.scope_begin();
-        funscope_.scope_begin();*/
         scope_begin();
         for ( auto& x : e.chunks_get())
             x->accept(*this);
