@@ -13,6 +13,14 @@ namespace type
   class Array : public Type
   {
     // FIXME: Some code was deleted here.
+  public:
+      Type arrtype_get();
+      void arrtype_set(const Type& type);
+      bool compatible_with(const Type& other) const override;
+      void accept(ConstVisitor& v) const override;
+
+  protected:
+      Type* arrtype_;
   };
 
 } // namespace type

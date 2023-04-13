@@ -63,36 +63,43 @@ namespace type
   void PrettyPrinter::operator()(const Int&)
   {
     // FIXME: Some code was deleted here.
+    ostr_ << "int";
   }
 
   void PrettyPrinter::operator()(const String&)
   {
     // FIXME: Some code was deleted here.
+    ostr_ << "string";
   }
 
   void PrettyPrinter::operator()(const Named& e)
   {
     // FIXME: Some code was deleted here.
+      ostr_ << e.name_get() << " : " << e.type_get();
   }
 
   void PrettyPrinter::operator()(const Array& e)
   {
     // FIXME: Some code was deleted here.
+    ostr_ << "Array of " << e.arrtype_get();
   }
 
   void PrettyPrinter::operator()(const Record& e)
   {
     // FIXME: Some code was deleted here.
+    ostr_ << "Record with fields : " << e.fields_get();
   }
 
   void PrettyPrinter::operator()(const Class& e)
   {
     // FIXME: Some code was deleted here.
+    ostr_ << "Class with id " << e.id_get();
   }
 
   void PrettyPrinter::operator()(const Function& e)
   {
     // FIXME: Some code was deleted here.
+      ostr_ << e.result_get() << " : " << e.formals_get();
   }
 
   void PrettyPrinter::operator()(const Attribute& e)

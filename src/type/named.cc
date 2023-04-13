@@ -36,7 +36,7 @@ namespace type
   bool Named::sound() const
   {
     // FIXME: Some code was deleted here (Sound).
-
+    ///?????
   }
 
   bool Named::compatible_with(const Type& other) const

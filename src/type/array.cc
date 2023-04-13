@@ -9,5 +9,9 @@
 namespace type
 {
   // FIXME: Some code was deleted here.
+  bool compatible_with(const Type& other)
+  {
+      return this->actual() == other;
+  }
 
 } // namespace type

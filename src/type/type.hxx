@@ -13,14 +13,14 @@ namespace type
   {
     // FIXME: Some code was deleted here.
     ///*DONE*/
-        return lhs.actual() == rhs.actual();
+        return lhs.compatible_with(lhs);
   }
 
   inline bool operator!=(const Type& lhs, const Type& rhs)
   {
     // FIXME: Some code was deleted here.
       ///*DONE*/
-      return lhs.actual() != rhs.actual();
+      return !(lhs == rhs);
   }
 
 } // namespace type

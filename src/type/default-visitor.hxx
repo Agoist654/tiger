@@ -40,12 +40,14 @@ namespace type
   void GenDefaultVisitor<Const>::operator()(const_t<Named>& e)
   {
     // FIXME: Some code was deleted here.
+    e.accept(*this);
   }
 
   template <template <typename> class Const>
   void GenDefaultVisitor<Const>::operator()(const_t<Array>& e)
   {
     // FIXME: Some code was deleted here.
+
   }
 
   template <template <typename> class Const>

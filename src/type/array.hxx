@@ -10,5 +10,19 @@
 namespace type
 {
   // FIXME: Some code was deleted here.
+  Type arrtype_get()
+  {
+      return *arrtype_;
+  }
+
+  void arrtype_set(const Type& type)
+  {
+      *arrtype_ = type;
+  }
+
+  void accept(ConstVisitor& v) const
+  {
+      v(*this);
+  }
 
 } // namespace type
