@@ -16,7 +16,7 @@ namespace escapes
     void EscapesVisitor::operator()(ast::VarDec& e)
     {
             vars_[&e] = e.name_get();
-            std::cout << "vardec set to 0:" << e.name_get() << "\n";
+            //std::cout << "vardec set to 0:" << e.name_get() << "\n";
             e.escape_set(0);
     }
 
@@ -30,7 +30,7 @@ namespace escapes
 
         for (auto args : e.formals_get())
         {
-            std::cout << "formals set to 0:" << args->name_get()<< "\n";
+            //std::cout << "formals set to 0:" << args->name_get()<< "\n";
             args->escape_set(0);
             vars_.erase(args);
         }
@@ -44,7 +44,7 @@ namespace escapes
         {
             if (vars_.contains(e.def_get()))
             {
-                std::cout << "simplevar set to 1:" << e.name_get()<< "\n";
+                //std::cout << "simplevar set to 1:" << e.name_get()<< "\n";
                 e.def_get()->escape_set(1);
             }
         }
