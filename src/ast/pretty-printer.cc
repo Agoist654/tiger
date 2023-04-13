@@ -251,7 +251,7 @@ namespace ast
       if (e.init_get() != nullptr)
           ostr_<< "var ";
 
-      if (escapes_display(ostr_) && e.escape_get() == 2)
+      if (escapes_display(ostr_) && e.escape_get() == 1)
           ostr_ << "/* escaping */";
 
       ostr_ << e.name_get();
