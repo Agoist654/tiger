@@ -118,7 +118,7 @@ namespace bind
   }
 
   void Binder::operator()(ast::TypeDec& e)
-  {     
+  {
       typescope_.put(e.name_get(), &e);
       e.def_set(&e);
   }
@@ -147,6 +147,7 @@ namespace bind
       e.def_set(&e);
       forvector_.emplace_back(&e);
       operator()(e.vardec_get());
+      operator()(e.hi_get());
       super_type::operator()(e.body_get());
 
       forvector_.pop_back();

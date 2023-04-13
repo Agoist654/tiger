@@ -14,6 +14,7 @@
 /// Ast management.
 namespace ast
 {
+  extern const misc::xalloc<bool> escapes_compute;
   extern const misc::xalloc<bool> escapes_display;
   extern const misc::xalloc<bool> bindings_display;
 

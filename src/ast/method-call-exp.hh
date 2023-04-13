@@ -31,7 +31,6 @@ namespace ast
       void accept(ConstVisitor& v) const override;
       void accept(Visitor& v) override;
 
-
       misc::symbol name_get() const;
       exps_type* args_get() const;
       Var* object_get() const;

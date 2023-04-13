@@ -27,8 +27,9 @@ namespace bind::tasks
                  "at least one way, executes binding-compute"
                  "if not.",
                  "bindings-compute"
-                 "object-bindings-compute"
-                 "combine-types-compute");
+                 //"object-bindings-compute"
+                 //"combine-types-compute"
+                 );
     TASK_DECLARE("rename",
                  "rename all symbols so all ids are unique",
                  rename,
