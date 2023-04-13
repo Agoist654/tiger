@@ -86,14 +86,14 @@ namespace ast
     node_html_ports();
     // FIXME: Some code was deleted here (node_html_port_list for each list).
 //<<<<<<< HEAD
-    node_html_port_list("args", *e.args_get());
+  //  node_html_port_list("args", *e.args_get());
 //=======
     node_html_one_port("def");
 //>>>>>>> tc3_bind
     footer_and_link(old_parent_id);
     dump_def(e);
     // FIXME: Some code was deleted here (dump_list).
-    dump_list("args", *e.args_get());
+  //  dump_list("args", *e.args_get());
     parent_id = old_parent_id;
   }
 
@@ -219,7 +219,7 @@ namespace ast
 
     // FIXME: Some code was deleted here (node_html_port_list for each list).
 //<<<<<<< HEAD
-    node_html_port_list("args", *e.args_get());
+  //  node_html_port_list("args", *e.args_get());
 //=======
     node_html_one_port("def");
 //>>>>>>> tc3_bind
@@ -227,7 +227,7 @@ namespace ast
     dump_def(e);
     // FIXME: Some code was deleted here (dump and dump_list).
     dump("object", e.object_get());
-    dump_list("args", *e.args_get());
+  //  dump_list("args", *e.args_get());
     parent_id = old_parent_id;
   }
 

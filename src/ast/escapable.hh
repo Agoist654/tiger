@@ -9,10 +9,26 @@
 
 namespace ast
 {
-  /// Escapable.
+ // Escapable.
  class Escapable
   {
-    // FIXME: Some code was deleted here
+     //FIXME: Some code was deleted here
+
+      public:
+          Escapable();
+          Escapable(const Escapable&) = delete;
+          Escapable& operator=(const Escapable&) = delete;
+
+          int escape_get();
+          const int escape_get() const;
+          void escape_set(int escape);
+
+//          void operator()(const VarDec) override;
+
+      protected:
+          /*luca veut un bool*/
+          int escape_ = 1;
+
   };
-} // namespace ast
+}//  namespace ast
 #include <ast/escapable.hxx>

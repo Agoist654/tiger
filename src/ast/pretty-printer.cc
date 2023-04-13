@@ -250,9 +250,14 @@ namespace ast
   {
       if (e.init_get() != nullptr)
           ostr_<< "var ";
+
+      if (escapes_display(ostr_) && e.escape_get() == 1)
+          ostr_ << "/* escaping */";
+
       ostr_ << e.name_get();
+
       if (bindings_display(ostr_))
-        ostr_<< " /* " << &e/*.name_get()*/ << " */ ";
+        ostr_<< " /* " << &e << " */ ";
 
       if (e.type_name_get() != nullptr)
           ostr_ << " : " << *e.type_name_get();

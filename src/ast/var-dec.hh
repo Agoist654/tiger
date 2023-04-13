@@ -16,6 +16,7 @@ namespace ast
   class VarDec
     : public Dec
     , public Escapable
+
   {
   public:
     /** \name Ctor & dtor.

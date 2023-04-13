@@ -8,5 +8,9 @@
 
 namespace ast
 {
-  // FIXME: Some code was deleted here.
-} // namespace ast
+   //FIXME: Some code was deleted here.
+
+    Escapable::Escapable()
+    {
+    };
+}//  namespace ast
