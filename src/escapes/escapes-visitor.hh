@@ -60,8 +60,9 @@ namespace escapes
     // FIXME: Some code was deleted here.
 
   protected:
-    std::map<ast::VarDec*, misc::symbol> vars_;
-    int in_function = 0;
+    std::map<ast::VarDec*, ast::FunctionDec*> vars_;
+    std::vector<ast::FunctionDec*> funvector_;
+
   };
 
 } // namespace escapes

@@ -15,7 +15,7 @@ namespace escapes
 
     void EscapesVisitor::operator()(ast::VarDec& e)
     {
-            vars_[&e] = e.name_get();
+            vars_[&e] = funvector_.back();
             //std::cout << "vardec set to 0:" << e.name_get() << "\n";
             e.escape_set(0);
     }
@@ -24,8 +24,7 @@ namespace escapes
     void EscapesVisitor::operator()(ast::FunctionDec& e)
     {
 
-        in_function = 1;
-
+        funvector_.push_back(&e);
         super_type::operator()(e);
 
         for (auto args : e.formals_get())
@@ -35,18 +34,15 @@ namespace escapes
             vars_.erase(args);
         }
 
-        in_function = 0;
+        funvector_.pop_back();
     }
 
     void EscapesVisitor::operator()(ast::SimpleVar& e)
     {
-        if (in_function == 1)
+        if (vars_.find(e.def_get())->second != funvector_.back())
         {
-            if (vars_.contains(e.def_get()))
-            {
-                //std::cout << "simplevar set to 1:" << e.name_get()<< "\n";
-                e.def_get()->escape_set(1);
-            }
+            //std::cout << "simplevar set to 1:" << e.name_get()<< "\n";
+            e.def_get()->escape_set(1);
         }
     }
 } // namespace escapes
