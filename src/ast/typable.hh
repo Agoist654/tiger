@@ -23,8 +23,7 @@ namespace ast
     {
         // FIXME: Some code was deleted he
     public:
-        Typable():type_(nullptr){}
-        inline Typable(type::Type* t);
+        inline typable(type::Type* t);
         void setType(type::Type* t);
         type::Type* getType() const;
     private:
