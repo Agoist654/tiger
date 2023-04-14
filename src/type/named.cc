@@ -37,6 +37,7 @@ namespace type
   {
     // FIXME: Some code was deleted here (Sound).
     ///?????
+    return type_ != nullptr;
   }
 
   bool Named::compatible_with(const Type& other) const

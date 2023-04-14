@@ -80,7 +80,11 @@ namespace type
   ///DONE
   bool compatible_with(const Type& other)
   {
-      return this->id_get() == other.id_get(); ///pas bon, corriger dans record d'abord
+      ///return this->id_get() == other.id_get(); ///pas bon, corriger dans record d'abord
+      Class& other_class = dynamic_cast<const Class&>(other);
+      if (other_class != other)
+          return false;
+      return this->subclasses_get() == other.subclasses_get();
   }
 
   const Class& Class::object_instance()
