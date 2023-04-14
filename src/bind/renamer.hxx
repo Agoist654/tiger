@@ -20,33 +20,52 @@ namespace bind
         return new_name;
     }
 
-    template <> inline misc::symbol Renamer::new_name_compute(const ast::FunctionDec& e)
+    template <> inline misc::symbol Renamer::new_name_compute(const ast::CallExp& e)
     {
-        if (e.name_get() == "_main" || e.body_get() == nullptr) //TODO: add primitive case later
-            return e.name_get();
+
         misc::symbol new_name = misc::symbol::fresh(e.name_get());
-        //if (dynamic_cast<const ast::Dec*>(&e) != nullptr)
-            new_names_set(e, new_name);
+
+        new_names_set(*dynamic_cast<const ast::CallExp*>(e.def_get()), new_name);
+
         return new_name;
     }
+
+    template <> inline misc::symbol Renamer::new_name_compute(const ast::FunctionDec& e)
+    {
+        if (new_names_get().contains(&e))
+        {
+            return new_names_get().find((dynamic_cast<const ast::Dec*>(&e)))->second;
+        }
+
+        if (e.name_get() == "_main" || e.body_get() == nullptr) //TODO: add primitive case later
+            return e.name_get();
+
+        misc::symbol new_name = misc::symbol::fresh(e.name_get());
+
+        if (dynamic_cast<const ast::Dec*>(&e) != nullptr)
+            new_names_set(e, new_name);
+
+        return new_name;
+    }
+
     template <> inline misc::symbol Renamer::new_name_compute(const ast::NameTy& e)
     {
         if (e.name_get() == "string" || e.name_get() == "int" )
             return e.name_get();
         misc::symbol new_name = misc::symbol::fresh(e.name_get());
-        //if (dynamic_cast<const ast::Dec*>(&e) != nullptr)
+        if (dynamic_cast<const ast::Dec*>(&e) != nullptr)
             new_names_set(e, new_name);
         return new_name;
     }
-
 
     template <typename Def> inline misc::symbol Renamer::new_name(const Def& e)
     {
         if (dynamic_cast<const ast::Dec*>(&e) == nullptr)
         {
-            if (new_names_get().contains(e.def_get()))
+            if (new_names_get().contains(dynamic_cast<const ast::Dec*>(&e)))
             {
-                return new_names_get().find(e.def_get())->second;
+                if (e.def_get() != nullptr)
+                    return new_names_get().find(e.def_get())->second;
             }
         }
         return new_name_compute(e);
@@ -67,7 +86,11 @@ namespace bind
     {
         // FIXME: Some code was deleted here.
 
-        e.name_set(new_name(e));
+        if (new_names_get().contains(def))
+            e.name_set(new_names_get().find(def)->second);
+
+        else
+            e.name_set(new_name_compute(e));
         super_type::operator()(e);
     }
 
