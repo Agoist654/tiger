@@ -144,12 +144,14 @@ namespace bind
 
   void Binder::operator()(ast::ForExp& e)
   {
+      scope_begin();
       e.def_set(&e);
       forvector_.emplace_back(&e);
       operator()(e.vardec_get());
       operator()(e.hi_get());
       super_type::operator()(e.body_get());
 
+      scope_end();
       forvector_.pop_back();
   }
 
