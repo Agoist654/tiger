@@ -14,12 +14,13 @@ namespace bind
 
     template <typename Def> inline misc::symbol Renamer::new_name_compute(const Def& e)
     {
-        misc::symbol new_name = misc::symbol::fresh(e.name_get());
+        misc::symbol new_name = misc::symbol::fresh(e->name_get());
         //if (dynamic_cast<const ast::Dec*>(&e) != nullptr)
-            new_names_set(e, new_name);
+            new_names_set(*e, new_name);
         return new_name;
     }
 
+/*
     template <> inline misc::symbol Renamer::new_name_compute(const ast::CallExp& e)
     {
 
@@ -29,9 +30,11 @@ namespace bind
 
         return new_name;
     }
+*/
 
     template <> inline misc::symbol Renamer::new_name_compute(const ast::FunctionDec& e)
     {
+
         if (new_names_get().contains(&e))
         {
             return new_names_get().find((dynamic_cast<const ast::Dec*>(&e)))->second;
@@ -45,6 +48,7 @@ namespace bind
         if (dynamic_cast<const ast::Dec*>(&e) != nullptr)
             new_names_set(e, new_name);
 
+
         return new_name;
     }
 
@@ -53,8 +57,11 @@ namespace bind
         if (e.name_get() == "string" || e.name_get() == "int" )
             return e.name_get();
         misc::symbol new_name = misc::symbol::fresh(e.name_get());
+
+/*
         if (dynamic_cast<const ast::Dec*>(&e) != nullptr)
             new_names_set(e, new_name);
+*/
         return new_name;
     }
 
@@ -90,7 +97,10 @@ namespace bind
             e.name_set(new_names_get().find(def)->second);
 
         else
-            e.name_set(new_name_compute(e));
+        {
+            misc::symbol new_name = new_name_compute(def);
+            e.name_set(new_name);
+        }
         super_type::operator()(e);
     }
 
