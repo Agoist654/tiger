@@ -39,10 +39,26 @@ namespace type
   }
 
   // FIXME: Some code was deleted here (Special implementation of "compatible_with" for Record).
-  bool compatible_with(const Type& other) const
+  /*bool compatible_with(const Type& other) const
   {
       return this->actual() == other || other == nil; //soit l'autre type est egal,
                                                       //...soit il est nil
+  }*/
+  bool Record::compatible_with(const Type& other) const
+  {
+    if (other.is_record()) {
+      auto& other_record = dynamic_cast<const Record&>(other);
+      if (fields_.size() == other_record.fields_.size()) {
+        for (std::size_t i = 0; i < fields_.size(); ++i) {
+          if (fields_[i].name != other_record.fields_[i].name
+              || !fields_[i].type->compatible_with(*other_record.fields_[i].type)) {
+            return false;
+          }
+        }
+        return true;
+      }
+    }
+    return false;
   }
 
 } // namespace type
