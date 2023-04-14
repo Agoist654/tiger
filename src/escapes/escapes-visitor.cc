@@ -45,4 +45,17 @@ namespace escapes
             e.def_get()->escape_set(1);
         }
     }
+
+/*
+    void EscapesVisitor::operator()(ast::CallExp& e)
+    {
+
+        for (auto args : e.args_get())
+        {
+            if (vars_.find(e.def_get())->second != funvector_.back())
+                //std::cout << "simplevar set to 1:" << e.name_get()<< "\n";
+                e.def_get()->escape_set(1);
+        }
+    }
+*/
 } // namespace escapes
