@@ -38,6 +38,7 @@ namespace type
   void TypeChecker::type_set(NodeType& e, const type::Type* type)
   {
     // FIXME: Some code was deleted here (Basically e.type_set(type)).
+      e.type_set(type);
   }
 
   /*-----------------.
