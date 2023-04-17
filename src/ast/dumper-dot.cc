@@ -38,6 +38,7 @@ namespace ast
   void DumperDot::dump_type(const ast::Typable& e)
   {
     // FIXME: Some code was deleted here (Call node_html_field on a e.type_get() if exist).
+    node_html_field("type", e.type_get());
   }
 
   void DumperDot::operator()(const ArrayExp& e)
