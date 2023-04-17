@@ -111,6 +111,7 @@ namespace type
                      const Type& type1,
                      const std::string& exp2,
                      const Type& type2);
+
     void check_types(const ast::Ast& loc,
                      const std::string& exp1,
                      ast::Typable& type1,
