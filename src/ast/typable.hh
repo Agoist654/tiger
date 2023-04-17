@@ -23,7 +23,7 @@ namespace ast
     {
         // FIXME: Some code was deleted he
     public:
-        inline typable(type::Type* t);
+        inline Typable(type::Type* t);
         void setType(type::Type* t);
         type::Type* getType() const;
     private:

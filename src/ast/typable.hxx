@@ -10,7 +10,7 @@
 namespace ast
 {
   // FIXME: Some code was deleted here.
-  inline Typable::typable(type::Type* t): type_(t) {}
+  inline Typable::Typable(type::Type* t): type_(t) {};
   void Typable::setType(type::Type* t)
   {
        type_ = t;
