@@ -80,6 +80,15 @@ namespace bind
     void operator()(ast::TypeDec& e) override;
     void operator()(ast::ChunkList & e) override;
 
+    //void operator()(as::ClassTy& e) override;
+
+    //void operator()(ast::MethodChunk& e) override;
+    //void operator()(ast::MethodDec& e) override;
+
+    //void operator()(ast::MethodCallExp& e) override;
+    //void operator()(ast::ObjectExp& e) override;
+
+
 
     int nb_main = 0;
        // ---------------- //
