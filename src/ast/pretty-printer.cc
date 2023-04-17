@@ -92,7 +92,7 @@ namespace ast
       ostr_ << e.name_get();
 
       if (bindings_display(ostr_))
-        ostr_<< " /* " << e.def_get() << " */";
+        ostr_<< " /* " << e.def_get() << " */ ";
       ostr_ << "(";
       if (e.args_get() != nullptr)
           ostr_ << misc::separate(*e.args_get(), ",");
@@ -133,7 +133,7 @@ namespace ast
       {
           ostr_ << "function " << e.name_get();
           if (bindings_display(ostr_))
-              ostr_<< " /* " << &e << " */";
+              ostr_<< " /* " << &e << " */ ";
           ostr_ << "(" << misc::separate(e.formals_get(), ",") << ")";
       }
       else
@@ -252,7 +252,7 @@ namespace ast
           ostr_<< "var ";
 
       if (escapes_display(ostr_) && e.escape_get() == 1)
-          ostr_ << "/* escaping */ ";
+          ostr_ << " /* escaping */ ";
 
       ostr_ << e.name_get();
 
@@ -296,7 +296,7 @@ namespace ast
       {
           ostr_ << "method " << e.name_get();
           if (bindings_display(ostr_))
-              ostr_<< " /* " << &e << " */";
+              ostr_<< " /* " << &e << " */ ";
           ostr_ << "(" << misc::separate(e.formals_get(), ",") << ")";
       }
 
