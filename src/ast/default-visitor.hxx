@@ -62,10 +62,13 @@ namespace ast
   {
     // FIXME: Some code was deleted here.
     /*DONE*/
-      for (auto& v : *e.args_get())
-      {
-          v->accept(*this);
-      }
+    if(e.args_get())
+    {
+        for (auto& v : *e.args_get())
+        {
+            v->accept(*this);
+        }
+    }
   }
 
   template <template <typename> class Const>
