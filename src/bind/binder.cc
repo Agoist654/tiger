@@ -132,7 +132,7 @@ namespace bind
 
       else
       {
-          if (e.name_get() != "int" && e.name_get() != "string")
+          if (e.name_get() != "int" && e.name_get() != "string" && e.name_get() != "Object")
           {
               undeclared("undeclared type", e);
           }
@@ -189,7 +189,7 @@ namespace bind
   `-------------------*/
 
 
-  void Binder::operator()(ast::VarChunk& e)
+void Binder::operator()(ast::VarChunk& e)
   {
       chunk_visit(e);
   }
@@ -213,5 +213,34 @@ namespace bind
   {
       chunk_visit(e);
   }
+
+  /*--------------------.
+  | Visiting Objects.   |
+  `--------------------*/
+    
+
+    void Binder::operator()(ast::ObjectExp& e)
+    {
+        if(typescope_.get_back_map().contains(e.type_name_get()->name_get()))
+        {
+            e.def_set(typescope_.get_back_map().find(e.type_name_get()->name_get())->second);
+        }
+        else
+        {
+             //undeclared("undeclared class", e);
+
+        }
+    }
+
+    void Binder::operator()(ast::ClassTy& e)
+    {
+        classvector_.emplace_back(e.def_get());
+        operator()(e.super_get());
+        operator()(e.chunks_get());
+        classvector_.pop_back();
+
+
+    }
+
 
 } // namespace bind

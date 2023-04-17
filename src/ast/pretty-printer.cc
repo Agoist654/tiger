@@ -302,8 +302,7 @@ namespace ast
       if (e.body_get() != nullptr)
       {
           ostr_ << "method " << e.name_get();
-          if (bindings_display(ostr_))
-              ostr_<< " /* " << &e << " */";
+
           ostr_ << "(" << misc::separate(e.formals_get(), ",") << ")";
       }
 

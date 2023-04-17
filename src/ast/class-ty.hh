@@ -43,6 +43,15 @@ namespace ast
     const ChunkList& chunks_get() const;
     /// Return list of declarations.
     ChunkList& chunks_get();
+
+    /// Return definition site.
+    const TypeDec* def_get() const;
+    /// Return definition site.
+    TypeDec* def_get();
+    /// Set definition site.
+    void def_set(TypeDec*);
+    /** \} */
+
     /** \} */
 
   protected:
@@ -50,6 +59,8 @@ namespace ast
     NameTy* super_;
     /// List of declarations.
     ChunkList* chunks_;
+    TypeDec* def_ = nullptr;
+
   };
 } // namespace ast
 #include <ast/class-ty.hxx>
