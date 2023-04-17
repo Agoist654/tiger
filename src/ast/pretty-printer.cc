@@ -252,7 +252,7 @@ namespace ast
           ostr_<< "var ";
 
       if (escapes_display(ostr_) && e.escape_get() == 1)
-          ostr_ << "/* escaping */";
+          ostr_ << "/* escaping */ ";
 
       ostr_ << e.name_get();
 
