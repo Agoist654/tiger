@@ -316,6 +316,18 @@ namespace ast
 
   }
 
+  void PrettyPrinter::operator()(const MethodCallExp& e)
+  {
+      ostr_ << e.name_get();
+
+      if (bindings_display(ostr_))
+        ostr_<< " /* " << e.def_get() << " */";
+      ostr_ << "(";
+      if (e.args_get() != nullptr)
+          ostr_ << misc::separate(*e.args_get(), ",");
+      ostr_ << ")";
+  }
+
   
 
 } // namespace ast
