@@ -11,4 +11,5 @@ namespace ast
   // FIXME: Some code was deleted here.
 
   /// voir dans typable.hxx
+  Typable::Typable() {};
 } // namespace ast

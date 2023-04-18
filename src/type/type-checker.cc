@@ -20,6 +20,7 @@ namespace type
   const Type* TypeChecker::type(ast::Typable& e)
   {
     // FIXME: Some code was deleted here.
+      types_check(e);
   }
 
   const Record* TypeChecker::type(const ast::fields_type& e)
@@ -69,6 +70,12 @@ namespace type
   {
     // FIXME: Some code was deleted here (Check for type mismatch).
 
+   if (type1.compatible_with(type2))
+   {
+        error_ << ast <<exp2 << type2 << exp1 << type1;
+                //("expected type: " << type2 << "got: " << type1)
+   }
+
     // If any of the type is Nil, set its `record_type_` to the other type.
     if (!error_)
       {
@@ -86,6 +93,8 @@ namespace type
     type(type1);
     type(type2);
     // FIXME: Some code was deleted here (Check types).
+
+    check_type(ast, exp1, type1.type_get(), exp2, type2.type_get());
   }
 
   /*--------------------------.
@@ -135,6 +144,8 @@ namespace type
   void TypeChecker::operator()(ast::OpExp& e)
   {
     // FIXME: Some code was deleted here.
+
+      check_types(e.lhs_get(), e.rhs_get());
   }
 
   // FIXME: Some code was deleted here.

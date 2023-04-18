@@ -9,4 +9,9 @@
 namespace ast
 {
   // FIXME: Some code was deleted here.
+
+    TypeConstructor::TypeConstructor()
+    {
+    };
+
 } // namespace ast

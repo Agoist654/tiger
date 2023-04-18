@@ -11,4 +11,20 @@
 namespace ast
 {
   // FIXME: Some code was deleted here.
+
+    type::Type* type_get() const
+    {
+        return type_;
+    }
+
+    const type::Type* type_get() const 
+    {
+        return type_;
+    }
+
+    void type_set()
+    {
+        return type_;
+    }
+
 } // namespace ast

@@ -23,11 +23,11 @@ namespace ast
     {
         // FIXME: Some code was deleted here
     public:
-        Typable() = default;
-        inline Typable(type::Type* t);
+        Typable();
         void type_set(type::Type* t);
         type::Type* type_get() const;
-    private:
+        const type::Type* type_get() const;
+    protected:
         type::Type* type_;
     };
 } // namespace ast

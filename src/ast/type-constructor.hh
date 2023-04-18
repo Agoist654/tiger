@@ -18,14 +18,15 @@ namespace ast
   {
     // FIXME: Some code was deleted here.
     public:
-    TypeConstructor() = default;
-    TypeConstructor(type::Type* t) : type_(t) {}
-    type::Type* getType() const 
-    {
-        return type_;
-    }
-    private:
-    type::Type* type_;
+
+    TypeConstructor();
+    type::Type* typec_get() const;
+    const type::Type* typec_get() const;
+
+    void typec_set();
+
+    protected:
+    type::Type* typec_;
   };
 } // namespace ast
 #include <ast/type-constructor.hxx>

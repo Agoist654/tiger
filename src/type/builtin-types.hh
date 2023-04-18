@@ -11,7 +11,35 @@
 namespace type
 {
     // FIXME: Some code was deleted here (Other types : Int, String, Void)
-    class String:public  misc::Singleton<String>, public Type{};
-    class Int:public  misc::Singleton<Int>, public Type{};
-    class Void:public  misc::Singleton<Void>, public Type{};
+
+///String
+//
+    class String : public  misc::Singleton<String>
+                    , public Type
+    {
+
+    };
+
+///Int
+//
+    class Int : public  misc::Singleton<Int>
+                 , public Type
+    {
+        public:
+
+            ~Int();
+            void type_set(const type::Type*);
+
+        private:
+            const type::Type* type_;
+    };
+
+///Void
+//
+    class Void : public  misc::Singleton<Void>
+                  , public Type
+    {
+
+    };
+
 } // namespace type
