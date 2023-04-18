@@ -60,7 +60,8 @@ namespace ast
 
     void operator()(const MethodDec& e) override;
     void operator()(const ObjectExp& e) override;
-    void operator()(const ClassTy& e);
+    void operator()(const MethodCallExp& e) override;
+    void operator()(const ClassTy& e) override;
 
 
 

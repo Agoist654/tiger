@@ -26,8 +26,18 @@ namespace ast
 
       NameTy* type_name_get() const;
 
+      /// Return definition site.
+      TypeDec* def_get() ;
+      const TypeDec* def_get() const;
+      /// Set definition site.
+      void def_set(TypeDec*);
+      /** \} */
+
+
   protected:
       NameTy* type_name_;
+      TypeDec* def_ = nullptr;
+
   };
 } // namespace ast
 #include <ast/object-exp.hxx>

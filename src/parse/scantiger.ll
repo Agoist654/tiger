@@ -246,8 +246,8 @@ long ouais = 0;
 \\t {growing_string = growing_string + "\t";}
 \\v {growing_string = growing_string + "\v";}
 
-\\\\ {growing_string = growing_string + "\\";
-      growing_string = growing_string + "\\";}
+\\\\ {growing_string = growing_string + "\\\\";}
+      
 
 {space}       {
                 growing_string = growing_string + text();

@@ -118,11 +118,18 @@ namespace ast
   {
       ostr_ << "for ";
       if (bindings_display(ostr_))
-        ostr_<< " /* " << &e << " */ ";
-      ostr_ << e.vardec_get().name_get() << " := ";
+          ostr_<< " /* " << &e << " */ ";
+      ostr_ << e.vardec_get().name_get();
+
+      if (bindings_display(ostr_))
+          ostr_<< " /* " << e.vardec_get().def_get() << " */ ";
+
+      ostr_ << " := ";
       if (e.vardec_get().init_get() != nullptr)
-          ostr_ << *e.vardec_get().init_get() << " to ";
-          ostr_ << e.hi_get() << " do";
+          ostr_ << *e.vardec_get().init_get();
+
+      ostr_ << " to ";
+      ostr_ << e.hi_get() << " do";
           ostr_ << misc::incendl << e.body_get() << misc::incendl;
   }
 
@@ -297,6 +304,7 @@ namespace ast
           ostr_ << "method " << e.name_get();
           if (bindings_display(ostr_))
               ostr_<< " /* " << &e << " */ ";
+
           ostr_ << "(" << misc::separate(e.formals_get(), ",") << ")";
       }
 
@@ -307,6 +315,18 @@ namespace ast
       else
           ostr_ << misc::iendl;
 
+  }
+
+  void PrettyPrinter::operator()(const MethodCallExp& e)
+  {
+      ostr_ << e.name_get();
+
+      if (bindings_display(ostr_))
+        ostr_<< " /* " << e.def_get() << " */";
+      ostr_ << "(";
+      if (e.args_get() != nullptr)
+          ostr_ << misc::separate(*e.args_get(), ",");
+      ostr_ << ")";
   }
 
   

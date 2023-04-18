@@ -18,18 +18,18 @@ namespace bind
 
   void Renamer::operator()(ast::FunctionDec& e)
   {
-    visit(e, e.def_get());
+    visit(e, &e);
   }
 
 
   void Renamer::operator()(ast::TypeDec& e)
   {
-    visit(e, e.def_get());
+    visit(e, &e);
   }
 
   void Renamer::operator()(ast::VarDec& e)
   {
-    visit(e, e.def_get());
+    visit(e, &e);
   }
 
   void Renamer::operator()(ast::NameTy& e)

@@ -16,4 +16,11 @@ namespace ast
   inline const ChunkList& ClassTy::chunks_get() const { return *chunks_; }
   inline ChunkList& ClassTy::chunks_get() { return *chunks_; }
 
+  inline const TypeDec* ClassTy::def_get() const { return def_; }
+  inline TypeDec* ClassTy::def_get() { return def_; }
+  inline void ClassTy::def_set(TypeDec* def) { def_ = def; }
+
+  
+
+
 } // namespace ast

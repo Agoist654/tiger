@@ -14,42 +14,10 @@ namespace bind
 
     template <typename Def> inline misc::symbol Renamer::new_name_compute(const Def& e)
     {
-        misc::symbol new_name = misc::symbol::fresh(e.name_get());
+        misc::symbol new_name = misc::symbol::fresh(e->name_get());
         //if (dynamic_cast<const ast::Dec*>(&e) != nullptr)
-            new_names_set(e, new_name);
+            new_names_set(*e, new_name);
         return new_name;
-    }
-
-    template <> inline misc::symbol Renamer::new_name_compute(const ast::FunctionDec& e)
-    {
-        if (e.name_get() == "_main" || e.body_get() == nullptr) //TODO: add primitive case later
-            return e.name_get();
-        misc::symbol new_name = misc::symbol::fresh(e.name_get());
-        //if (dynamic_cast<const ast::Dec*>(&e) != nullptr)
-            new_names_set(e, new_name);
-        return new_name;
-    }
-    template <> inline misc::symbol Renamer::new_name_compute(const ast::NameTy& e)
-    {
-        if (e.name_get() == "string" || e.name_get() == "int" )
-            return e.name_get();
-        misc::symbol new_name = misc::symbol::fresh(e.name_get());
-        //if (dynamic_cast<const ast::Dec*>(&e) != nullptr)
-            new_names_set(e, new_name);
-        return new_name;
-    }
-
-
-    template <typename Def> inline misc::symbol Renamer::new_name(const Def& e)
-    {
-        if (dynamic_cast<const ast::Dec*>(&e) == nullptr)
-        {
-            if (new_names_get().contains(e.def_get()))
-            {
-                return new_names_get().find(e.def_get())->second;
-            }
-        }
-        return new_name_compute(e);
     }
 
     inline new_names_type Renamer::new_names_get()
@@ -67,10 +35,20 @@ namespace bind
     {
         // FIXME: Some code was deleted here.
 
-        e.name_set(new_name(e));
-        super_type::operator()(e);
-    }
+        if (new_names_get().contains(def))
+            e.name_set(new_names_get().find(def)->second);
 
+        else
+        {
+            if(def != nullptr)
+            {
+                misc::symbol new_name = new_name_compute(def);
+                e.name_set(new_name);
+            }
+        }
+        super_type::operator()(e);
+
+    }
     /*----------------------------.
       | Visiting /ChunkInterface/.  |
       `----------------------------*/

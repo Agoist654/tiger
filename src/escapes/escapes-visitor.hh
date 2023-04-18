@@ -56,6 +56,7 @@ namespace escapes
     void operator()(ast::SimpleVar& e) override;
     void operator()(ast::FunctionDec& e) override;
     void operator()(ast::VarDec& e) override;
+    //void operator()(ast::CallExp& e) override;
 
     // FIXME: Some code was deleted here.
 

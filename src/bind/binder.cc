@@ -23,6 +23,8 @@ namespace bind
   {
       // FIXME: Some code was deleted here.
 
+      auto tmp = forvector_;
+      forvector_.clear();
       if (e.name_get() == "_main" && nb_main == 1)
       {
           redefinition(*funscope_.get_back_map().find("_main")->second, e);
@@ -30,6 +32,7 @@ namespace bind
       if (nb_main == 0 && e.name_get() == "_main")
           nb_main = 1;
 
+      forvector_ = tmp;
   }
 
   /*----------------.
@@ -62,12 +65,17 @@ namespace bind
   // FIXME: Some code was deleted here.
   void Binder::operator()(ast::LetExp& e)
   {
+      auto tmp = forvector_;
+      forvector_.clear();
+
       // FIXME: Some code was deleted here.
       scope_begin();
       super_type::operator()(*e.decs_get());
       if (e.body_get())
       super_type::operator()(*e.body_get());
       scope_end();
+
+      forvector_ = tmp;
   }
 
   // FIXME: Some code was deleted here.
@@ -132,7 +140,7 @@ namespace bind
 
       else
       {
-          if (e.name_get() != "int" && e.name_get() != "string")
+          if (e.name_get() != "int" && e.name_get() != "string" && e.name_get() != "Object")
           {
               undeclared("undeclared type", e);
           }
@@ -144,12 +152,14 @@ namespace bind
 
   void Binder::operator()(ast::ForExp& e)
   {
+      scope_begin();
       e.def_set(&e);
       forvector_.emplace_back(&e);
-      operator()(e.vardec_get());
       operator()(e.hi_get());
+      operator()(e.vardec_get());
       super_type::operator()(e.body_get());
 
+      scope_end();
       forvector_.pop_back();
   }
 
@@ -187,7 +197,7 @@ namespace bind
   `-------------------*/
 
 
-  void Binder::operator()(ast::VarChunk& e)
+void Binder::operator()(ast::VarChunk& e)
   {
       chunk_visit(e);
   }
@@ -211,5 +221,34 @@ namespace bind
   {
       chunk_visit(e);
   }
+
+  /*--------------------.
+  | Visiting Objects.   |
+  `--------------------*/
+    
+
+    void Binder::operator()(ast::ObjectExp& e)
+    {
+        if(typescope_.get_back_map().contains(e.type_name_get()->name_get()))
+        {
+            e.def_set(typescope_.get_back_map().find(e.type_name_get()->name_get())->second);
+        }
+        else
+        {
+             //undeclared("undeclared class", e);
+
+        }
+    }
+
+    void Binder::operator()(ast::ClassTy& e)
+    {
+        classvector_.emplace_back(e.def_get());
+        operator()(e.super_get());
+        operator()(e.chunks_get());
+        classvector_.pop_back();
+
+
+    }
+
 
 } // namespace bind

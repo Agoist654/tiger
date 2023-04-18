@@ -80,6 +80,15 @@ namespace bind
     void operator()(ast::TypeDec& e) override;
     void operator()(ast::ChunkList & e) override;
 
+    void operator()(ast::ClassTy& e) override;
+
+    //void operator()(ast::MethodChunk& e) override;
+    //void operator()(ast::MethodDec& e) override;
+
+    //void operator()(ast::MethodCallExp& e) override;
+    void operator()(ast::ObjectExp& e) override;
+
+
 
     int nb_main = 0;
        // ---------------- //
@@ -170,6 +179,7 @@ namespace bind
     misc::scoped_map<misc::symbol, ast::TypeDec*> typescope_;
 
     std::vector<ast::Exp*> forvector_;
+    std::vector<ast::TypeDec*> classvector_;
     // FIXME/*DONE: Some code was deleted here (More members).
   };
 
