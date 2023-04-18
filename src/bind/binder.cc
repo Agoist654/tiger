@@ -23,6 +23,8 @@ namespace bind
   {
       // FIXME: Some code was deleted here.
 
+      auto tmp = forvector_;
+      forvector_.clear();
       if (e.name_get() == "_main" && nb_main == 1)
       {
           redefinition(*funscope_.get_back_map().find("_main")->second, e);
@@ -30,6 +32,7 @@ namespace bind
       if (nb_main == 0 && e.name_get() == "_main")
           nb_main = 1;
 
+      forvector_ = tmp;
   }
 
   /*----------------.
@@ -62,12 +65,17 @@ namespace bind
   // FIXME: Some code was deleted here.
   void Binder::operator()(ast::LetExp& e)
   {
+      auto tmp = forvector_;
+      forvector_.clear();
+
       // FIXME: Some code was deleted here.
       scope_begin();
       super_type::operator()(*e.decs_get());
       if (e.body_get())
       super_type::operator()(*e.body_get());
       scope_end();
+
+      forvector_ = tmp;
   }
 
   // FIXME: Some code was deleted here.

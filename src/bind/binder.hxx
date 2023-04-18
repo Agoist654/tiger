@@ -130,6 +130,7 @@ namespace bind
   template <>
   inline void Binder::visit_dec_header<ast::VarDec>(ast::VarDec& e)
   {
+      if (e.init_get() != nullptr)
       operator()(e.init_get());
       varscope_.put(e.name_get(), &e);
   }
