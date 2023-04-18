@@ -20,7 +20,8 @@ namespace type
   const Type* TypeChecker::type(ast::Typable& e)
   {
     // FIXME: Some code was deleted here.
-      types_check(e);
+      e.accept(*this);
+      return e.type_get();
   }
 
   const Record* TypeChecker::type(const ast::fields_type& e)
@@ -145,7 +146,7 @@ namespace type
   {
     // FIXME: Some code was deleted here.
 
-      check_types(e.lhs_get(), e.rhs_get());
+      check_types(e, "right operand type: ", e.lhs_get(), "left operand type: ", e.rhs_get());
   }
 
   // FIXME: Some code was deleted here.
