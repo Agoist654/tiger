@@ -125,9 +125,15 @@ namespace type
     created_type_default(e, nil_ptr.release());
   }
 
+    void TypeChecker::operator()(ast::ChunkList& e)
+    {
+        //instance();
+    }
+
   void TypeChecker::operator()(ast::IntExp& e)
   {
     // FIXME: Some code was deleted here.
+
   }
 
   void TypeChecker::operator()(ast::StringExp& e)

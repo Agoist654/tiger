@@ -20,13 +20,13 @@ namespace ast
     public:
 
     TypeConstructor();
-    type::Type* typec_get() const;
-    const type::Type* typec_get() const;
+    type::Type* type_constructor_get() const;
+    const type::Type* type_constructor_get() const;
 
-    void typec_set();
+    void type_constructor_set();
 
     protected:
-    type::Type* typec_;
+    type::Type* type_constructor_;
   };
 } // namespace ast
 #include <ast/type-constructor.hxx>
