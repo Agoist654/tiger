@@ -25,6 +25,40 @@ namespace desugar
   void DesugarVisitor::operator()(const ast::OpExp& e)
   {
     // FIXME: Some code was deleted here.
+    parse::Tweast in;
+    // && e.left_get().type_get()  && e.right_get().type_get() == 
+    if(desugar_string_cmp_p_)
+    {
+      
+       switch(e.oper_get())
+       {
+           case ast::OpExp::Oper::add:
+               in << "concat(" << e.left_get() << ", " << e.right_get() << ")";
+               break;
+           case ast::OpExp::Oper::eq:
+               in << "streq(" << e.left_get() << ", " << e.right_get() << ")";
+               break;
+           case ast::OpExp::Oper::ne:
+               in << "streq(" << e.left_get() << ", " << e.right_get() << ") = 0";
+               break;
+           case ast::OpExp::Oper::lt:
+                in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") = -1";
+               break;
+           case ast::OpExp::Oper::le:
+               in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") >= 0";
+               break;
+           case ast::OpExp::Oper::gt:
+               in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") > 1";
+               break;
+           case ast::OpExp::Oper::ge:
+               in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") >= 0";
+               break;
+
+       }
+       auto res = parse::parse(in);
+    }
+
+
   }
 
   /*----------------------.
@@ -69,7 +103,23 @@ namespace desugar
 
   void DesugarVisitor::operator()(const ast::ForExp& e)
   {
-    // FIXME: Some code was deleted here.
+    parse::Tweast in;
+    misc::symbol local_var = e.vardec_get().name_get();
+    if(desugar_for_p_)
+    {
+       in << "let\n";
+       in << "var _lo := " << *e.vardec_get().init_get() << "\n";
+       in << " var _hi := " << e.hi_get() << "\n";
+       in << " var " << local_var << " := _lo" << "\n";
+       in << "in\n";
+       in << "if " << local_var << " <= " << "_hi then\n";
+       in << "while 1 do \n( " << e.body_get() << ";" << "\n";
+       in << "if " << local_var << " = _hi then break;" << "\n";
+       in << local_var << " := " << local_var << " + 1 )  end";
+
+       auto res = parse::parse(in);
+    }
+
   }
 
 } // namespace desugar
