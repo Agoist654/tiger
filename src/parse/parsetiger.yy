@@ -372,8 +372,12 @@ chunks:
                                             auto tmp = tp.parse_import($2, @$);
                                            if (tmp != nullptr)
                                                 $$->splice_front(*tmp);
-                                            else 
-                                                tp.error_ << misc::error::error_type::failure << ": " << $2 << ": file not found.\n"; }
+                                            else
+                                                {
+                                                    tp.error_ << misc::error::error_type::failure << ": " << $2 << ": file not found.\n"; 
+                                                    tp.error_.exit();
+                                                }
+}
 
 /* A list of chunk metavariable */
 | "_chunks" "(" INT ")" chunks           { $$ = $5; $$->splice_front(*metavar<ast::ChunkList>(tp, $3)); }
