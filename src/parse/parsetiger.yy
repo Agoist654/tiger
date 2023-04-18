@@ -66,9 +66,10 @@
 
 %printer { yyo << $$; } <int> <std::string> <misc::symbol>;
 
-%token <std::string>    STRING "string"
-%token <misc::symbol>   ID     "identifier"
-%token <int>            INT    "integer"
+%token <std::string>    STRING   "string"
+%token <misc::symbol>   ID       "identifier"
+%token <misc::symbol>   RESERVED "reseved"
+%token <int>            INT      "integer"
 
 
 /*-----------------------------------------.

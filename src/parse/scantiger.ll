@@ -82,6 +82,7 @@ string          [a-zA-Z]+
 id              [a-zA-Z][a-zA-Z0-9_]*|"_main"
 space           [ \t]
 eol             \n\r|\r\n|\n|\r
+reserved        _[a-zA-Z0-9_]*
 
 %class{
 // FIXME: Some code was deleted here (Local variables).
@@ -101,6 +102,7 @@ long ouais = 0;
 "_lvalue" return TOKEN(LVALUE);
 "_chunks" return TOKEN(CHUNKS);
 "_namety" return TOKEN(NAMETY);
+
 
 "array"       return parser::make_ARRAY(tp.location_);
 "&"           return TOKEN(AND);
@@ -300,6 +302,7 @@ long ouais = 0;
             << "invalid character\n"                              
             << misc::escape(text()) << "\n";                 
 
+{reserved}         { CHECK_EXTENSION(); return TOKEN_VAL(ID, text());}
 {id}          return TOKEN_VAL(ID, text());
 <<EOF>>       return TOKEN(EOF      );
 %%
