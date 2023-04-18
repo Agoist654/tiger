@@ -130,13 +130,15 @@ namespace bind
   template <>
   inline void Binder::visit_dec_header<ast::VarDec>(ast::VarDec& e)
   {
+      operator()(e.init_get());
       varscope_.put(e.name_get(), &e);
   }
 
   template <>
       inline void Binder::visit_dec_body<ast::VarDec>(ast::VarDec& e)
-      { 
-          super_type::operator()(e);
+      {
+          if(e.type_name_get())
+            operator()(e.type_name_get());
       }
 } // namespace bind
 
