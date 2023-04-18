@@ -128,7 +128,7 @@ namespace ast
       if (e.vardec_get().init_get() != nullptr)
           ostr_ << *e.vardec_get().init_get();
 
-      ostr_ << "to";
+      ostr_ << " to ";
       ostr_ << e.hi_get() << " do";
           ostr_ << misc::incendl << e.body_get() << misc::incendl;
   }
