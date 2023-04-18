@@ -63,13 +63,13 @@ AC_CANONICAL_HOST
 case $host_os in
   (darwin*)
     AX_CHECK_COMPILE_FLAG([-std=c++20 -stdlib=libc++],
-                          [CXXFLAGS="$CXXFLAGS -std=c++20 -stdlib=libc++"
+                          [CXXFLAGS="$CXXFLAGS -std=c++20 -stdlib=libc++ -g -O0"
                            stdpass=true])
     ;;
 esac
 if ! "${stdpass-false}"; then
   AX_CHECK_COMPILE_FLAG([-std=c++20],
-                        [CXXFLAGS="$CXXFLAGS -std=c++20"
+                        [CXXFLAGS="$CXXFLAGS -std=c++20 -g -O0"
                          stdpass=true])
 fi
 

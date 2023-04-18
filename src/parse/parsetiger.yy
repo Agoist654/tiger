@@ -368,9 +368,12 @@ chunks:
 | tychunk chunks                         { $$ = $2; $$->push_front($1); }
 | funchunk chunks                        { $$ = $2; $$->push_front($1); }
 | varchunk chunks                        { $$ = $2; $$->push_front($1); }
-|"import" STRING chunks                  { $$ = $3; 
-                                           if (tp.parse_import($2, @$) != nullptr)
-$$->splice_front(*tp.parse_import($2, @$)); }
+|"import" STRING chunks                  { $$ = $3;
+                                            auto tmp = tp.parse_import($2, @$);
+                                           if (tmp != nullptr)
+                                                $$->splice_front(*tmp);
+                                            else 
+                                                tp.error_ << misc::error::error_type::failure << ": " << $2 << ": file not found.\n"; }
 
 /* A list of chunk metavariable */
 | "_chunks" "(" INT ")" chunks           { $$ = $5; $$->splice_front(*metavar<ast::ChunkList>(tp, $3)); }
