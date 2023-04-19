@@ -16,10 +16,10 @@ namespace misc
         Singleton(Singleton&&) = delete;
         Singleton& operator=(const Singleton&) = delete;
         Singleton& operator=(Singleton&/*&*/) = delete;
-        static const Singleton& instance()
+        static const T& instance()
         {
-            static /*T*/Singleton instance;
-            return instance;
+            static T* instance;
+            return *instance;
         }
 
     private:

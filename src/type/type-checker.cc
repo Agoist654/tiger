@@ -128,13 +128,13 @@ namespace type
   void TypeChecker::operator()(ast::IntExp& e)
   {
     // FIXME: Some code was deleted here.
-    type_default(e, &type::Int::instance());
+    type_default(e, &Int::instance());
   }
 
   void TypeChecker::operator()(ast::StringExp& e)
   {
     // FIXME: Some code was deleted here.
-     type_default(e, &type::String::instance())
+     type_default(e, &String::instance());
   }
 
   // Complex values.
