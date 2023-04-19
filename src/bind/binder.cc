@@ -25,12 +25,14 @@ namespace bind
 
       auto tmp = forvector_;
       forvector_.clear();
-      if (e.name_get() == "_main" && nb_main == 1)
+
+      if (e.name_get() == "_main" && Binder::nb_main == 1)
       {
           redefinition(*funscope_.get_back_map().find("_main")->second, e);
       }
+
       if (nb_main == 0 && e.name_get() == "_main")
-          nb_main = 1;
+          Binder::nb_main = 1;
 
       forvector_ = tmp;
   }
@@ -45,7 +47,6 @@ namespace bind
         varscope_.scope_begin();
         funscope_.scope_begin();
         typescope_.scope_begin();
-
 
   }
 
@@ -105,8 +106,11 @@ namespace bind
 
   void Binder::operator()(ast::VarDec& e)
   {
+      auto tmp = forvector_;
+      forvector_.clear();
       e.def_set(&e);
       varscope_.put(e.name_get(), &e);
+      forvector_ = tmp;
   }
 
   void Binder::operator()(ast::SimpleVar& e)
@@ -152,6 +156,7 @@ namespace bind
 
   void Binder::operator()(ast::ForExp& e)
   {
+
       scope_begin();
       e.def_set(&e);
       forvector_.emplace_back(&e);
@@ -191,6 +196,12 @@ namespace bind
         scope_begin();
         for ( auto& x : e.chunks_get())
             x->accept(*this);
+
+    if (nb_main != 1)
+    {
+        error_ << misc::error::error_type::bind << "undeclared main" << "\n";
+        error_.exit();
+    }
     }
   /*-------------------.
   | Visiting VarChunk. |

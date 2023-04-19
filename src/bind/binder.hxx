@@ -87,7 +87,6 @@ namespace bind
     {
         visit_dec_body(*dec);
     }
-
   }
 
 
@@ -99,8 +98,8 @@ namespace bind
       inline void Binder::visit_dec_header<ast::FunctionDec>(ast::FunctionDec& e)
       {
           // FIXME: Some code was deleted here.
-          check_main(e);
           funscope_.put(e.name_get(), &e);
+          check_main(e);
       }
 
   // Compute the bindings of this function's body.

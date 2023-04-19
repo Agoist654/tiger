@@ -90,7 +90,6 @@ namespace bind
 
 
 
-    int nb_main = 0;
        // ---------------- //
     // Visiting /Dec/.  //
     // ---------------- //
@@ -180,6 +179,7 @@ namespace bind
 
     std::vector<ast::Exp*> forvector_;
     std::vector<ast::TypeDec*> classvector_;
+    int nb_main = 0;
     // FIXME/*DONE: Some code was deleted here (More members).
   };
 
