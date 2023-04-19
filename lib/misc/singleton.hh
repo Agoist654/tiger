@@ -15,7 +15,7 @@ namespace misc
         Singleton(const Singleton&) = delete;
         Singleton(Singleton&&) = delete;
         Singleton& operator=(const Singleton&) = delete;
-        Singleton& operator=(Singleton&&) = delete;
+        Singleton& operator=(Singleton&/*&*/) = delete;
         static const Singleton& instance()
         {
             static T instance;

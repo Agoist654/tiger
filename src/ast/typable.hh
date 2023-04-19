@@ -24,8 +24,9 @@ namespace ast
         // FIXME: Some code was deleted here
     public:
         Typable();
+        Typable(type::Type* type);
         void type_set(type::Type* t);
-        type::Type* type_get() const;
+        //type::Type* type_get() const;
         const type::Type* type_get() const;
     protected:
         type::Type* type_;

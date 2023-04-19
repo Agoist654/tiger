@@ -20,10 +20,10 @@ namespace ast
     public:
 
     TypeConstructor();
-    type::Type* type_constructor_get() const;
+    //type::Type* type_constructor_get() const;
     const type::Type* type_constructor_get() const;
 
-    void type_constructor_set();
+    void type_constructor_set(type::Type* type);
 
     protected:
     type::Type* type_constructor_;

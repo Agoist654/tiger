@@ -25,13 +25,13 @@ namespace type
     class Int : public  misc::Singleton<Int>
                  , public Type
     {
-        public:
+        /*public:
 
             ~Int();
             void type_set(const type::Type*);
 
         private:
-            const type::Type* type_;
+            const type::Type* type_;*/
     };
 
 ///Void

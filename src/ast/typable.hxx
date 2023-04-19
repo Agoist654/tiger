@@ -15,7 +15,7 @@ namespace ast
   {
        type_ = t;
   }
-  inline type::Type* Typable::type_get() const
+  inline const type::Type* Typable::type_get() const
   {
        return type_;
   }

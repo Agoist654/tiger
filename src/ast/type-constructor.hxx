@@ -12,19 +12,19 @@ namespace ast
 {
   // FIXME: Some code was deleted here.
 
-    type::Type* type_constructor_get() const
+    /*type::Type* TypeConstructor::type_constructor_get() const
+    {
+        return type_constructor_;
+    }*/
+
+    const type::Type* TypeConstructor::type_constructor_get() const
     {
         return type_constructor_;
     }
 
-    const type::Type* type_constructor_get() const 
+    void TypeConstructor::type_constructor_set(type::Type* type)
     {
-        return type_constructor_;
-    }
-
-    void type_constructor_set()
-    {
-        return type_constructor_;
+        type_constructor_ = type;
     }
 
 } // namespace ast
