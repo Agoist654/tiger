@@ -95,7 +95,7 @@ namespace type
     type(type2);
     // FIXME: Some code was deleted here (Check types).
 
-    check_type(ast, exp1, type1.type_get(), exp2, type2.type_get());
+    check_types(ast, exp1, type1.type_get(), exp2, type2.type_get());
   }
 
   /*--------------------------.
@@ -125,22 +125,22 @@ namespace type
     created_type_default(e, nil_ptr.release());
   }
 
-    void TypeChecker::operator()(ast::ChunkList& e)
-    {
+  /*void TypeChecker::operator()(ast::ChunkList& e)
+  {
         //instance();
-    }
+  }*/
 
   void TypeChecker::operator()(ast::IntExp& e)
   {
     // FIXME: Some code was deleted here.
-    type_default(e, &Int::instance());
+    type_default(e, &Int.instance());
 
   }
 
   void TypeChecker::operator()(ast::StringExp& e)
   {
     // FIXME: Some code was deleted here.
-     type_default(e, &String::instance())
+     type_default(e, &String.instance())
   }
 
   // Complex values.
@@ -154,7 +154,7 @@ namespace type
   {
     // FIXME: Some code was deleted here.
 
-      check_types(e, "right operand type: ", e.lhs_get(), "left operand type: ", e.rhs_get());
+      check_types(e, "right operand type: ", e.left_get(), "left operand type: ", e.right_get());
   }
 
   // FIXME: Some code was deleted here.
