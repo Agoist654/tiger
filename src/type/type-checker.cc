@@ -20,8 +20,8 @@ namespace type
   const Type* TypeChecker::type(ast::Typable& e)
   {
     // FIXME: Some code was deleted here.
-///////      e.accept(*this);
-     ////////// return e.type_get();
+      //e.accept(*this);
+      return e.type_get();
   }
 
   const Record* TypeChecker::type(const ast::fields_type& e)
@@ -128,14 +128,13 @@ namespace type
   void TypeChecker::operator()(ast::IntExp& e)
   {
     // FIXME: Some code was deleted here.
-/////////////////    type_default(e, &Int.instance());
-
+    type_default(e, &type::Int::instance());
   }
 
   void TypeChecker::operator()(ast::StringExp& e)
   {
     // FIXME: Some code was deleted here.
-     //////////////////type_default(e, &String.instance())
+     type_default(e, &type::String::instance())
   }
 
   // Complex values.
