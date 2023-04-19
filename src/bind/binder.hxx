@@ -74,7 +74,7 @@ namespace bind
     {
         if (m.contains(dec->name_get()))
         {
-            //check_main(e);
+            //TODO: replace redefinition by insertion in overfun
             redefinition(*m.find(dec->name_get())->second, *dec);
             return;
         }

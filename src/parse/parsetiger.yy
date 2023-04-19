@@ -258,7 +258,7 @@ exp:
   | lvalue                              { $$ = $1; }
 
   /* Function call. */
-  | ID "(" ")"          { $$ = tp.td_.make_CallExp(@$, $1, nullptr); }
+  | ID "(" ")"          { $$ = tp.td_.make_CallExp(@$, $1, tp.td_.make_exps_type());; }
   | ID "(" list_exp ")" { $$ = tp.td_.make_CallExp(@$, $1, $3); }
 
     

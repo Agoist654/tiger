@@ -36,6 +36,8 @@ namespace bind
 
 
     template <typename Def> misc::symbol new_name_compute(const Def& e);
+
+
     //misc::symbol new_name_compute(const ast::Dec& e);
 
     /// \brief Get the new name of this declaration, possibly create it.

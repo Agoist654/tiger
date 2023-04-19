@@ -117,7 +117,7 @@ namespace bind
   {
       if (!varscope_.get_back_map().contains(e.name_get()))
       {
-          undeclared("undeclared var: ", e.name_get());
+          undeclared("undeclared var: ", e);
           return;
       }
 

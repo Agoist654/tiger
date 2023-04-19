@@ -37,6 +37,11 @@ namespace overload
   void Binder::operator()(ast::CallExp& e)
   {
     // FIXME: Some code was deleted here.
+    if (!funscope_.get_back_map().contains(e.name_get()))
+      {
+          undeclared("undeclared function:", e);
+      }
+
   }
 
   // Insert the prototype of the function in the environment.
@@ -49,7 +54,28 @@ namespace overload
   void Binder::operator()(ast::FunctionChunk& e)
   {
     // Two passes: once on headers, then on bodies.
-    // FIXME: Some code was deleted here.
+    // FIXME: Some code was deleted here.;
+    // FIXME: Some code was deleted here (Two passes: once on headers, then on bodies).
+    std::map<misc::symbol, ast::FunctionDec*> m;
+
+    for (auto& dec : e.decs_get())
+    {
+        if (m.contains(dec->name_get()))
+        {
+            //check_main(e);
+            redefinition(*m.find(dec->name_get())->second, *dec);
+            return;
+        }
+        m[dec->name_get()] = dec;
+        visit_dec_header(*dec);
+        //visit_dec_body(*dec);
+    }
+
+    for (auto& dec : e.decs_get())
+    {
+        visit_dec_body(*dec);
+    }
+
   }
 
 } // namespace overload

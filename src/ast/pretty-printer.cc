@@ -164,7 +164,7 @@ namespace ast
   }
   void PrettyPrinter::operator()(const IfExp& e)
   {
-      ostr_ << "if (" << *e.test_get() << ") then" << misc::incendl <<*e.thenclause_get() << misc::decendl;
+      ostr_ << "if (" << *e.test_get() << ") then" << misc::incendl <<*e.thenclause_get(); // misc::decendl;
       if (e.elseclause_get() != nullptr)
       {
           ostr_ << "else" << misc::incendl << *e.elseclause_get();
@@ -234,7 +234,12 @@ namespace ast
       if (!e.exps_get().empty())
       {
           if (e.exps_get().size() != 1)
-          ostr_ << "(" << misc::incendl << misc::separate(e.exps_get(), ";\n    ") << misc::resetindent << misc::incendl <<")";
+          {
+              ostr_ << "(" << misc::incendl ;
+              ostr_ << misc::separate(e.exps_get(), ";\n    ");
+              ostr_ << misc::resetindent ;
+              ostr_ << misc::incendl <<")";
+          }
           else
               ostr_ << misc::separate(e.exps_get(), ";\n");
       }
@@ -242,10 +247,11 @@ namespace ast
           ostr_ << misc::resetindent  << misc::incindent << misc::incendl << "()";
   }
 
-  void PrettyPrinter::operator()(const StringExp& e)
-  {
-      ostr_ << "\"" << misc::escape(e.value_get()) << "\"";
-  }
+
+void PrettyPrinter::operator()(const StringExp& e)
+{
+    ostr_ << "\"" << misc::escape(e.value_get()) << "\"";
+}
 
   void PrettyPrinter::operator()(const TypeDec& e)
   {

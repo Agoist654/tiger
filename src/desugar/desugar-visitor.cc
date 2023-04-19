@@ -55,7 +55,7 @@ namespace desugar
                break;
 
        }
-       auto res = parse::parse(in);
+       //result_ = parse::parse(in);
     }
 
 
@@ -117,7 +117,7 @@ namespace desugar
        in << "if " << local_var << " = _hi then break;" << "\n";
        in << local_var << " := " << local_var << " + 1 )  end";
 
-       auto res = parse::parse(in);
+       result_ = std::get<ast::Exp*>(parse::parse(in));
     }
 
   }

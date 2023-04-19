@@ -14,12 +14,25 @@ namespace bind
 
     template <typename Def> inline misc::symbol Renamer::new_name_compute(const Def& e)
     {
-        misc::symbol new_name = misc::symbol::fresh(e->name_get());
+        misc::symbol new_name = misc::symbol::fresh(e.name_get());
         //if (dynamic_cast<const ast::Dec*>(&e) != nullptr)
-            new_names_set(*e, new_name);
+            new_names_set(e, new_name);
         return new_name;
     }
+    template <> inline misc::symbol Renamer::new_name_compute(const ast::FunctionDec& e)
+    {
+        misc::symbol new_name = e.name_get();
+        //if (dynamic_cast<const ast::Dec*>(&e) != nullptr)
+        if(e.name_get().get().at(0) != '_' && e.body_get() != nullptr)
+        {
+           
+            new_name = misc::symbol::fresh(e.name_get());
+            //new_names_set(e, new_name);
+        }
+        new_names_set(e, new_name);
 
+        return new_name;
+    }
     inline new_names_type Renamer::new_names_get()
     {
         return new_names_;
@@ -42,7 +55,7 @@ namespace bind
         {
             if(def != nullptr)
             {
-                misc::symbol new_name = new_name_compute(def);
+                misc::symbol new_name = new_name_compute(*def);
                 e.name_set(new_name);
             }
         }

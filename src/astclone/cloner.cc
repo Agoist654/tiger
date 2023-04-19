@@ -56,7 +56,9 @@ namespace astclone
     // FIXED
     const Location& location = e.location_get();
     misc::symbol name = e.name_get();
-    exps_type* args = recurse_collection(*e.args_get());
+    exps_type* args = nullptr;
+    if(e.args_get())
+        args = recurse_collection(*e.args_get());
     result_ = new CallExp(location, name, args);
   }
 
