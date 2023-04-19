@@ -28,7 +28,7 @@ namespace ast
         void type_set(type::Type* t);
         //type::Type* type_get() const;
         const type::Type* type_get() const;
-        accept(ConstVisitor& v);
+        /*void accept(ConstVisitor& v);*/
     protected:
         type::Type* type_;
     };

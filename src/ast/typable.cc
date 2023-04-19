@@ -12,7 +12,7 @@ namespace ast
 
   /// voir dans typable.hxx
   Typable::Typable() {};
-    accept(ConstVisitor& v){
+    /*void Typable::accept(ConstVisitor& v){
         v(*this);
-    }
+    }*/
 } // namespace ast
