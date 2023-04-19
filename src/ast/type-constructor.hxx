@@ -17,12 +17,12 @@ namespace ast
         return type_constructor_;
     }*/
 
-    const type::Type* TypeConstructor::type_constructor_get() const
+    inline const type::Type* TypeConstructor::type_constructor_get() const
     {
         return type_constructor_;
     }
 
-    void TypeConstructor::type_constructor_set(type::Type* type)
+    inline void TypeConstructor::type_constructor_set(type::Type* type)
     {
         type_constructor_ = type;
     }
