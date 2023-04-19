@@ -18,7 +18,7 @@ namespace misc
         Singleton& operator=(Singleton&/*&*/) = delete;
         static const Singleton& instance()
         {
-            static T instance;
+            static /*T*/Singleton instance;
             return instance;
         }
 
