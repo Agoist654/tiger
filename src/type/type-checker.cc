@@ -20,8 +20,8 @@ namespace type
   const Type* TypeChecker::type(ast::Typable& e)
   {
     // FIXME: Some code was deleted here.
-      e.accept(*this);
-      return e.type_get();
+///////      e.accept(*this);
+     ////////// return e.type_get();
   }
 
   const Record* TypeChecker::type(const ast::fields_type& e)
@@ -70,13 +70,13 @@ namespace type
                                 const Type& type2)
   {
     // FIXME: Some code was deleted here (Check for type mismatch).
-
-   if (type1.compatible_with(type2))
-   {
-        error_ << ast <<exp2 << type2 << exp1 << type1;
-                //("expected type: " << type2 << "got: " << type1)
-   }
-
+/*
+*   if (type1.compatible_with(type2))
+*   {
+*        error_ << ast <<exp2 << type2 << exp1 << type1;
+*                //("expected type: " << type2 << "got: " << type1)
+*   }
+*/
     // If any of the type is Nil, set its `record_type_` to the other type.
     if (!error_)
       {
@@ -95,7 +95,7 @@ namespace type
     type(type2);
     // FIXME: Some code was deleted here (Check types).
 
-    check_types(ast, exp1, type1.type_get(), exp2, type2.type_get());
+////////////    check_types(ast, exp1, type1.type_get(), exp2, type2.type_get());
   }
 
   /*--------------------------.
@@ -125,22 +125,17 @@ namespace type
     created_type_default(e, nil_ptr.release());
   }
 
-  /*void TypeChecker::operator()(ast::ChunkList& e)
-  {
-        //instance();
-  }*/
-
   void TypeChecker::operator()(ast::IntExp& e)
   {
     // FIXME: Some code was deleted here.
-    type_default(e, &Int.instance());
+/////////////////    type_default(e, &Int.instance());
 
   }
 
   void TypeChecker::operator()(ast::StringExp& e)
   {
     // FIXME: Some code was deleted here.
-     type_default(e, &String.instance())
+     //////////////////type_default(e, &String.instance())
   }
 
   // Complex values.
