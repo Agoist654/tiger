@@ -69,6 +69,8 @@ namespace type
                                const Type& expected)
   {
     // FIXME: Some code was deleted here.
+    if (!expected.compatible_with(*e.type_get()))
+        type_mismatch(e, "got: ", *e.type_get(), "expected: ", expected);
   }
 
   /*------------.
@@ -80,7 +82,8 @@ namespace type
   {
     // FIXME: Some code was deleted here.
 
-      check_type(e, "expected function to return: ", *e.body_get()->type_get());
+      type(*e.body_get());
+      check_type(*e.body_get(), "expected function to return: ", *e.type_get());
   }
 
 } // namespace type
