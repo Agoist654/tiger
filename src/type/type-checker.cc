@@ -152,7 +152,9 @@ namespace type
   {
     // FIXME: Some code was deleted here.
 
-      check_types(e, "right operand type: ", e.left_get(), "left operand type: ", e.right_get());
+      type(e.left_get());
+      type(e.right_get());
+      check_types(e, "left operand type: ", e.left_get(), "right operand type: ", e.right_get());
   }
 
   // FIXME: Some code was deleted here.
@@ -198,6 +200,17 @@ namespace type
   void TypeChecker::operator()(ast::VarDec& e)
   {
     // FIXME: Some code was deleted here.
+      if (e.init_get() != nullptr)
+          type(*e.init_get());
+
+      if (e.type_name_get()->type_get() != nullptr)
+      {
+          type(*e.type_name_get());
+          check_types(e, "vardec expected type: ", *e.type_name_get()->type_get(), "got: ", *e.init_get()->type_get());
+      }
+
+      else
+          e.type_set(e.init_get()->type_get());
   }
 
   /*--------------------.
@@ -282,5 +295,23 @@ namespace type
   {
     // FIXME: Some code was deleted here.
   }
+
+
+  // MY_FIXME: Exp
+  void TypeChecker::operator()(ast::SeqExp& e)
+  {
+
+      if (e.exps_get().empty())
+          e.type_set(&Void::instance());
+      else
+      {
+          for (auto exp : e.exps_get())
+          {
+              type(*exp);
+              e.type_set(exp->type_get());
+          }
+      }
+    }
+
 
 } // namespace type
