@@ -15,6 +15,12 @@ namespace ast
   {
        type_ = t;
   }
+
+  inline void Typable::type_set(const type::Type* t)
+  {
+       type_ = t;
+  }
+
   inline const type::Type* Typable::type_get() const
   {
        return type_;

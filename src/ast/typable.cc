@@ -15,4 +15,5 @@ namespace ast
     /*void Typable::accept(ConstVisitor& v){
         v(*this);
     }*/
+
 } // namespace ast

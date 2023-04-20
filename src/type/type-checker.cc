@@ -20,7 +20,9 @@ namespace type
   const Type* TypeChecker::type(ast::Typable& e)
   {
     // FIXME: Some code was deleted here.
-      //e.accept(*this);
+      if (e.type_get() == nullptr)
+          e.accept(*this);
+      //super_type::operator()(e);
       return e.type_get();
   }
 
@@ -70,13 +72,15 @@ namespace type
                                 const Type& type2)
   {
     // FIXME: Some code was deleted here (Check for type mismatch).
-/*
-*   if (type1.compatible_with(type2))
-*   {
-*        error_ << ast <<exp2 << type2 << exp1 << type1;
-*                //("expected type: " << type2 << "got: " << type1)
-*   }
-*/
+
+  if (!type1.compatible_with(type2))
+  {
+    error_ << misc::error::error_type::type << ast.location_get()
+           << ": check type " << misc::incendl << exp1 << " type: " << type1
+           << misc::iendl << exp2 << " type: " << type2 << misc::decendl;
+               //("expected type: " << type2 << "got: " << type1)
+  }
+
     // If any of the type is Nil, set its `record_type_` to the other type.
     if (!error_)
       {
@@ -95,7 +99,7 @@ namespace type
     type(type2);
     // FIXME: Some code was deleted here (Check types).
 
-////////////    check_types(ast, exp1, type1.type_get(), exp2, type2.type_get());
+    check_types(ast, exp1, *type1.type_get(), exp2, *type2.type_get());
   }
 
   /*--------------------------.
@@ -224,6 +228,7 @@ namespace type
   template <> void TypeChecker::visit_dec_body<ast::TypeDec>(ast::TypeDec& e)
   {
     // FIXME: Some code was deleted here.
+
   }
 
   /*------------------.
@@ -233,7 +238,31 @@ namespace type
   template <class D> void TypeChecker::chunk_visit(ast::Chunk<D>& e)
   {
     // FIXME: Some code was deleted here.
+
+    // Shorthand.
+    using chunk_type = ast::Chunk<D>;
+    // FIXME: Some code was deleted here (Two passes: once on headers, then on bodies).
+    //std::map<misc::symbol, D*> m;
+
+    for (auto& dec : e.decs_get())
+    {
+        /*if (m.contains(dec->name_get()))
+        {
+            //check_main(e);
+            redefinition(*m.find(dec->name_get())->second, *dec);
+            return;
+        }*/
+        //m[dec->name_get()] = dec;
+        visit_dec_header(*dec);
+        //visit_dec_body(*dec);
+    }
+
+    for (auto& dec : e.decs_get())
+    {
+        visit_dec_body(*dec);
+    }
   }
+
 
   /*-------------.
   | Visit /Ty/.  |

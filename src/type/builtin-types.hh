@@ -18,6 +18,10 @@ namespace type
                     , public Type
     {
 
+    /// Accept a const visitor \a v.
+    void accept(ConstVisitor& v) const override;
+    /// Accept a non-const visitor \a v.
+    void accept(Visitor& v) override;
     };
 
 ///Int
@@ -25,6 +29,10 @@ namespace type
     class Int : public  misc::Singleton<Int>
                  , public Type
     {
+    /// Accept a const visitor \a v.
+    void accept(ConstVisitor& v) const override;
+    /// Accept a non-const visitor \a v.
+    void accept(Visitor& v) override;
         /*public:
 
             ~Int();
@@ -40,6 +48,10 @@ namespace type
                   , public Type
     {
 
+    /// Accept a const visitor \a v.
+    void accept(ConstVisitor& v) const override;
+    /// Accept a non-const visitor \a v.
+    void accept(Visitor& v) override;
     };
 
 } // namespace type

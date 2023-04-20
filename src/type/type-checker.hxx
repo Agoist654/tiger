@@ -26,6 +26,8 @@ namespace type
   void TypeChecker::type_default(NodeType& e, const type::Type* type)
   {
     // FIXME: Some code was deleted here.
+    if (e.type_get() == nullptr)
+        e.type_set(type);
   }
 
   template <typename NodeType>
@@ -77,6 +79,8 @@ namespace type
   void TypeChecker::visit_routine_body(Routine_Node& e)
   {
     // FIXME: Some code was deleted here.
+
+      check_type(e, "expected function to return: ", *e.body_get()->type_get());
   }
 
 } // namespace type
