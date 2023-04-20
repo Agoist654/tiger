@@ -48,17 +48,17 @@ namespace type
   }
 
   // FIXME: Some code was deleted here (Find common super class).
-  ///DONE
+  ///ONGOING
   /*const Class* common_root(const Class& other) const
   {
-      Class* tracker = this;
+      Class* tracker = super_get();
       std::set<Class*> supers;
       while (tracker != nullptr)
       {
           supers.insert(tracker->super_get());
           tracker = tracker->super_get();
       }
-      tracker = &*other;
+      tracker = &other;
       while (supers.insert(tracker).second)
           tracker = tracker->super_get();
       return tracker;
@@ -90,7 +90,23 @@ namespace type
   const Class& Class::object_instance()
   {
     // FIXME: Some code was deleted here.
-    ///
+      class Object : public Class
+      {
+      public:
+          Object(const Object&) = delete;
+          Object(Object&&) = delete;
+          Object& operator=(const Object&) = delete;
+          Object& operator=(Object&/*&*/) = delete;
+          static const Object& instance()
+          {
+              static Object* instance;
+              return *instance;
+          }
+
+      private:
+          Object() = default;
+      };
+      return Object::instance();
   }
 
   unsigned Class::fresh_id()

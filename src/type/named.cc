@@ -37,7 +37,18 @@ namespace type
   {
     // FIXME: Some code was deleted here (Sound).
     ///?????
-    return type_ != nullptr;
+    std::set<const Type*> names;
+    const Named* cur = this;
+    while (cur == dynamic_cast<const Named*>(cur))
+    {
+        if (!names.insert(cur->type_get()).second)
+            return false;
+        const Named* uptype = dynamic_cast<const Named*>(cur->type_get());
+        if (uptype != cur->type_get())
+            break;
+        cur = &*uptype;
+    }
+    return true;
   }
 
   bool Named::compatible_with(const Type& other) const
