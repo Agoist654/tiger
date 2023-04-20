@@ -256,12 +256,14 @@ long ouais = 0;
 
 \\[0-7]{3} {
     ouais += strtol(text() + 1, 0, 8);
+
     if (ouais > 255)
         tp.error_ << misc::error::error_type::scan       
         << tp.location_                                  
         << "wrong octal\n"                               
         << misc::escape(text()) << "\n";                 
-    start(INITIAL);
+    ouais = 0;
+    growing_string = growing_string + text();
 }
 
 \\x[0-9a-fA-F]{2}  {
