@@ -275,6 +275,13 @@ namespace type
   {
     // FIXME: Some code was deleted here.
 
+      auto type = ast::TypeConstructor();
+
+      if (e.ty_get().type_get() != nullptr)
+          auto named = Named(e.name_get());
+      else
+          auto named = Named(e.name_get(), e.ty_get().type_get());
+
   }
 
   /*------------------.
