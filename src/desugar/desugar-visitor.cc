@@ -55,7 +55,8 @@ namespace desugar
                break;
 
        }
-       //result_ = parse::parse(in);
+       result_ = std::get<ast::Exp*>(parse::parse(in));
+
     }
 
 
