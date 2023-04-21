@@ -83,7 +83,7 @@ namespace bind
     void operator()(ast::ClassTy& e) override;
 
     //void operator()(ast::MethodChunk& e) override;
-    //void operator()(ast::MethodDec& e) override;
+    void operator()(ast::MethodDec& e) override;
 
     //void operator()(ast::MethodCallExp& e) override;
     void operator()(ast::ObjectExp& e) override;

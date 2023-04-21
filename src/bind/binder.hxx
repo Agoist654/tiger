@@ -102,6 +102,7 @@ namespace bind
           check_main(e);
       }
 
+
   // Compute the bindings of this function's body.
   template <>
       inline void Binder::visit_dec_body<ast::FunctionDec>(ast::FunctionDec& e)
@@ -131,7 +132,10 @@ namespace bind
   {
       if (e.init_get() != nullptr)
       operator()(e.init_get());
-      varscope_.put(e.name_get(), &e);
+      if(classvector_.empty())
+      {
+        varscope_.put(e.name_get(), &e);
+      }
   }
 
   template <>

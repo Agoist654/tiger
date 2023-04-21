@@ -109,19 +109,25 @@ namespace bind
       auto tmp = forvector_;
       forvector_.clear();
       e.def_set(&e);
-      varscope_.put(e.name_get(), &e);
+      //varscope_.put(e.name_get(), &e);
       forvector_ = tmp;
+      if(classvector_.empty())
+        varscope_.put(e.name_get(), &e);
   }
 
   void Binder::operator()(ast::SimpleVar& e)
   {
       if (!varscope_.get_back_map().contains(e.name_get()))
       {
-          undeclared("undeclared var: ", e);
-          return;
+          if(classvector_.empty())
+          {
+            undeclared("undeclared var: ", e.name_get());
+            return;
+            }
       }
 
-      e.def_set(varscope_.get_back_map().find(e.name_get())->second);
+      else
+        e.def_set(varscope_.get_back_map().find(e.name_get())->second);
   }
 
   void Binder::operator()(ast::IfExp& e)
@@ -240,7 +246,7 @@ void Binder::operator()(ast::VarChunk& e)
 
     void Binder::operator()(ast::ObjectExp& e)
     {
-        if(typescope_.get_back_map().contains(e.type_name_get()->name_get()))
+        /*if(typescope_.get_back_map().contains(e.type_name_get()->name_get()))
         {
             e.def_set(typescope_.get_back_map().find(e.type_name_get()->name_get())->second);
         }
@@ -248,7 +254,8 @@ void Binder::operator()(ast::VarChunk& e)
         {
              //undeclared("undeclared class", e);
 
-        }
+        }*/
+        operator()(e.type_name_get());
     }
 
     void Binder::operator()(ast::ClassTy& e)
@@ -260,6 +267,24 @@ void Binder::operator()(ast::VarChunk& e)
 
 
     }
+
+
+  void Binder::operator()(ast::MethodDec& e)
+  {
+        check_main(e);
+        scope_begin();
+        std::cout << "HELLO";
+        operator()(e.formals_get());
+        operator()(e.result_get());
+        operator()(e.body_get());
+
+
+        scope_end();
+
+  }
+
+    
+
 
 
 } // namespace bind
