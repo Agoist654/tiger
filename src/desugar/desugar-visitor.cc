@@ -58,6 +58,8 @@ namespace desugar
        result_ = std::get<ast::Exp*>(parse::parse(in));
 
     }
+    else
+        super_type::operator()(e);
 
 
   }
@@ -120,6 +122,9 @@ namespace desugar
 
        result_ = std::get<ast::Exp*>(parse::parse(in));
     }
+    else
+        super_type::operator()(e);
+
 
   }
 
