@@ -6,6 +6,7 @@
 
 #include <type/fwd.hh>
 #include <type/type.hh>
+#include <type/visitor.hh>
 
 namespace type
 {
@@ -14,7 +15,8 @@ namespace type
 	{
 		// FIXME: Some code was deleted here.
 		public:
-			Type arrtype_get();
+            Array() = default;
+			Type& arrtype_get();
 			void arrtype_set(const Type& type);
 			bool compatible_with(const Type& other) const override;
 			void accept(ConstVisitor& v) const override;

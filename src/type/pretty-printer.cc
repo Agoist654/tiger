@@ -75,25 +75,35 @@ namespace type
   void PrettyPrinter::operator()(const Named& e)
   {
     // FIXME: Some code was deleted here.
-      ostr_ << e.name_get() << " : " << e.type_get();
+      ostr_ << "Named type: " << e.name_get();
   }
 
   void PrettyPrinter::operator()(const Array& e)
   {
     // FIXME: Some code was deleted here.
-    ostr_ << "Array of " << e.arrtype_get();
+    ostr_ << "Array";
   }
 
   void PrettyPrinter::operator()(const Record& e)
   {
     // FIXME: Some code was deleted here.
-    ostr_ << "Record with fields : " << e.fields_get();
+    ostr_ << "Record with fields : ";
+    for (const Field& field : e.fields_get())
+        ostr_ << field << " ";
   }
 
   void PrettyPrinter::operator()(const Class& e)
   {
     // FIXME: Some code was deleted here.
-    ostr_ << "Class with id " << e.id_get();
+    ostr_ << "Class:\n-id: " << e.id_get() << "\n-subclasses: ";
+    int subs = 0;
+    for (const Class* sub : e.subclasses_get())
+    {
+        ostr_ << "\n--subclass with id " << sub->id_get() << "\n";
+        subs++;
+    }
+    if (!subs)
+        ostr_ << "None\n";
   }
 
   void PrettyPrinter::operator()(const Function& e)

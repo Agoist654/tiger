@@ -11,11 +11,11 @@ namespace ast
 {
   // FIXME: Some code was deleted here.
   inline Typable::Typable(type::Type* t): type_(t) {};
-  void Typable::setType(type::Type* t)
+  inline void Typable::type_set(type::Type* t)
   {
        type_ = t;
   }
-  type::Type* Typable::getType() const
+  inline type::Type* Typable::type_get() const
   {
        return type_;
   }

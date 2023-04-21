@@ -16,17 +16,17 @@ namespace type {
     void Record::accept(Visitor &v) { v(*this); }
 
     // FIXME: Some code was deleted here (Field manipulators).
-    const Type *field_type(misc::symbol key) const {
-        for (Field &field: fields_) {
+    const Type* Record::field_type(misc::symbol key) const {
+        for (const Field& field: fields_) {
             if (field.name_get() == key)
-                return field.type_get().actual();
+                return &field.type_get();
         }
         return nullptr;
     }
 
-    int field_index(misc::symbol key) const {
+    int Record::field_index(misc::symbol key) const {
         int index = 0;
-        for (Field &field: fields_) {
+        for (const Field& field: fields_) {
             if (field.name_get() == key)
                 return index;
             index++;
@@ -44,12 +44,12 @@ namespace type {
         Nil nil;
         if (other == nil)
             return true;
-        Record& other_record = dynamic_cast<const Record&>(other);
+        const Record& other_record = dynamic_cast<const Record&>(other);
         if (other_record == other) {
             if (fields_.size() == other_record.fields_.size()) {
                 for (std::size_t i = 0; i < fields_.size(); ++i) {
-                    if (fields_[i].name_get() != other_record.fields_[i].name_get())
-                        || !fields_[i].type->compatible_with(*other_record.fields_[i].type_get())) {
+                    if (fields_[i].name_get() != other_record.fields_[i].name_get()
+                        || !fields_[i].type_get().compatible_with(other_record.fields_[i].type_get())) {
                         return false;
                     }
                 }

@@ -18,6 +18,7 @@ namespace ast
   {
     // FIXME: Some code was deleted here.
     public:
+    TypeConstructor() = default;
     TypeConstructor(type::Type* t) : type_(t) {}
     type::Type* getType() const 
     {

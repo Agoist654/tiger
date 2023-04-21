@@ -9,4 +9,6 @@
 namespace ast
 {
   // FIXME: Some code was deleted here.
+
+  /// voir dans typable.hxx
 } // namespace ast

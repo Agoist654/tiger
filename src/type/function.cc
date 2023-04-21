@@ -27,9 +27,12 @@ namespace type
 
   // FIXME: Some code was deleted here.
   ///*DONE*/
-  bool compatible_with(const Type& other) const
+  bool Function::compatible_with(const Type& other) const
   {
-      return this->result_get() == other.result_get();
+      const Function& other_fun = dynamic_cast<const Function&>(other);
+      if (other_fun != other)
+          return false;
+      return result_ == other_fun.result_get();
   }
 
 

@@ -33,7 +33,7 @@ namespace type
   {}
 
   template <template <typename> class Const>
-  void GenDefaultVisitor<Const>::operator()(const_t<String>&)
+  inline void GenDefaultVisitor<Const>::operator()(const_t<String>&)
   {}
 
   template <template <typename> class Const>

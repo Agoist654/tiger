@@ -29,10 +29,10 @@ namespace type
      * meths_ est std::vector<const Method*>
      * subclasses_ est std::vector<const Class*> */
     ///DONE
-    for (Attribute att : this->attrs_get())
+    for (const Attribute att : this->attrs_get())
     {
         if (att.name_get() == key)
-            return att.type_get();
+            return &att.type_get();
     }
   }
 
@@ -40,16 +40,16 @@ namespace type
   {
     // FIXME: Some code was deleted here.
     ///DONE
-      for (Method* met : this->meths_get())
+      for (const Method* met : this->meths_get())
       {
           if (met->name_get() == key)
-              return met->type_get();
+              return &met->type_get();
       }
   }
 
   // FIXME: Some code was deleted here (Find common super class).
   ///DONE
-  const Class* common_root(const Class& other) const
+  /*const Class* common_root(const Class& other) const
   {
       Class* tracker = this;
       std::set<Class*> supers;
@@ -62,13 +62,13 @@ namespace type
       while (supers.insert(tracker).second)
           tracker = tracker->super_get();
       return tracker;
-  }
+  }*/
 
   // FIXME: Some code was deleted here (Super class soundness test).
   ///DONE
-  bool sound() const
+  bool Class::sound() const
   {
-      for (Class* sub : this->subclasses_get())
+      for (const Class* sub : subclasses_get())
       {
           if (sub == this)
               return false;
@@ -78,13 +78,13 @@ namespace type
 
   // FIXME: Some code was deleted here (Special implementation of "compatible_with" for Class).
   ///DONE
-  bool compatible_with(const Type& other)
+  bool Class::compatible_with(const Type& other) const
   {
       ///return this->id_get() == other.id_get(); ///pas bon, corriger dans record d'abord
-      Class& other_class = dynamic_cast<const Class&>(other);
+      const Class& other_class = dynamic_cast<const Class&>(other);
       if (other_class != other)
           return false;
-      return this->subclasses_get() == other.subclasses_get();
+      return subclasses_ == other_class.subclasses_get();
   }
 
   const Class& Class::object_instance()

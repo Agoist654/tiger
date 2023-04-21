@@ -27,9 +27,9 @@ namespace type
 
   // FIXME: Some code was deleted here.
   ///DONE
-  bool compatible_with(const Type& other) const
+  bool Method::compatible_with(const Type& other) const
   {
-      return this->type_get().actual() == other;
+      return type_get().actual() == other;
   }
 
 } // namespace type

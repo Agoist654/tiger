@@ -21,11 +21,12 @@ namespace ast
 
     class Typable
     {
-        // FIXME: Some code was deleted he
+        // FIXME: Some code was deleted here
     public:
+        Typable() = default;
         inline Typable(type::Type* t);
-        void setType(type::Type* t);
-        type::Type* getType() const;
+        void type_set(type::Type* t);
+        type::Type* type_get() const;
     private:
         type::Type* type_;
     };

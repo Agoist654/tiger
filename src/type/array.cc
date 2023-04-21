@@ -4,14 +4,13 @@
  */
 
 #include <type/array.hh>
-#include <type/visitor.hh>
 
 namespace type
 {
   // FIXME: Some code was deleted here.
-  bool Array::compatible_with(const Type& other)
+  bool Array::compatible_with(const Type& other) const
   {
-      return this->actual() == other;
+      return *arrtype_ == other;
   }
 
 } // namespace type
