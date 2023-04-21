@@ -238,7 +238,7 @@ namespace type
       if (e.type_name_get()->type_get() != nullptr)
       {
           type(*e.type_name_get());
-          check_types(e, "vardec expected type: ", *e.type_name_get()->type_get(), "got: ", *e.init_get()->type_get());
+          check_types(e, "vardec expected type: ", *e.type_name_get()/*->type_get()*/, "got: ", *e.init_get()/*->type_get()*/);
       }
 
       else
@@ -358,12 +358,13 @@ namespace type
 
   void TypeChecker::operator()(ast::IfExp& e)
   {
-      if 
 
-      if (e.else_clause_get() == nullptr)
-          e.else_clause_get()->type_set(&Void::instance());
+      //check_types de test -> int
 
-      check_types(e, "then type: ", e.left_get(), "else type: ", e.right_get());
+      if (e.elseclause_get() == nullptr)
+          e.elseclause_get()->type_set(&Void::instance());
+
+      check_types(e, "then type: ", *e.test_get(), "else type: ", *e.elseclause_get());
   }
 
 
