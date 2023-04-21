@@ -169,6 +169,7 @@ namespace type
     // FIXME: Some code was deleted here (Other Exp nodes).
 
     void operator()(ast::SeqExp& e) override;
+    void operator()(ast::IfExp& e) override;
 
     // ---------------- //
     // Visiting /Dec/.  //

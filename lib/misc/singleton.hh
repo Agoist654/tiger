@@ -15,14 +15,15 @@ namespace misc
         Singleton(const Singleton&) = delete;
         Singleton(Singleton&&) = delete;
         Singleton& operator=(const Singleton&) = delete;
-        Singleton& operator=(Singleton&/*&*/) = delete;
+        Singleton& operator=(Singleton&) = delete;
         static const T& instance()
         {
-            static T* instance;
+
+            static T* instance = new T;
             return *instance;
         }
 
-    private:
+    protected:
         Singleton() = default;
     };
 

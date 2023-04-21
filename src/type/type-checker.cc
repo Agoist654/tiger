@@ -151,10 +151,34 @@ namespace type
   void TypeChecker::operator()(ast::OpExp& e)
   {
     // FIXME: Some code was deleted here.
-
+      e.type_set(&Int::instance());
       type(e.left_get());
       type(e.right_get());
+
       check_types(e, "left operand type: ", e.left_get(), "right operand type: ", e.right_get());
+
+      if (dynamic_cast<ast::IntExp*>(&e.left_get()) != nullptr && dynamic_cast<ast::IntExp*>(&e.right_get()) != nullptr)
+      {
+          //le && ne sert a r mais whatever
+          return;
+      }
+
+      if (dynamic_cast<ast::StringExp*>(&e.left_get()) != nullptr && dynamic_cast<ast::StringExp*>(&e.right_get()) != nullptr)
+      {
+          if (e.oper_get() == ast::OpExp::Oper::eq || e.oper_get() == ast::OpExp::Oper::ne)
+          {
+              check_type(e.left_get(), "left operand is a string can't be op with artimetiaue op", *e.type_get());
+              check_type(e.right_get(), "right opreand is a string can't be op with artimetiaue op", *e.type_get());
+          }
+      }
+
+/*
+      if (e.oper_get() == ast::OpExp::Oper::add || e.oper_get() == ast::OpExp::Oper::sub || e.oper_get() == ast::OpExp::Oper::mul || e.oper_get() == ast::OpExp::Oper::div)
+      {
+          check_type(e.left_get(), "op arthm with left operand not a int", &Int::instance());
+          check_type(e.right_get(), "op arthm with right operand not a int", &Int::instance());
+      }
+*/
   }
 
   // FIXME: Some code was deleted here.
@@ -183,6 +207,14 @@ namespace type
   void TypeChecker::visit_dec_header<ast::FunctionDec>(ast::FunctionDec& e)
   {
     // FIXME: Some code was deleted here.
+
+          e.formals_get().accept(*this);
+          if(e.result_get())
+            e.result_get()->accept(*this);
+          else
+          {
+              e.type_set(&Void::instance());
+          }
   }
 
   // Type check this function's body.
@@ -235,6 +267,7 @@ namespace type
     // name in E.  A declaration has no type in itself; here we store
     // the type declared by E.
     // FIXME: Some code was deleted here.
+
   }
 
   // Bind the type body to its name.
@@ -284,6 +317,16 @@ namespace type
   void TypeChecker::operator()(ast::NameTy& e)
   {
     // FIXME: Some code was deleted here (Recognize user defined types, and built-in types).
+
+      if (e.name_get().get() == "int")
+          type_default(e, &Int::instance());
+      if (e.name_get().get() == "string")
+          type_default(e, &String::instance());
+
+      else
+      {
+          e.type_set(e.def_get()->type_get());
+      }
   }
 
   void TypeChecker::operator()(ast::RecordTy& e)
@@ -312,6 +355,16 @@ namespace type
           }
       }
     }
+
+  void TypeChecker::operator()(ast::IfExp& e)
+  {
+      if 
+
+      if (e.else_clause_get() == nullptr)
+          e.else_clause_get()->type_set(&Void::instance());
+
+      check_types(e, "then type: ", e.left_get(), "else type: ", e.right_get());
+  }
 
 
 } // namespace type
