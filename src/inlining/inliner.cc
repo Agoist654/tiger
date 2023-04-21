@@ -45,5 +45,19 @@ namespace inlining
   }
 
   // FIXME: Some code was deleted here.
+   void Inliner::operator()(const ast::CallExp& e)
+   {  
+        parse::Tweast in;
+        //result_ = parse::parse(in);
+   }
+   void Inliner::operator()(const ast::FunctionChunk& e)
+   {
+        super_type::operator()(e);
+   }
+    void Inliner::operator()(const ast::FunctionDec& e)
+    {
+
+    }
+
 
 } // namespace inlining

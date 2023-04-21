@@ -32,7 +32,10 @@ namespace callgraph
 
   void CallGraphVisitor::operator()(const ast::CallExp& e)
   {
-    // FIXME: Some code was deleted here (Link the Caller with the CallExp's declaration).
+    // FIXME: Some code was deleted here (Link the Caller with the CallExp's declaration)
+    callgraph->fundec_link(caller, const_cast<ast::FunctionDec*>(e.def_get()));
+
+    
   }
 
   void CallGraphVisitor::operator()(const ast::FunctionChunk& e)
