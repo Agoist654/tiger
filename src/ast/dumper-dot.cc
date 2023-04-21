@@ -7,6 +7,7 @@
 #include <ast/dumper-dot.hh>
 #include <misc/indent.hh>
 #include <misc/symbol.hh>
+#include <type/pretty-printer.hh>
 
 namespace ast
 {
@@ -34,11 +35,18 @@ namespace ast
     : ostr_(ostr)
   {}
 
+  void DumperDot::dump_type(const ast::Typable& e)
+  {
+    // FIXME: Some code was deleted here (Call node_html_field on a e.type_get() if exist).
+  }
+
   void DumperDot::operator()(const ArrayExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "ArrayExp");
     // FIXME: Some code was deleted here (node_html_ports with properties)
     node_html_ports({"type_name", "size", "init"});
+    dump_type(e);
+    // FIXME: Some code was deleted here (node_html_ports with properties).
     footer_and_link(old_parent_id);
     // FIXME: Some code was deleted here (dump).
     dump("type_name", e.Type_name_get());
@@ -51,6 +59,7 @@ namespace ast
   void DumperDot::operator()(const ArrayTy& e)
   {
     unsigned long old_parent_id = node_html_header(e, "ArrayTy");
+    dump_type(e);
     node_html_ports({"base_type"});
     footer_and_link(old_parent_id);
     dump("base_type", e.base_type_get());
@@ -60,6 +69,7 @@ namespace ast
   void DumperDot::operator()(const AssignExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "AssignExp");
+    dump_type(e);
     // FIXME: Some code was deleted here (node_html_ports with properties).
     node_html_ports({"var", "exp"});
     footer_and_link(old_parent_id);
@@ -72,6 +82,7 @@ namespace ast
   void DumperDot::operator()(const BreakExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "BreakExp");
+    dump_type(e);
     node_html_ports({"def"});
     footer_and_link(old_parent_id);
     dump_def(e);
@@ -81,6 +92,7 @@ namespace ast
   void DumperDot::operator()(const CallExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "CallExp");
+    dump_type(e);
     // FIXME: Some code was deleted here (node_html_field).
     node_html_field("name", e.name_get());
     node_html_ports();
@@ -100,6 +112,7 @@ namespace ast
   void DumperDot::operator()(const CastExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "CastExp");
+    dump_type(e);
     node_html_ports({"exp", "ty"});
     footer_and_link(old_parent_id);
     dump("exp", e.exp_get());
@@ -110,6 +123,7 @@ namespace ast
   void DumperDot::operator()(const ClassTy& e)
   {
     unsigned long old_parent_id = node_html_header(e, "ClassTy");
+    dump_type(e);
     node_html_ports({"super", "chunks"});
     footer_and_link(old_parent_id);
     dump("super", e.super_get());
@@ -140,6 +154,7 @@ namespace ast
   void DumperDot::operator()(const FieldVar& e)
   {
     unsigned long old_parent_id = node_html_header(e, "FieldVar");
+    dump_type(e);
     // FIXME: Some code was deleted here (node_html_field).
     node_html_field("name", e.name_get());
     // FIXME: Some code was deleted here (node_html_ports with properties).
@@ -153,6 +168,7 @@ namespace ast
   void DumperDot::operator()(const ForExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "ForExp");
+    dump_type(e);
     node_html_ports({"vardec", "hi", "body"});
     footer_and_link(old_parent_id);
     dump("vardec", e.vardec_get());
@@ -164,6 +180,7 @@ namespace ast
   void DumperDot::operator()(const FunctionDec& e)
   {
     unsigned long old_parent_id = node_html_header(e, "FunctionDec");
+    dump_type(e);
     node_html_field("name", e.name_get());
     node_html_ports({"formals", "result", "body"});
     footer_and_link(old_parent_id);
@@ -176,6 +193,7 @@ namespace ast
   void DumperDot::operator()(const IfExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "IfExp");
+    dump_type(e);
     // FIXME: Some code was deleted here (node_html_ports with properties).
     node_html_ports({"test", "thenclause", "elseclause"});
     footer_and_link(old_parent_id);
@@ -190,6 +208,7 @@ namespace ast
   void DumperDot::operator()(const IntExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "IntExp");
+    dump_type(e);
     node_html_field("value", e.value_get());
     footer_and_link(old_parent_id);
     parent_id = old_parent_id;
@@ -198,6 +217,7 @@ namespace ast
   void DumperDot::operator()(const LetExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "LetExp");
+    dump_type(e);
     // FIXME: Some code was deleted here (node_html_ports with properties).
     node_html_ports({"decs", "body"});
     footer_and_link(old_parent_id);
@@ -211,6 +231,7 @@ namespace ast
   void DumperDot::operator()(const MethodCallExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "MethodCallExp");
+    dump_type(e);
     // FIXME: Some code was deleted here (node_html_field).
     node_html_field("name", e.name_get());
 
@@ -234,6 +255,7 @@ namespace ast
   void DumperDot::operator()(const MethodDec& e)
   {
     unsigned long old_parent_id = node_html_header(e, "MethodDec");
+    dump_type(e);
     node_html_field("name", e.name_get());
     node_html_ports({"formals", "result", "body"});
     footer_and_link(old_parent_id);
@@ -246,6 +268,7 @@ namespace ast
   void DumperDot::operator()(const NameTy& e)
   {
     unsigned long old_parent_id = node_html_header(e, "NameTy");
+    dump_type(e);
     node_html_field("name", e.name_get());
     node_html_ports({"def"});
     footer_and_link(old_parent_id);
@@ -256,6 +279,7 @@ namespace ast
   void DumperDot::operator()(const NilExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "NilExp");
+    dump_type(e);
     footer_and_link(old_parent_id);
     parent_id = old_parent_id;
   }
@@ -263,6 +287,7 @@ namespace ast
   void DumperDot::operator()(const ObjectExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "ObjectExp");
+    dump_type(e);
     // FIXME: Some code was deleted here (node_html_ports with properties).
     node_html_ports({"type_name"});
     footer_and_link(old_parent_id);
@@ -274,6 +299,7 @@ namespace ast
   void DumperDot::operator()(const OpExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "OpExp");
+    dump_type(e);
     node_html_field("oper", str(e.oper_get()), "'");
     node_html_ports({"left", "right"});
     footer_and_link(old_parent_id);
@@ -285,6 +311,7 @@ namespace ast
   void DumperDot::operator()(const RecordExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "RecordExp");
+    dump_type(e);
     // FIXME: Some code was deleted here (node_html_ports with properties).
     node_html_ports({"type_name"});
     // FIXME: Some code was deleted here (node_html_port_list for each list).
@@ -298,6 +325,7 @@ namespace ast
   void DumperDot::operator()(const RecordTy& e)
   {
     unsigned long old_parent_id = node_html_header(e, "RecordTy");
+    dump_type(e);
     node_html_ports();
     // FIXME: Some code was deleted here (node_html_port_list for each list).
     node_html_port_list("fields", *e.fields_get());
@@ -310,6 +338,7 @@ namespace ast
   void DumperDot::operator()(const SeqExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "SeqExp");
+    dump_type(e);
     node_html_ports();
     // FIXME: Some code was deleted here (node_html_port_list for each list).
     node_html_port_list("exps", e.exps_get());
@@ -322,6 +351,7 @@ namespace ast
   void DumperDot::operator()(const SimpleVar& e)
   {
     unsigned long old_parent_id = node_html_header(e, "SimpleVar");
+    dump_type(e);
     node_html_field("name", e.name_get());
     node_html_ports({"def"});
     footer_and_link(old_parent_id);
@@ -334,6 +364,8 @@ namespace ast
     unsigned long old_parent_id = node_html_header(e, "StringExp");
     // FIXME: Some code was deleted here (node_html_field, use misc::escape)
     node_html_field("string", e.value_get());
+    dump_type(e);
+    // FIXME: Some code was deleted here (node_html_field, use misc::escape).
     footer_and_link(old_parent_id);
     parent_id = old_parent_id;
   }
@@ -341,6 +373,7 @@ namespace ast
   void DumperDot::operator()(const SubscriptVar& e)
   {
     unsigned long old_parent_id = node_html_header(e, "SubscriptVar");
+    dump_type(e);
     node_html_ports({"var", "index"});
     footer_and_link(old_parent_id);
     dump("var", e.var_get());
@@ -351,6 +384,7 @@ namespace ast
   void DumperDot::operator()(const TypeDec& e)
   {
     unsigned long old_parent_id = node_html_header(e, "TypeDec");
+    dump_type(e);
     node_html_field("name", e.name_get());
     node_html_ports({"ty"});
     footer_and_link(old_parent_id);
@@ -361,6 +395,7 @@ namespace ast
   void DumperDot::operator()(const VarDec& e)
   {
     unsigned long old_parent_id = node_html_header(e, "VarDec");
+    dump_type(e);
     node_html_field("name", e.name_get());
     node_html_ports({"type_name", "init"});
     footer_and_link(old_parent_id);
@@ -372,6 +407,7 @@ namespace ast
   void DumperDot::operator()(const WhileExp& e)
   {
     unsigned long old_parent_id = node_html_header(e, "WhileExp");
+    dump_type(e);
     node_html_ports({"test", "body"});
     footer_and_link(old_parent_id);
     dump("test", e.test_get());
