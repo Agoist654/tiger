@@ -2,7 +2,7 @@
  ** \file type/array.hxx
  ** \brief Inline methods for type::Array.
  */
-#pragma once
+//#pragma once
 
 #include <misc/contract.hh>
 #include <type/array.hh>

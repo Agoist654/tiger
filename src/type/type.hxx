@@ -13,7 +13,7 @@ namespace type
   {
     // FIXME: Some code was deleted here.
     ///*DONE*/
-        return &lhs.actual() == &rhs.actual();
+        return lhs.compatible_with(rhs);
   }
 
   inline bool operator!=(const Type& lhs, const Type& rhs)
