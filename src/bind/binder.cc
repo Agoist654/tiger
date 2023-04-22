@@ -106,8 +106,12 @@ namespace bind
 
   void Binder::operator()(ast::VarDec& e)
   {
+    if (dynamic_cast<const ast::BreakExp*>(e.init_get()) != nullptr)
+        undeclared("break in for init", e);
+
       auto tmp = forvector_;
       forvector_.clear();
+
       e.def_set(&e);
       //varscope_.put(e.name_get(), &e);
       forvector_ = tmp;
@@ -163,11 +167,19 @@ namespace bind
   void Binder::operator()(ast::ForExp& e)
   {
 
+
       scope_begin();
       e.def_set(&e);
       forvector_.emplace_back(&e);
+
+      auto tmp = forvector_;
+      forvector_.clear();
+
       operator()(e.hi_get());
       operator()(e.vardec_get());
+
+      forvector_ = tmp;
+
       super_type::operator()(e.body_get());
 
       scope_end();
@@ -178,6 +190,14 @@ namespace bind
   {
       e.def_set(&e);
       forvector_.emplace_back(&e);
+
+      auto tmp = forvector_;
+      forvector_.clear();
+
+      super_type::operator()(e.test_get());
+
+        forvector_ = tmp;
+
       super_type::operator()(e.body_get());
       forvector_.pop_back();
   }

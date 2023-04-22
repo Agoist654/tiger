@@ -85,7 +85,10 @@ namespace type
     // FIXME: Some code was deleted here.
 
       type(*e.body_get());
-      check_types(e, "expected function to return: ", *e.body_get(), "got: ", *e.result_get());
+      if (e.result_get() != nullptr)
+          check_types(e, "expected function to return: ", *e.body_get(), "got: ", *e.result_get());
+      else
+          check_type(*e.body_get(), "function expected to return void returned: ", *e.type_get());
   }
 
 } // namespace type

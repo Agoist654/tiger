@@ -253,7 +253,7 @@ namespace type
 
       if (e.type_name_get() != nullptr)
       {
-          type(*e.type_name_get());
+          //type(*e.type_name_get());
           if (e.init_get() != nullptr)
                 check_types(e, "type should be: ", *e.type_name_get(), "got: ", *e.init_get());
       }
