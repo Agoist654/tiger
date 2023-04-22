@@ -60,9 +60,7 @@ namespace type
   bool Named::compatible_with(const Type& other) const
   {
     // FIXME: Some code was deleted here (Special implementation of "compatible_with" for Named).
-
-    return this->actual() == other.actual();
-
+    return this->actual().compatible_with(other);
   }
 
 } // namespace type

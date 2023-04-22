@@ -71,7 +71,7 @@ namespace type
                                const Type& expected)
   {
     // FIXME: Some code was deleted here.
-    if (!expected.compatible_with(*e.type_get()))
+    if (!e.type_get()->compatible_with(expected))
         type_mismatch(e, "got: ", *e.type_get(), "expected: ", expected);
   }
 

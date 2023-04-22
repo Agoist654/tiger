@@ -19,6 +19,8 @@ namespace type
 
   void Int::accept(Visitor& v) { v(*this); }
 
+  bool Int::compatible_with(const Type& other) { return *this == other || dynamic_cast<const Int*>(&other); }
+
   void Void::accept(ConstVisitor& v) const { v(*this); }
 
   void Void::accept(Visitor& v) { v(*this); }

@@ -27,7 +27,7 @@ namespace ast
     void type_constructor_set(const type::Type* type);
 
     protected:
-    mutable const type::Type* type_constructor_;
+    mutable const type::Type* type_constructor_ = nullptr;
   };
 } // namespace ast
 #include <ast/type-constructor.hxx>

@@ -20,7 +20,7 @@ namespace type
   const Type* TypeChecker::type(ast::Typable& e)
   {
     // FIXME: Some code was deleted here.
-      if (e.type_get() == nullptr)
+    if (e.type_get() == nullptr)
           e.accept(*this);
       //super_type::operator()(e);
       return e.type_get();
@@ -294,8 +294,11 @@ namespace type
   {
     // FIXME: Some code was deleted here.
 
-      type(e.ty_get());
-      check_type(e.ty_get(), "wrong dec of type: ", *e.type_get());
+      auto new_type = type(e.ty_get());
+
+      auto named = dynamic_cast<const Named*>(e.type_get());
+      //check_type(e.ty_get(), "wrong c of type: ", *named);
+      named->type_set(new_type);
   }
 
   /*------------------.
@@ -340,10 +343,12 @@ namespace type
     // FIXME: Some code was deleted here (Recognize user defined types, and built-in types).
 
       if (e.def_get() != nullptr)
-          e.type_set(e.def_get()->type_get());
-      if (e.name_get().get() == "int")
+          e.type_set(e.def_get()->type_constructor_get());
+
+      else if (e.name_get().get() == "int")
           type_default(e, &Int::instance());
-      if (e.name_get().get() == "string")
+
+      else//string
           type_default(e, &String::instance());
 
   }

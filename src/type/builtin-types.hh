@@ -33,13 +33,8 @@ namespace type
     void accept(ConstVisitor& v) const override;
     /// Accept a non-const visitor \a v.
     void accept(Visitor& v) override;
-        /*public:
 
-            ~Int();
-            void type_set(const type::Type*);
-
-        private:
-            const type::Type* type_;*/
+    bool compatible_with(const Type&);
     };
 
 ///Void

@@ -20,7 +20,7 @@ namespace type
   inline const Type& Named::actual() const
   {
     // FIXME: Some code was deleted here.
-    return *type_get();
+      return type_->actual();
   }
 
 } // namespace type
