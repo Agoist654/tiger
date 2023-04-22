@@ -24,9 +24,10 @@ namespace ast
     const type::Type* type_constructor_get() const;
 
     void type_constructor_set(type::Type* type);
+    void type_constructor_set(const type::Type* type);
 
     protected:
-    type::Type* type_constructor_;
+    mutable const type::Type* type_constructor_;
   };
 } // namespace ast
 #include <ast/type-constructor.hxx>

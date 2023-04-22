@@ -113,6 +113,7 @@ namespace type
   void TypeChecker::operator()(ast::SimpleVar& e)
   {
     // FIXME: Some code was deleted here.
+    e.type_set(&e.def_get()->type_get()->actual());
   }
 
   // FIXME: Some code was deleted here.
@@ -157,13 +158,13 @@ namespace type
 
       check_types(e, "left operand type: ", e.left_get(), "right operand type: ", e.right_get());
 
-      if (dynamic_cast<ast::IntExp*>(&e.left_get()) != nullptr && dynamic_cast<ast::IntExp*>(&e.right_get()) != nullptr)
+      if (dynamic_cast<const Int*>(&e.left_get().type_get()->actual()) != nullptr && dynamic_cast<const Int*>(&e.right_get().type_get()->actual()) != nullptr)
       {
           //le && ne sert a r mais whatever
           return;
       }
 
-      if (dynamic_cast<ast::StringExp*>(&e.left_get()) != nullptr && dynamic_cast<ast::StringExp*>(&e.right_get()) != nullptr)
+      if (dynamic_cast<const String*>(&e.left_get().type_get()->actual()) != nullptr && dynamic_cast<const String*>(&e.right_get().type_get()->actual()) != nullptr)
       {
           if (e.oper_get() == ast::OpExp::Oper::eq || e.oper_get() == ast::OpExp::Oper::ne)
           {
@@ -231,18 +232,32 @@ namespace type
 
   void TypeChecker::operator()(ast::VarDec& e)
   {
-    // FIXME: Some code was deleted here.
-      if (e.init_get() != nullptr)
-          type(*e.init_get());
+//      // FIXME: Some code was deleted here.
+//      if (e.init_get() != nullptr)
+//          type(*e.init_get());
+//
+//      if (e.type_name_get() != nullptr)
+//      {
+//          type(*e.type_name_get());
+//          check_types(e, "vardec expected type: ", *e.type_name_get()/*->type_get()*/, "got: ", *e.init_get()/*->type_get()*/);
+//      }
+//
+//      else
+//          e.type_set(e.init_get()->type_get());
 
-      if (e.type_name_get()->type_get() != nullptr)
+      if (e.init_get() != nullptr)
       {
-          type(*e.type_name_get());
-          check_types(e, "vardec expected type: ", *e.type_name_get()/*->type_get()*/, "got: ", *e.init_get()/*->type_get()*/);
+          auto t = type(*e.init_get());
+          type_default(e, t);
       }
 
-      else
-          e.type_set(e.init_get()->type_get());
+      if (e.type_name_get() != nullptr)
+      {
+          type(*e.type_name_get());
+          if (e.init_get() != nullptr)
+                check_types(e, "type should be: ", *e.type_name_get(), "got: ", *e.init_get());
+      }
+
   }
 
   /*--------------------.
@@ -267,6 +282,11 @@ namespace type
     // name in E.  A declaration has no type in itself; here we store
     // the type declared by E.
     // FIXME: Some code was deleted here.
+
+      auto named = new Named(e.name_get());
+      created_type_default(e, named);
+      type_default(e, named);
+
   }
 
   // Bind the type body to its name.
@@ -274,13 +294,8 @@ namespace type
   {
     // FIXME: Some code was deleted here.
 
-      auto type = ast::TypeConstructor();
-
-      if (e.ty_get().type_get() != nullptr)
-          auto named = Named(e.name_get());
-      else
-          auto named = Named(e.name_get(), e.ty_get().type_get());
-
+      type(e.ty_get());
+      check_type(e.ty_get(), "wrong dec of type: ", *e.type_get());
   }
 
   /*------------------.
@@ -324,15 +339,13 @@ namespace type
   {
     // FIXME: Some code was deleted here (Recognize user defined types, and built-in types).
 
+      if (e.def_get() != nullptr)
+          e.type_set(e.def_get()->type_get());
       if (e.name_get().get() == "int")
           type_default(e, &Int::instance());
       if (e.name_get().get() == "string")
           type_default(e, &String::instance());
 
-      else
-      {
-          e.type_set(e.def_get()->type_get());
-      }
   }
 
   void TypeChecker::operator()(ast::RecordTy& e)

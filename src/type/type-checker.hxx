@@ -34,6 +34,8 @@ namespace type
   void TypeChecker::created_type_default(NodeType& e, const type::Type* type)
   {
     // FIXME: Some code was deleted here.
+    if (e.type_get() == nullptr)
+        e.type_constructor_set(type);
   }
 
   template <typename NodeType>
@@ -83,7 +85,7 @@ namespace type
     // FIXME: Some code was deleted here.
 
       type(*e.body_get());
-      check_type(*e.body_get(), "expected function to return: ", *e.type_get());
+      check_types(e, "expected function to return: ", *e.body_get(), "got: ", *e.result_get());
   }
 
 } // namespace type

@@ -22,6 +22,12 @@ namespace ast
         return type_constructor_;
     }
 
+    inline void TypeConstructor::type_constructor_set(const type::Type* type)
+    {
+        type_constructor_ = type;
+    }
+
+
     inline void TypeConstructor::type_constructor_set(type::Type* type)
     {
         type_constructor_ = type;
