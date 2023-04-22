@@ -54,21 +54,27 @@ namespace type
   void GenDefaultVisitor<Const>::operator()(const_t<Record>& e)
   {
     // FIXME: Some code was deleted here.
+
     e.accept(*this);
+
   }
 
   template <template <typename> class Const>
   void GenDefaultVisitor<Const>::operator()(const_t<Class>& e)
   {
     // FIXME: Some code was deleted here.
+
     e.accept(*this);
+
   }
 
   template <template <typename> class Const>
   void GenDefaultVisitor<Const>::operator()(const_t<Function>& e)
   {
     // FIXME: Some code was deleted here.
+
     e.accept(*this);
+
   }
 
   template <template <typename> class Const>

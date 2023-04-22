@@ -267,7 +267,6 @@ namespace type
     // name in E.  A declaration has no type in itself; here we store
     // the type declared by E.
     // FIXME: Some code was deleted here.
-
   }
 
   // Bind the type body to its name.

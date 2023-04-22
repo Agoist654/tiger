@@ -58,5 +58,4 @@ namespace type {
         }
         return false;
     }
-
 } // namespace type

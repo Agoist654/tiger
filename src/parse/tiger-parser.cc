@@ -136,7 +136,6 @@ namespace parse {
         std::swap(extensions, enable_extensions_p_);
         return res;
     }
-
     /*-----------------.
     | Parse a string.  |
     `-----------------*/

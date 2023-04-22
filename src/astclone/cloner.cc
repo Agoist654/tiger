@@ -19,12 +19,14 @@ namespace astclone
 
   void Cloner::operator()(const ast::ArrayExp& e)
   {
+
     // FIXED
     const Location& location = e.location_get();
     NameTy* type_name = recurse(*e.Type_name_get());
     Exp* size = recurse(*e.size_get());
     Exp* init = recurse(*e.init_get());
     result_ = new ArrayExp(location, type_name, size, init);
+
 
   }
 
@@ -37,22 +39,27 @@ namespace astclone
 
   void Cloner::operator()(const ast::AssignExp& e)
   {
+
     // FIXED
     const Location& location = e.location_get();
     Var* var = recurse(*e.var_get());
     Exp* exp = recurse(*e.exp_get());
     result_ = new AssignExp(location, var, exp);
+
   }
 
   void Cloner::operator()(const ast::BreakExp& e)
   {
+
     // FIXED
     const Location& location = e.location_get();
     result_ = new BreakExp(location);
+
   }
 
   void Cloner::operator()(const ast::CallExp& e)
   {
+
     // FIXED
     const Location& location = e.location_get();
     misc::symbol name = e.name_get();
@@ -60,6 +67,7 @@ namespace astclone
     if(e.args_get())
         args = recurse_collection(*e.args_get());
     result_ = new CallExp(location, name, args);
+
   }
 
   void Cloner::operator()(const ast::CastExp& e)
@@ -103,11 +111,13 @@ namespace astclone
 
   void Cloner::operator()(const ast::FieldVar& e)
   {
+
     // FIXED
     const Location& location = e.location_get();
     misc::symbol name = e.name_get();
     Var* var = recurse(*e.var_get());
     result_ = new FieldVar(location, var, name);
+
 
   }
 
@@ -133,6 +143,7 @@ namespace astclone
 
   void Cloner::operator()(const ast::IfExp& e)
   {
+
     // FIXED
     const Location& location = e.location_get();
     Exp* test = recurse(*e.test_get());
@@ -141,6 +152,7 @@ namespace astclone
     if( e.elseclause_get())
         Exp* elseclause = recurse(*e.elseclause_get());
     result_ = new IfExp(location, test, thenclause, elseclause);
+
 
   }
 
@@ -153,22 +165,26 @@ namespace astclone
 
   void Cloner::operator()(const ast::LetExp& e)
   {
+
     // FIXED
     const Location& location = e.location_get();
     ChunkList* decs = recurse(*e.decs_get());
     Exp* body = recurse(*e.body_get());
     result_ = new LetExp(location, decs, body);
 
+
   }
 
   void Cloner::operator()(const ast::MethodCallExp& e)
   {
+
     // FIXED
     const Location& location = e.location_get();
     misc::symbol name = e.name_get();
     exps_type* args = recurse_collection(*e.args_get());
     Var* object = recurse(*e.object_get());
     result_ = new MethodCallExp(location, name, args, object);
+
 
   }
 
@@ -197,10 +213,12 @@ namespace astclone
 
   void Cloner::operator()(const ast::ObjectExp& e)
   {
+
     // FIXED
     const Location& location = e.location_get();
     NameTy* type_name = recurse(*e.type_name_get());
     result_ = new ObjectExp(location, type_name);
+
   }
 
   void Cloner::operator()(const ast::OpExp& e)
@@ -214,28 +232,34 @@ namespace astclone
 
   void Cloner::operator()(const ast::RecordExp& e)
   {
+
     // FIXED
     const Location& location = e.location_get();
     NameTy* type_name = recurse(*e.type_name_get());
     fieldinits_type* fields = recurse_collection(*e.fields_get());
     result_ = new RecordExp(location, type_name, fields);
+
   }
 
   void Cloner::operator()(const ast::RecordTy& e)
   {
+
     // FIXED
     const Location& location = e.location_get();
     fields_type* fields = recurse_collection(*e.fields_get());
     result_ = new RecordTy(location, fields);
 
+
   }
 
   void Cloner::operator()(const ast::SeqExp& e)
   {
+
     // FIXED
     const Location& location = e.location_get();
     exps_type* exps = recurse_collection(e.exps_get());
     result_ = new SeqExp(location, exps);
+
 
   }
 
@@ -248,10 +272,12 @@ namespace astclone
 
   void Cloner::operator()(const ast::StringExp& e)
   {
+
     // FIXED
     const Location& location = e.location_get();
     std::string value = e.value_get();
     result_ = new StringExp(location, value);
+
 
   }
 
@@ -277,6 +303,7 @@ namespace astclone
     misc::symbol name = e.name_get();
     NameTy* type_name = recurse(e.type_name_get());
     Exp* init = recurse(e.init_get());
+
     // FIXED: Some code was deleted here (Cloned node instantiation).
     result_ = new VarDec(location, name, type_name, init);
   }
@@ -296,21 +323,27 @@ namespace astclone
 
   void Cloner::operator()(const ast::MethodChunk& e)
   {
+
     // FIXED
     chunk_visit<ast::MethodChunk>(e);
+
   }
 
   void Cloner::operator()(const ast::TypeChunk& e)
   {
+
     // FIXED
      chunk_visit<ast::TypeChunk>(e);
+
 
   }
 
   void Cloner::operator()(const ast::VarChunk& e)
   {
+
     // FIXED
      chunk_visit<ast::VarChunk>(e);
+
   }
 
 } // namespace astclone

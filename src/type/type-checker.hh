@@ -111,7 +111,10 @@ namespace type
                      const Type& type1,
                      const std::string& exp2,
                      const Type& type2);
+<<<<<<< HEAD
 
+=======
+>>>>>>> afe1cdc (2025-tc-4.0.)
     void check_types(const ast::Ast& loc,
                      const std::string& exp1,
                      ast::Typable& type1,
@@ -168,9 +171,12 @@ namespace type
     void operator()(ast::OpExp& e) override;
     // FIXME: Some code was deleted here (Other Exp nodes).
 
+<<<<<<< HEAD
     void operator()(ast::SeqExp& e) override;
     void operator()(ast::IfExp& e) override;
 
+=======
+>>>>>>> afe1cdc (2025-tc-4.0.)
     // ---------------- //
     // Visiting /Dec/.  //
     // ---------------- //
