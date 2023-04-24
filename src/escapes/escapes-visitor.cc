@@ -18,6 +18,7 @@ namespace escapes
             //std::cout << "vardec set to 0:" << e.name_get() << "\n";
             e.escape_set(0);
             super_type::operator()(e.init_get());
+
     }
 
     void EscapesVisitor::operator()(ast::FunctionDec& e)
