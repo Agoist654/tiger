@@ -211,7 +211,10 @@ namespace type
 
           e.formals_get().accept(*this);
           if(e.result_get())
-            e.result_get()->accept(*this);
+          {
+            type(*e.result_get());
+            type_default(e, e.result_get()->type_get());
+          }
           else
           {
               e.type_set(&Void::instance());
@@ -232,34 +235,22 @@ namespace type
 
   void TypeChecker::operator()(ast::VarDec& e)
   {
-//      // FIXME: Some code was deleted here.
-//      if (e.init_get() != nullptr)
-//          type(*e.init_get());
-//
-//      if (e.type_name_get() != nullptr)
-//      {
-//          type(*e.type_name_get());
-//          check_types(e, "vardec expected type: ", *e.type_name_get()/*->type_get()*/, "got: ", *e.init_get()/*->type_get()*/);
-//      }
-//
-//      else
-//          e.type_set(e.init_get()->type_get());
-
       if (e.init_get() != nullptr)
+          type(*e.init_get());
+
+      if (e.type_name_get()->type_get() != nullptr)
       {
-          auto t = type(*e.init_get());
-          type_default(e, t);
+          type(*e.type_name_get());
+          check_types(e, "vardec expected type: ", *e.type_name_get()/*->type_get()*/, "got: ", *e.init_get()/*->type_get()*/);
       }
 
-      if (e.type_name_get() != nullptr)
+      else
       {
           auto t = type(*e.type_name_get());
           if (e.init_get() != nullptr)
                 check_types(e, "type should be: ", *e.type_name_get(), "got: ", *e.init_get());
           type_default(e, t);
-          
       }
-
   }
 
   /*--------------------.
@@ -382,16 +373,43 @@ namespace type
       }
     }
 
+  void TypeChecker::operator()(ast::LetExp& e)
+  {
+      if (e.decs_get() != nullptr)
+      {
+          super_type::operator()(*e.decs_get());
+      }
+
+      if (e.body_get() == nullptr)
+          e.type_set(&Void::instance());
+
+      else
+          type(*e.body_get());
+      type_default(e, e.body_get()->type_get());
+  }
+
   void TypeChecker::operator()(ast::IfExp& e)
   {
 
-      //check_types de test -> int
+      type_default(e, &Int::instance());
+      type_default(*e.test_get(), &Int::instance());
+      check_type(*e.test_get(), "if test should be int", *&Int::instance());
 
       if (e.elseclause_get() == nullptr)
           e.elseclause_get()->type_set(&Void::instance());
 
       check_types(e, "then type: ", *e.test_get(), "else type: ", *e.elseclause_get());
   }
+
+    void TypeChecker::operator()(ast::CallExp& e)
+    {
+        auto k = 0;
+        for (auto arg : e.def_get()->formals_get())
+        {
+            check_types(e, "argument in call exp is not matching the function declaration: ", *arg, "given arg:", *e.args_get()->at(k++));
+        }
+        type_default(e, e.def_get()->type_get());
+    }
 
 
 } // namespace type
