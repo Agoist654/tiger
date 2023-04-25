@@ -488,7 +488,7 @@ tydec: "class" ID "extends" typeid  "{" classfields "}" { $$ = tp.td_.make_TypeD
      | "class" ID "{" classfields "}"                   { $$ = tp.td_.make_TypeDec(@$, $2,tp.td_.make_ClassTy(@$, tp.td_.make_NameTy(@$, "Object"), $4)); } 
      ;
 
-ty: "class" "{" classfields "}"                                 { $$ = tp.td_.make_ClassTy(@$, nullptr, $3);}
+ty: "class" "{" classfields "}"                                 { $$ = tp.td_.make_ClassTy(@$, tp.td_.make_NameTy(@$, "Object"), $3);}
     | "class" "extends" typeid "{" classfields "}"              { $$ = tp.td_.make_ClassTy(@$, $3, $5);}
     ;
 

@@ -27,5 +27,22 @@ namespace desugar
   `-----------------------*/
 
   // FIXME: Some code was deleted here.
+  void BoundsCheckingVisitor::operator()(const ast::ArrayTy& e)
+  {
+        parse::Tweast in;
+
+        in << "let type __int_array = array of int\n" ;
+        in << "type _int_array = {\n";
+        in << "arr : __int_array,\nsize : int\n}";
+
+        result_ = std::get<ast::Exp*>(parse::parse(in));
+
+
+  }
+  void BoundsCheckingVisitor::operator()(const ast::ArrayExp& e)
+  {
+      //boxes_[e] = e.size_get();
+      super_type::operator()(e);
+  }
 
 } // namespace desugar

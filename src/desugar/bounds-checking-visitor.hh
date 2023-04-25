@@ -28,6 +28,10 @@ namespace desugar
     /// \name Visit methods.
     /// \{
     // FIXME: Some code was deleted here.
+    void operator()(const ast::ArrayExp& e) override;
+    void operator()(const ast::ArrayTy& e) override;
+
+
     /// \}
 
   private:

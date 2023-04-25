@@ -46,18 +46,31 @@ namespace inlining
 
   // FIXME: Some code was deleted here.
    void Inliner::operator()(const ast::CallExp& e)
-   {  
-        parse::Tweast in;
-        //result_ = parse::parse(in);
-   }
-   void Inliner::operator()(const ast::FunctionChunk& e)
-   {
-        super_type::operator()(e);
-   }
-    void Inliner::operator()(const ast::FunctionDec& e)
-    {
+   { 
+        if(!rec_funs_get().contains(e.def_get()))
+            super_type::operator()(e);
+        else
+        {
+            exps_type* args = e.args_get();
+            auto fun_ref = e.def_get();
+            parse::Tweast in;
+            in << "let\n";
+            in << fun_ref << "\n";
+            in << "in \nlet\n";
+            auto k = 0;
+            for (auto arg : fun_ref->formals_get().decs_get())
+            {
+                in << "var " << arg->name_get() << " : " << arg->type_name_get() << ":=" <<  args->at(k++);
 
-    }
+
+            }
+            in << "var res : " << fun_ref->result_get()->name_get() << " := " << fun_ref->body_get();
+            in << " in \nres\n";
+            in << " end \nend";
+            result_ = std::get<ast::Exp*>(parse::parse(in));
+        }
+   }
+
 
 
 } // namespace inlining
