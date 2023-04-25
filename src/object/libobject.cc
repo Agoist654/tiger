@@ -7,6 +7,8 @@
 #include <object/libobject.hh>
 #include <object/renamer.hh>
 #include <object/type-checker.hh>
+#include <object/binder.hh>
+
 
 namespace object
 {
@@ -15,6 +17,13 @@ namespace object
   `-------*/
 
   // FIXME: Some code was deleted here.
+  misc::error bindings_compute(ast::Ast& tree)
+  {
+    Binder bind;
+    bind(tree);
+    return bind.error_get();
+  }
+
 
   /*----------------.
   | Compute types.  |

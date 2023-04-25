@@ -18,6 +18,13 @@ namespace object::tasks
   void object_parse() {}
 
   // FIXME: Some code was deleted here.
+  
+  
+  void object_bindings_compute()
+  {
+    task_error() << ::object::bindings_compute(*ast::tasks::the_program)
+                 << &misc::error::exit_on_error;
+  }
 
   void object_types_compute()
   {

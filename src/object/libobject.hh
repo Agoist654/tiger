@@ -16,6 +16,8 @@ namespace object
   `-------*/
 
   // FIXME: Some code was deleted here.
+  misc::error bindings_compute(ast::Ast& tree);
+
 
   /*----------------.
   | Compute types.  |
