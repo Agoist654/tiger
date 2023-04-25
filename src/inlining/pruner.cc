@@ -32,8 +32,9 @@ namespace inlining
   // FIXME: Some code was deleted here.
   void Pruner::operator()(const ast::FunctionDec& e)
   {
-        current_function_ =  &e;
+        current_function_ =  &e; //useless line ?
         //operator()(e.body_get);
+        super_type::operator()(e);
   }
 
   void Pruner::operator()(const ast::CallExp& e)
@@ -55,7 +56,8 @@ namespace inlining
 
   void Pruner::operator()(const ast::FunctionChunk& e)
   {
-     //result_ = prune(e);
+     super_type::operator()(e);
+     //result_ = prune(dynamic_cast<ast::Chunk<ast::FunctionDec>*>(result_));
   }
 
 

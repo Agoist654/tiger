@@ -43,6 +43,10 @@ namespace inlining
   {
     return rec_funs_;
   }
+  /*
+  #include <ast/libast.hh>
+  #include <ast/pretty-printer.hh>*/
+
 
   // FIXME: Some code was deleted here.
    void Inliner::operator()(const ast::CallExp& e)
@@ -54,9 +58,8 @@ namespace inlining
             exps_type* args = e.args_get();
             auto fun_ref = e.def_get();
             parse::Tweast in;
+       
             in << "let\n";
-            in << fun_ref << "\n";
-            in << "in \nlet\n";
             auto k = 0;
             for (auto arg : fun_ref->formals_get().decs_get())
             {
@@ -66,7 +69,10 @@ namespace inlining
             }
             in << "var res : " << fun_ref->result_get()->name_get() << " := " << fun_ref->body_get();
             in << " in \nres\n";
-            in << " end \nend";
+            in << " end \n";
+            /*ast::PrettyPrinter print(ostr);
+            ast::print(in);*/
+
             result_ = std::get<ast::Exp*>(parse::parse(in));
         }
    }

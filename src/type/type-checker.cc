@@ -113,7 +113,7 @@ namespace type
   void TypeChecker::operator()(ast::SimpleVar& e)
   {
     // FIXME: Some code was deleted here.
-    e.type_set(&e.def_get()->type_get()->actual());
+    e.type_set(e.def_get()->type_get());
   }
 
   // FIXME: Some code was deleted here.
@@ -253,9 +253,11 @@ namespace type
 
       if (e.type_name_get() != nullptr)
       {
-          //type(*e.type_name_get());
+          auto t = type(*e.type_name_get());
           if (e.init_get() != nullptr)
                 check_types(e, "type should be: ", *e.type_name_get(), "got: ", *e.init_get());
+          type_default(e, t);
+          
       }
 
   }
