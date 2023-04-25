@@ -172,6 +172,7 @@ namespace type
     void operator()(ast::IfExp& e) override;
     void operator()(ast::LetExp& e) override;
     void operator()(ast::CallExp& e) override;
+    void operator()(ast::ForExp& e) override;
 
     // ---------------- //
     // Visiting /Dec/.  //

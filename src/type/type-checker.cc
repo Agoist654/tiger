@@ -235,6 +235,7 @@ namespace type
 
   void TypeChecker::operator()(ast::VarDec& e)
   {
+<<<<<<< Updated upstream
       if (e.init_get() != nullptr)
           type(*e.init_get());
 
@@ -251,6 +252,8 @@ namespace type
                 check_types(e, "type should be: ", *e.type_name_get(), "got: ", *e.init_get());
           type_default(e, t);
       }
+=======
+>>>>>>> Stashed changes
   }
 
   /*--------------------.
@@ -411,5 +414,16 @@ namespace type
         type_default(e, e.def_get()->type_get());
     }
 
+    void TypeChecker::operator()(ast::ForExp& e)
+    {
+        type_default(e, &Void::instance());
+
+        type(e.vardec_get());
+        type(e.hi_get());
+
+        check_type(e.vardec_get(), "for vardec should: ", *&Int::instance());
+
+
+    }
 
 } // namespace type
