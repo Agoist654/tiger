@@ -235,7 +235,6 @@ namespace type
 
   void TypeChecker::operator()(ast::VarDec& e)
   {
-<<<<<<< Updated upstream
       if (e.init_get() != nullptr)
           type(*e.init_get());
 
@@ -252,8 +251,6 @@ namespace type
                 check_types(e, "type should be: ", *e.type_name_get(), "got: ", *e.init_get());
           type_default(e, t);
       }
-=======
->>>>>>> Stashed changes
   }
 
   /*--------------------.
