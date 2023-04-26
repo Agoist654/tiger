@@ -15,20 +15,16 @@ namespace type
     {
         // FIXME: Some code was deleted here.
         public:
-            explicit Array();
-//            Array();
-            Type& arrtype_get();
+            explicit Array() = default;
 
             void arrtype_set(const Type& type);
-            void arrtype_set(Type& type);
             Type* arrtype_get() const ;
 
-            bool compatible_with(const Type& other) const override;
             void accept(ConstVisitor& v) const override;
             void accept(Visitor& v) override;
 
         protected:
-            Type* arrtype_{};
+            Type* arrtype_ = nullptr;
     };
 
 } // namespace type

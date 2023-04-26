@@ -276,8 +276,8 @@ namespace type
       auto named = new Named(e.name_get());
       created_type_default(e, named);
       type_default(e, named);
-      if (!named->sound())
-          error(e, "named is not sound");
+      //if (!named->sound())
+      //    error(e, "named is not sound");
 
   }
 
@@ -358,6 +358,8 @@ namespace type
       created_type_default(e, array);
       type_default(e, array);
       array->arrtype_set(*e.base_type_get().type_get());
+      e.type_set(array);
+      super_type::operator()(e.base_type_get());
   }
 
 
@@ -412,6 +414,12 @@ namespace type
     void TypeChecker::operator()(ast::CallExp& e)
     {
         auto k = 0;
+        if (e.def_get()->formals_get().decs_get().size() != e.args_get()->size())
+        {
+            error(e, "numbre of arguments missmath");
+            return;
+        }
+
         for (auto arg : e.def_get()->formals_get())
         {
             check_types(e, "argument in call exp is not matching the function declaration: ", *arg, "given arg:", *e.args_get()->at(k++));
@@ -421,6 +429,8 @@ namespace type
 
     void TypeChecker::operator()(ast::ForExp& e)
     {
+        var_read_only_ += &e.vardec_get();
+
         type_default(e, &Void::instance());
 
         type(e.vardec_get());
@@ -430,6 +440,7 @@ namespace type
         check_type(e.vardec_get(), "for vardec should: ", *&Int::instance());
         check_type(e.hi_get(), "for hi should: ", *&Int::instance());
         check_type(e.body_get(), "for body should be void", *&Void::instance());
+        var_read_only_ -= &e.vardec_get();
     }
 
     void TypeChecker::operator()(ast::WhileExp& e)
@@ -451,13 +462,40 @@ namespace type
 
     void TypeChecker::operator()(ast::AssignExp& e)
     {
-        super_type::operator()(e);
+        auto simplevar = dynamic_cast<const ast::SimpleVar*>(e.var_get());
+        if (var_read_only_.has(simplevar->def_get()))
+            error(e, "var in read only in for");
+
+        type(const_cast<ast::SimpleVar&>(*simplevar));
+        super_type::operator()(*e.exp_get());
         type_default(e, &Void::instance());
     }
 
     void TypeChecker::operator()(ast::ArrayExp& e)
     {
-        
+
+        type(*e.Type_name_get());
+        super_type::operator()(e.Type_name_get());
+        type(*e.size_get());
+        type(*e.init_get());
+
+        check_type(*e.size_get(), "array size is not a integer ", *&Int::instance());
+
+
+        if (dynamic_cast<ast::ArrayTy*>(&e.Type_name_get()->def_get()->ty_get()) != nullptr)
+        {
+            auto imma_def = dynamic_cast<ast::ArrayTy*>(&e.Type_name_get()->def_get()->ty_get());
+            check_types(e, "type inside the array expected: ", imma_def->base_type_get(), "got: ", *e.init_get());
+        }
+
+        else
+        {
+            //je fais un checktype avec un type random pour soulever une erreur
+            check_type(*e.Type_name_get(), "arrayexp's namety is not a array", *&Void::instance());
+        }
+
+        type_default(e, e.Type_name_get()->type_get());
+
     }
 
 } // namespace type

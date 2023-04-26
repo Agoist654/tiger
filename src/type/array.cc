@@ -10,10 +10,15 @@ namespace type
 {
   // FIXME: Some code was deleted here.
 
-    Array::Array() {}
-  bool Array::compatible_with(const Type& other) const
+
+
+  void Array::accept(Visitor& v)
   {
-      return *arrtype_ == other;
+      v(*this);
+  }
+  void Array::accept(ConstVisitor& v) const
+  {
+      v(*this);
   }
 
 } // namespace type
