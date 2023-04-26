@@ -20,6 +20,21 @@ namespace type
       *arrtype_ = type;
   }
 
+
+  inline void Array::arrtype_set(Type& type)
+  {
+      *arrtype_ = type;
+  }
+
+  inline Type* Array::arrtype_get() const
+  {
+     return arrtype_;
+  }
+
+  inline void Array::accept(Visitor& v)
+  {
+      v(*this);
+  }
   inline void Array::accept(ConstVisitor& v) const
   {
       v(*this);

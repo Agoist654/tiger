@@ -9,6 +9,8 @@
 namespace type
 {
   // FIXME: Some code was deleted here.
+
+    Array::Array() {}
   bool Array::compatible_with(const Type& other) const
   {
       return *arrtype_ == other;

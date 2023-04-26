@@ -236,15 +236,12 @@ namespace type
   void TypeChecker::operator()(ast::VarDec& e)
   {
       if (e.init_get() != nullptr)
-          type(*e.init_get());
-
-      if (e.type_name_get()->type_get() != nullptr)
       {
-          type(*e.type_name_get());
-          check_types(e, "vardec expected type: ", *e.type_name_get()/*->type_get()*/, "got: ", *e.init_get()/*->type_get()*/);
+          auto t = type(*e.init_get());
+          type_default(e, t);
       }
 
-      else
+      if (e.type_name_get() != nullptr)
       {
           auto t = type(*e.type_name_get());
           if (e.init_get() != nullptr)
@@ -279,6 +276,8 @@ namespace type
       auto named = new Named(e.name_get());
       created_type_default(e, named);
       type_default(e, named);
+      if (!named->sound())
+          error(e, "named is not sound");
 
   }
 
@@ -354,6 +353,11 @@ namespace type
   void TypeChecker::operator()(ast::ArrayTy& e)
   {
     // FIXME: Some code was deleted here.
+
+      auto array = new Array();
+      created_type_default(e, array);
+      type_default(e, array);
+      array->arrtype_set(*e.base_type_get().type_get());
   }
 
 
@@ -391,14 +395,18 @@ namespace type
   void TypeChecker::operator()(ast::IfExp& e)
   {
 
-      type_default(e, &Int::instance());
       type_default(*e.test_get(), &Int::instance());
       check_type(*e.test_get(), "if test should be int", *&Int::instance());
 
       if (e.elseclause_get() == nullptr)
-          e.elseclause_get()->type_set(&Void::instance());
+      {
+          type(*e.thenclause_get());
+          check_type(*e.thenclause_get(), "there is no else then thenclause should be void", *&Void::instance());
+      }
 
-      check_types(e, "then type: ", *e.test_get(), "else type: ", *e.elseclause_get());
+      else
+          check_types(e, "then type: ", *e.thenclause_get(), "else type: ", *e.elseclause_get());
+      type_default(e, e.thenclause_get()->type_get());
   }
 
     void TypeChecker::operator()(ast::CallExp& e)
@@ -417,10 +425,39 @@ namespace type
 
         type(e.vardec_get());
         type(e.hi_get());
+        type(e.body_get());
 
         check_type(e.vardec_get(), "for vardec should: ", *&Int::instance());
+        check_type(e.hi_get(), "for hi should: ", *&Int::instance());
+        check_type(e.body_get(), "for body should be void", *&Void::instance());
+    }
 
+    void TypeChecker::operator()(ast::WhileExp& e)
+    {
+        type_default(e, &Void::instance());
 
+        type(e.test_get());
+        type(e.body_get());
+
+        check_type(e.test_get(), "while test should be int", *&Int::instance());
+        check_type(e.body_get(), "while body should be void", *&Void::instance());
+
+    }
+
+    void TypeChecker::operator()(ast::BreakExp& e)
+    {
+        type_default(e, &Void::instance());
+    }
+
+    void TypeChecker::operator()(ast::AssignExp& e)
+    {
+        super_type::operator()(e);
+        type_default(e, &Void::instance());
+    }
+
+    void TypeChecker::operator()(ast::ArrayExp& e)
+    {
+        
     }
 
 } // namespace type
