@@ -275,7 +275,7 @@ void PrettyPrinter::operator()(const StringExp& e)
 
       ostr_ << e.name_get();
 
-      if (bindings_display(ostr_))
+      if (bindings_display(ostr_) && !within_classty_p_ )
         ostr_<< " /* " << &e << " */ ";
 
       if (e.type_name_get() != nullptr)
@@ -300,10 +300,12 @@ void PrettyPrinter::operator()(const StringExp& e)
 
   void PrettyPrinter::operator()(const ClassTy& e)
   {     
-     
+        within_classty_p_ = true;
         ostr_ <<  misc::iendl << "class extends " << e.super_get();
-        ostr_ << misc::iendl << "{" <<  misc::incendl << e.chunks_get(); 
+        ostr_ << misc::iendl << "{" <<  misc::incendl;
+        operator()(e.chunks_get()); 
         ostr_ <<  "}";
+        within_classty_p_ = false;
 
   }
 
@@ -314,8 +316,8 @@ void PrettyPrinter::operator()(const StringExp& e)
       if (e.body_get() != nullptr)
       {
           ostr_ << "method " << e.name_get();
-          if (bindings_display(ostr_))
-              ostr_<< " /* " << &e << " */ ";
+          //if (bindings_display(ostr_))
+              //ostr_<< " /* " << &e << " */ ";
 
           ostr_ << "(" << misc::separate(e.formals_get(), ",") << ")";
       }
@@ -331,10 +333,11 @@ void PrettyPrinter::operator()(const StringExp& e)
 
   void PrettyPrinter::operator()(const MethodCallExp& e)
   {
-      ostr_ << e.name_get();
+      operator()(e.object_get());
+      ostr_ << "." << e.name_get();
 
-      if (bindings_display(ostr_))
-        ostr_<< " /* " << e.def_get() << " */";
+      //if (bindings_display(ostr_))
+      //  ostr_<< " /* " << e.def_get() << " */";
       ostr_ << "(";
       if (e.args_get() != nullptr)
           ostr_ << misc::separate(*e.args_get(), ",");

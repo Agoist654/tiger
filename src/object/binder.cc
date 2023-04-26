@@ -26,12 +26,44 @@ namespace object
   void Binder::operator()(ast::SimpleVar& e)
   {
     // FIXME: Some code was deleted here.
+    if(e.name_get() == "self")
+    {
+       if(within_method_dec_ && !overrided_self_)
+       {
+           std::cout <<  &e << " " << within_method_dec_ << " " << !overrided_self_;
+
+           return;
+       }
+    }
+    //std::cout << "OUTSIDE\n";
+    if(varscope_.get_back_map().contains(e.name_get()))
+    {
+        //std::cout << "FOUND " << &e << ":" ;
+        e.def_set(varscope_.get_back_map().find(e.name_get())->second);
+        std::cout << e.def_get();
+    }
+
   }
 
   // Handle the case of `Object'.
   void Binder::operator()(ast::NameTy& e)
   {
     // FIXME: Some code was deleted here.
+      if (typescope_.get_back_map().contains(e.name_get()))
+      { 
+          e.def_set(typescope_.get_back_map().find(e.name_get())->second);
+      }
+
+      else
+      {
+          if (e.name_get() != "int" && e.name_get() != "string" && e.name_get() != "Object")
+          {
+              undeclared("undeclared type", e);
+          }
+
+          else
+              e.def_set(nullptr);
+      }
   }
 
   /*---------------.
@@ -96,6 +128,26 @@ namespace object
     // Shorthand.
     using chunk_type = ast::Chunk<D>;
     // FIXME: Some code was deleted here (Two passes: once on headers, then on bodies).
+    std::map<misc::symbol, D*> m;
+
+    for (auto& dec : e.decs_get())
+    {
+        if (m.contains(dec->name_get()))
+        {
+            //TODO: replace redefinition by insertion in overfun
+            redefinition(*m.find(dec->name_get())->second, *dec);
+            return;
+        }
+        m[dec->name_get()] = dec;
+        visit_dec_header(*dec);
+        //visit_dec_body(*dec);
+    }
+
+    for (auto& dec : e.decs_get())
+    {
+        visit_dec_body(*dec);
+    }
+
   }
 
   // This trampoline is needed, since `virtual' and `template' cannot

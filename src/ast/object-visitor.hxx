@@ -28,7 +28,6 @@ namespace ast
   void GenObjectVisitor<Const>::operator()(const_t<ClassTy>& e)
   {
     // FIXME: Some code was deleted here.
-
     e.super_get().accept(*this);
     for (const auto dec : e.chunks_get())
         dec->accept(*this);
@@ -61,10 +60,14 @@ namespace ast
   void GenObjectVisitor<Const>::operator()(const_t<MethodCallExp>& e)
   {
     // FIXME: Some code was deleted here.
-    for (auto& v : *e.args_get())
-      {
-          v->accept(*this);
-      }
+    if(e.args_get())
+    {
+
+        for (auto& v : *e.args_get())
+        {
+            v->accept(*this);
+        }
+    }
     e.object_get()->accept(*this);
   }
 

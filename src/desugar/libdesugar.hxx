@@ -27,6 +27,7 @@ namespace desugar
   {
     misc::error e;
     // FIXME: Some code was deleted here.
+    bind::bindings_compute(tree);
     e.ice_on_error_here();
     e << type::types_check(tree);
     e.ice_on_error_here();

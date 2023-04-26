@@ -35,6 +35,8 @@ namespace ast
   {
     const ast::Ast* d = nullptr;
     // FIXME: Some code was deleted here (set d using definition of e).
+
+    d = e.def_get();
     if (!d)
       return;
     ostr_ << parent_id << ":def:s -> " << reinterpret_cast<std::uintptr_t>(d)

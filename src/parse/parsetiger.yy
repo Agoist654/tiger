@@ -503,10 +503,10 @@ methchunk: methdec %prec CHUNKS                         { $$ = tp.td_.make_Metho
         | methdec methchunk                             { $$ = $2; $$->push_front(*$1); }
         ;
 
-methdec: "method" ID "(" tyfields ")" ":" typeid "=" exp
-                    { $$ = tp.td_.make_MethodDec(@$, $2,  tp.td_.make_VarChunk(@4), $7, $9); }
-        | "method" ID "(" tyfields ")"  "=" exp         
-                    { $$ = tp.td_.make_MethodDec(@$, $2,  tp.td_.make_VarChunk(@4), nullptr, $7); }
+methdec: "method" ID "(" funfields ")" ":" typeid "=" exp
+                    { $$ = tp.td_.make_MethodDec(@$, $2,  $4 , $7, $9); }
+        | "method" ID "(" funfields ")"  "=" exp         
+                    { $$ = tp.td_.make_MethodDec(@$, $2,  $4 , nullptr, $7); }
 
 
 %%

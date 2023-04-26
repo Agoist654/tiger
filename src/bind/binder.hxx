@@ -132,10 +132,8 @@ namespace bind
   {
       if (e.init_get() != nullptr)
       operator()(e.init_get());
-      if(classvector_.empty())
-      {
-        varscope_.put(e.name_get(), &e);
-      }
+      varscope_.put(e.name_get(), &e);
+
   }
 
   template <>

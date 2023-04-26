@@ -43,37 +43,36 @@ namespace inlining
   {
     return rec_funs_;
   }
-  /*
-  #include <ast/libast.hh>
-  #include <ast/pretty-printer.hh>*/
-
 
   // FIXME: Some code was deleted here.
    void Inliner::operator()(const ast::CallExp& e)
-   { 
-        if(!rec_funs_get().contains(e.def_get()))
+   {
+        if(rec_funs_get().contains(e.def_get()))
             super_type::operator()(e);
         else
         {
             exps_type* args = e.args_get();
             auto fun_ref = e.def_get();
             parse::Tweast in;
-       
-            in << "let\n";
+            parse::Tweast in2;
+
+            const Location& location = e.location_get();
             auto k = 0;
             for (auto arg : fun_ref->formals_get().decs_get())
             {
-                in << "var " << arg->name_get() << " : " << arg->type_name_get() << ":=" <<  args->at(k++);
-
-
+                in << "var " << arg->name_get() << " : " << arg->type_name_get()->name_get() << " := " <<  args->at(k++);
             }
-            in << "var res : " << fun_ref->result_get()->name_get() << " := " << fun_ref->body_get();
-            in << " in \nres\n";
-            in << " end \n";
-            /*ast::PrettyPrinter print(ostr);
-            ast::print(in);*/
 
-            result_ = std::get<ast::Exp*>(parse::parse(in));
+            in << "var res : " << fun_ref->result_get()->name_get() << " := " << recurse(*fun_ref->body_get());
+
+            ChunkList* decs = std::get<ast::ChunkList*>(parse::parse(in));
+            std::cout << "HELLO WORLD2\n";
+
+            in2 << "res";
+
+            Exp* body = std::get<ast::Exp*>(parse::parse(in2));
+            result_ = new LetExp(location, decs, body);
+
         }
    }
 

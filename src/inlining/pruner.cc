@@ -45,20 +45,20 @@ namespace inlining
 
   void Pruner::operator()(const ast::LetExp& e)
   {
-        //operator()(e.decs_get());
+        operator()(e.decs_get());
         operator()(e.body_get());
 
         const Location& location = e.location_get();
         ChunkList* decs = recurse(*e.decs_get());
+        for (auto chunk : decs->chunks_get())
+        {
+            if(dynamic_cast<ast::FunctionChunk*>(chunk) != nullptr)
+                prune(*dynamic_cast<ast::FunctionChunk*>(chunk) );
+        }
         Exp* body = recurse(*e.body_get());
         result_ = new LetExp(location, decs, body);
   }
 
-  void Pruner::operator()(const ast::FunctionChunk& e)
-  {
-     super_type::operator()(e);
-     //result_ = prune(dynamic_cast<ast::Chunk<ast::FunctionDec>*>(result_));
-  }
 
 
 } // namespace inlining

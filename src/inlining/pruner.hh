@@ -29,7 +29,7 @@ namespace inlining
     // FIXME: Some code was deleted here.
     void operator()(const ast::FunctionDec& e) override;
     void operator()(const ast::CallExp& e) override;
-    void operator()(const ast::FunctionChunk& e) override;
+    //void operator()(const ast::FunctionChunk& e) override;
     void operator()(const ast::LetExp& e) override;
 
 

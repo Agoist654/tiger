@@ -34,6 +34,7 @@ namespace callgraph
   {
     // FIXME: Some code was deleted here (Link the Caller with the CallExp's declaration)
     callgraph->fundec_link(caller, const_cast<ast::FunctionDec*>(e.def_get()));
+    super_type::operator()(e);
 
     
   }
