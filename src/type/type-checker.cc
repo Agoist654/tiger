@@ -391,7 +391,10 @@ namespace type
 
       else
           type(*e.body_get());
-      type_default(e, e.body_get()->type_get());
+      if (e.body_get() != nullptr)
+          type_default(e, e.body_get()->type_get());
+      else
+          type_default(e, &Void::instance());
   }
 
   void TypeChecker::operator()(ast::IfExp& e)
@@ -497,5 +500,23 @@ namespace type
         type_default(e, e.Type_name_get()->type_get());
 
     }
+
+    void TypeChecker::operator()(ast::SubscriptVar& e)
+    {
+        type(e.var_get());
+        type(e.index_get());
+
+        auto& t = e.var_get().type_get()->actual();
+
+        if (dynamic_cast<const type::Array*>(&t) == nullptr)
+        {
+            error(e, "subscriptvar's var's type is not an array");
+        }
+
+        check_type(e.index_get(), "index in array must integer", *&Int::instance());
+
+        type_default(e, e.var_get().type_get());
+    }
+
 
 } // namespace type
