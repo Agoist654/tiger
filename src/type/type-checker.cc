@@ -388,13 +388,11 @@ namespace type
 
       if (e.body_get() == nullptr)
           e.type_set(&Void::instance());
-
       else
+      {
           type(*e.body_get());
-      if (e.body_get() != nullptr)
           type_default(e, e.body_get()->type_get());
-      else
-          type_default(e, &Void::instance());
+      }
   }
 
   void TypeChecker::operator()(ast::IfExp& e)
@@ -464,17 +462,6 @@ namespace type
         type_default(e, &Void::instance());
     }
 
-    void TypeChecker::operator()(ast::AssignExp& e)
-    {
-        auto simplevar = dynamic_cast<const ast::SimpleVar*>(e.var_get());
-        if (var_read_only_.has(simplevar->def_get()))
-            error(e, "var in read only in for");
-
-        type(const_cast<ast::SimpleVar&>(*simplevar));
-        super_type::operator()(*e.exp_get());
-        type_default(e, &Void::instance());
-    }
-
     void TypeChecker::operator()(ast::ArrayExp& e)
     {
 
@@ -517,6 +504,22 @@ namespace type
         check_type(e.index_get(), "index in array must integer", *&Int::instance());
 
         type_default(e, e.var_get().type_get());
+    }
+
+    void TypeChecker::operator()(ast::AssignExp& e)
+    {
+        type(*e.var_get());
+        type(*e.exp_get());
+
+        if (dynamic_cast<const ast::SimpleVar*>(e.var_get()) != nullptr)
+        {
+            if (var_read_only_.has(dynamic_cast<const ast::SimpleVar*>(e.var_get())->def_get()))
+                error(e, "var in read only in for");
+        }
+
+        //type(const_cast<ast::SimpleVar&>(*simplevar));
+        //super_type::operator()(*e.exp_get());
+        type_default(e, &Void::instance());
     }
 
 
