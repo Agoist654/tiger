@@ -407,6 +407,7 @@ namespace type
       {
           type(*e.thenclause_get());
           check_type(*e.thenclause_get(), "there is no else then thenclause should be void", *&Void::instance());
+
       }
 
       else
