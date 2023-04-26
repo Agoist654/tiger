@@ -27,9 +27,9 @@ namespace desugar
     // FIXME: Some code was deleted here.
     parse::Tweast in;
     // && e.left_get().type_get()  && e.right_get().type_get() == 
-    if(desugar_string_cmp_p_)
+    if(desugar_string_cmp_p_ &&  e.left_get().type_get() == &type::String::instance() && e.right_get().type_get() == &type::String::instance())
     {
-      
+
        switch(e.oper_get())
        {
            case ast::OpExp::Oper::add:
