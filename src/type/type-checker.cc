@@ -166,9 +166,9 @@ namespace type
 
       if (dynamic_cast<const String*>(&e.left_get().type_get()->actual()) != nullptr && dynamic_cast<const String*>(&e.right_get().type_get()->actual()) != nullptr)
       {
-          if (e.oper_get() == ast::OpExp::Oper::sub || e.oper_get() == ast::OpExp::Oper::mul || e.oper_get() == ast::OpExp::Oper::div)
+          if (e.oper_get() == ast::OpExp::Oper::add || e.oper_get() == ast::OpExp::Oper::sub || e.oper_get() == ast::OpExp::Oper::mul || e.oper_get() == ast::OpExp::Oper::div)
           {
-              error(e, "cant do arithmetic on string (expect +)");
+              error(e, "cant do arithmetic on string");
           }
       }
 
