@@ -113,6 +113,7 @@ namespace bind
       forvector_.clear();
 
       e.def_set(&e);
+      super_type::operator()(e.init_get());
       //varscope_.put(e.name_get(), &e);
       forvector_ = tmp;
       varscope_.put(e.name_get(), &e);

@@ -509,15 +509,13 @@ namespace type
   void TypeChecker::operator()(ast::IfExp& e)
   {
 
-      type_default(*e.test_get(), &Int::instance());
+      type(*e.test_get());
+      type(*e.thenclause_get());
+
       check_type(*e.test_get(), "if test should be int", *&Int::instance());
 
       if (e.elseclause_get() == nullptr)
-      {
-          type(*e.thenclause_get());
           check_type(*e.thenclause_get(), "there is no else then thenclause should be void", *&Void::instance());
-
-      }
 
       else
           check_types(e, "then type: ", *e.thenclause_get(), "else type: ", *e.elseclause_get());
