@@ -166,20 +166,12 @@ namespace type
 
       if (dynamic_cast<const String*>(&e.left_get().type_get()->actual()) != nullptr && dynamic_cast<const String*>(&e.right_get().type_get()->actual()) != nullptr)
       {
-          if (e.oper_get() == ast::OpExp::Oper::eq || e.oper_get() == ast::OpExp::Oper::ne)
+          if (e.oper_get() == ast::OpExp::Oper::sub || e.oper_get() == ast::OpExp::Oper::mul || e.oper_get() == ast::OpExp::Oper::div)
           {
-              check_type(e.left_get(), "left operand is a string can't be op with artimetiaue op", *e.type_get());
-              check_type(e.right_get(), "right opreand is a string can't be op with artimetiaue op", *e.type_get());
+              error(e, "cant do arithmetic on string (expect +)");
           }
       }
 
-/*
-      if (e.oper_get() == ast::OpExp::Oper::add || e.oper_get() == ast::OpExp::Oper::sub || e.oper_get() == ast::OpExp::Oper::mul || e.oper_get() == ast::OpExp::Oper::div)
-      {
-          check_type(e.left_get(), "op arthm with left operand not a int", &Int::instance());
-          check_type(e.right_get(), "op arthm with right operand not a int", &Int::instance());
-      }
-*/
   }
 
   // FIXME: Some code was deleted here.
@@ -209,25 +201,34 @@ namespace type
   {
     // FIXME: Some code was deleted here.
 
-          e.formals_get().accept(*this);
-          if(e.result_get())
-          {
-            type(*e.result_get());
-            type_default(e, e.result_get()->type_get());
-          }
-          else
-          {
-              e.type_set(&Void::instance());
-          }
+
+      e.formals_get().accept(*this);
+      if(e.result_get())
+      {
+          type(*e.result_get());
+          type_default(e, e.result_get()->type_get());
+      }
+
+      else
+      {
+          e.type_set(&Void::instance());
+      }
   }
 
   // Type check this function's body.
   template <>
-  void TypeChecker::visit_dec_body<ast::FunctionDec>(ast::FunctionDec& e)
-  {
-    if (e.body_get())
-      visit_routine_body<Function>(e);
-  }
+      void TypeChecker::visit_dec_body<ast::FunctionDec>(ast::FunctionDec& e)
+      {
+          if (e.body_get())
+          {
+              visit_routine_body<Function>(e);
+
+              if (e.name_get() == "_main")
+              {
+                  check_type(*e.body_get(), "main's type must be void", *&Void::instance());
+              }
+          }
+      }
 
   /*---------------.
   | Visit VarDec.  |
