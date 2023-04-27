@@ -42,7 +42,7 @@ namespace type {
     }*/
     bool Record::compatible_with(const Type &other) const {
         const Nil nil;
-        if (other.actual() == nil)
+        if (dynamic_cast<const Nil*>(&other))
             return true;
         const Record& other_record = dynamic_cast<const Record&>(other.actual());
         if (other_record == other) {

@@ -85,6 +85,11 @@ namespace type
     if (!error_)
       {
         // FIXME: Some code was deleted here.
+        if(dynamic_cast<const Nil*>(&type1) != nullptr)
+            dynamic_cast<const Nil*>(&type1)->record_type_set(type2.actual());
+        else if(dynamic_cast<const Nil*>(&type2) != nullptr)
+            dynamic_cast<const Nil*>(&type2)->record_type_set(type1.actual());
+
       }
   }
 
@@ -131,6 +136,23 @@ namespace type
           e.type_set(type);
       }
   }
+
+  void TypeChecker::operator()(ast::SubscriptVar& e)
+  {
+      type(e.var_get());
+      type(e.index_get());
+
+      auto& t = e.var_get().type_get()->actual();
+
+      if (dynamic_cast<const type::Array*>(&t) == nullptr)
+      {
+          error(e, "subscriptvar's var's type is not an array");
+      }
+
+      check_type(e.index_get(), "index in array must integer", *&Int::instance());
+
+      type_default(e, dynamic_cast<const Array*>(&e.var_get().type_get()->actual())->arrtype_get());
+    }
 
 
   // FIXME: Some code was deleted here.
@@ -194,6 +216,37 @@ namespace type
 
         type_default(e, e.type_name_get()->type_get());
   }
+
+    void TypeChecker::operator()(ast::ArrayExp& e)
+    {
+
+        type(*e.Type_name_get());
+        super_type::operator()(e.Type_name_get());
+        type(*e.size_get());
+        type(*e.init_get());
+
+        check_type(*e.size_get(), "array size is not a integer ", *&Int::instance());
+
+
+        if (dynamic_cast<ast::ArrayTy*>(&e.Type_name_get()->def_get()->ty_get()) != nullptr)
+        {
+            auto imma_def = dynamic_cast<ast::ArrayTy*>(&e.Type_name_get()->def_get()->ty_get());
+            check_types(e, "type inside the array expected: ", imma_def->base_type_get(), "got: ", *e.init_get());
+        }
+
+        else
+        {
+            //je fais un checktype avec un type random pour soulever une erreur
+            std::cout << "HELLO WORLD\n";
+            check_type(*e.Type_name_get(), "arrayexp's namety is not a array", *&Void::instance());
+        }
+
+        type_default(e, e.Type_name_get()->type_get());
+
+    }
+
+
+
 
   void TypeChecker::operator()(ast::OpExp& e)
   {
@@ -519,51 +572,6 @@ namespace type
     {
         type_default(e, &Void::instance());
     }
-
-    void TypeChecker::operator()(ast::ArrayExp& e)
-    {
-
-        type(*e.Type_name_get());
-        super_type::operator()(e.Type_name_get());
-        type(*e.size_get());
-        type(*e.init_get());
-
-        check_type(*e.size_get(), "array size is not a integer ", *&Int::instance());
-
-
-        if (dynamic_cast<ast::ArrayTy*>(&e.Type_name_get()->def_get()->ty_get()) != nullptr)
-        {
-            auto imma_def = dynamic_cast<ast::ArrayTy*>(&e.Type_name_get()->def_get()->ty_get());
-            check_types(e, "type inside the array expected: ", imma_def->base_type_get(), "got: ", *e.init_get());
-        }
-
-        else
-        {
-            //je fais un checktype avec un type random pour soulever une erreur
-            check_type(*e.Type_name_get(), "arrayexp's namety is not a array", *&Void::instance());
-        }
-
-        type_default(e, e.Type_name_get()->type_get());
-
-    }
-
-    void TypeChecker::operator()(ast::SubscriptVar& e)
-    {
-        type(e.var_get());
-        type(e.index_get());
-
-        auto& t = e.var_get().type_get()->actual();
-
-        if (dynamic_cast<const type::Array*>(&t) == nullptr)
-        {
-            error(e, "subscriptvar's var's type is not an array");
-        }
-
-        check_type(e.index_get(), "index in array must integer", *&Int::instance());
-
-        type_default(e, e.var_get().type_get());
-    }
-
     void TypeChecker::operator()(ast::AssignExp& e)
     {
         type(*e.var_get());
