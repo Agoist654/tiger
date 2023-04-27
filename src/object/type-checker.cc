@@ -59,6 +59,11 @@ namespace object
   void TypeChecker::operator()(ast::NameTy& e)
   {
     // FIXME: Some code was deleted here.
+     if (e.name_get().get() == "Object")
+         type_default(e, &type::Class::object_instance());
+    
+     else
+         super_type::operator()(e);
   }
 
   /*-----------------.

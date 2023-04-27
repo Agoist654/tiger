@@ -164,6 +164,7 @@ namespace type
     void operator()(ast::StringExp&) override;
 
     void operator()(ast::SubscriptVar&) override;
+    void operator()(ast::FieldVar& e) override;
 
     // Complex values.
     void operator()(ast::RecordExp& e) override;

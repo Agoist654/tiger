@@ -116,6 +116,23 @@ namespace type
     e.type_set(e.def_get()->type_get());
   }
 
+  void TypeChecker::operator()(ast::FieldVar& e)
+  {
+    // FIXME: Some code was deleted here.
+      super_type::operator()(e);
+      if(dynamic_cast<const Record*>(&e.var_get()->type_get()->actual()) == nullptr)
+          error(e, "field's var type is not a record");
+      else
+      {
+
+          auto type = dynamic_cast<const Record*>(&e.var_get()->type_get()->actual())->field_type(e.name_get());
+          if(type == nullptr)
+              error(e, "tried to access to an inexistant field");
+          e.type_set(type);
+      }
+  }
+
+
   // FIXME: Some code was deleted here.
 
   /*-----------------.
@@ -147,6 +164,35 @@ namespace type
   void TypeChecker::operator()(ast::RecordExp& e)
   {
     // FIXME: Some code was deleted here.
+        type(*e.type_name_get());
+        super_type::operator()(e.type_name_get());
+
+        if (dynamic_cast<ast::RecordTy*>(&e.type_name_get()->def_get()->ty_get()) != nullptr)
+        {
+            auto imma_def = dynamic_cast<ast::RecordTy*>(&e.type_name_get()->def_get()->ty_get());
+            auto k = 0;
+            if( e.fields_get()->size() != imma_def->fields_get()->size())
+                error(e, "numbers of fields in record insantiation do no match");
+            for (auto field_init : *e.fields_get())
+            {
+
+                super_type::operator()(field_init);
+                if(field_init->name_get() != imma_def->fields_get()->at(k)->name_get())
+                {
+                    error(e, "mismatch record field's name)");
+                }
+                check_types(e, "the field " + field_init->name_get().get() +"is type: ", field_init->init_get(), "expected: ", imma_def->fields_get()->at(k++)->type_name_get());
+            }
+
+        }
+
+        else
+        {
+            //je fais un checktype avec un type random pour soulever une erreur
+            error(e, "recordexp's namety is not a record");
+        }
+
+        type_default(e, e.type_name_get()->type_get());
   }
 
   void TypeChecker::operator()(ast::OpExp& e)
@@ -349,6 +395,17 @@ namespace type
   void TypeChecker::operator()(ast::RecordTy& e)
   {
     // FIXME: Some code was deleted here.
+    auto record = new Record();
+    created_type_default(e, record);
+    type_default(e, record);
+    for (auto field : *e.fields_get())
+    {
+        super_type::operator()(field);
+        record->field_add(field->name_get(), *field->type_name_get().type_get());
+    }
+
+    e.type_set(record);
+
   }
 
   void TypeChecker::operator()(ast::ArrayTy& e)

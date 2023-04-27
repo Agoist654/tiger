@@ -30,29 +30,29 @@ namespace desugar
     if(desugar_string_cmp_p_ &&  e.left_get().type_get() == &type::String::instance() && e.right_get().type_get() == &type::String::instance())
     {
 
-       switch(e.oper_get())
-       {
-           case ast::OpExp::Oper::add:
-               in << "concat(" << e.left_get() << ", " << e.right_get() << ")";
-               break;
-           case ast::OpExp::Oper::eq:
-               in << "streq(" << e.left_get() << ", " << e.right_get() << ")";
-               break;
-           case ast::OpExp::Oper::ne:
-               in << "streq(" << e.left_get() << ", " << e.right_get() << ") = 0";
-               break;
-           case ast::OpExp::Oper::lt:
-                in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") <= 0";
-               break;
-           case ast::OpExp::Oper::le:
-               in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") >= 0";
-               break;
-           case ast::OpExp::Oper::gt:
-               in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") > 0";
-               break;
-           case ast::OpExp::Oper::ge:
-               in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") >= 0";
-               break;
+               switch(e.oper_get())
+               {
+                   case ast::OpExp::Oper::add:
+                       in << "concat(" << e.left_get() << ", " << e.right_get() << ")";
+                       break;
+                   case ast::OpExp::Oper::eq:
+                       in << "streq(" << e.left_get() << ", " << e.right_get() << ")";
+                       break;
+                   case ast::OpExp::Oper::ne:
+                       in << "streq(" << e.left_get() << ", " << e.right_get() << ") = 0";
+                       break;
+                   case ast::OpExp::Oper::lt:
+                        in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") < 0";
+                       break;
+                   case ast::OpExp::Oper::le:
+                       in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") <= 0";
+                       break;
+                   case ast::OpExp::Oper::gt:
+                       in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") > 0";
+                       break;
+                   case ast::OpExp::Oper::ge:
+                       in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") >= 0";
+                       break;
 
        }
        result_ = std::get<ast::Exp*>(parse::parse(in));
