@@ -66,7 +66,6 @@ namespace inlining
             in << "var res : " << fun_ref->result_get()->name_get() << " := " << recurse(*fun_ref->body_get());
 
             ChunkList* decs = std::get<ast::ChunkList*>(parse::parse(in));
-            std::cout << "HELLO WORLD2\n";
 
             in2 << "res";
 

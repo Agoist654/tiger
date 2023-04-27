@@ -26,7 +26,7 @@ namespace object
   void Binder::operator()(ast::SimpleVar& e)
   {
     // FIXME: Some code was deleted here.
-    if(e.name_get() == "self")
+    if(e.name_get() == "self" && within_class_ty_)
     {
        if(within_method_dec_ && !overrided_self_)
        {
@@ -36,12 +36,7 @@ namespace object
        }
     }
     //std::cout << "OUTSIDE\n";
-    if(varscope_.get_back_map().contains(e.name_get()))
-    {
-        //std::cout << "FOUND " << &e << ":" ;
-        e.def_set(varscope_.get_back_map().find(e.name_get())->second);
-        std::cout << e.def_get();
-    }
+    super_type::operator()(e);
 
   }
 

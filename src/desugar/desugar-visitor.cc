@@ -42,13 +42,13 @@ namespace desugar
                in << "streq(" << e.left_get() << ", " << e.right_get() << ") = 0";
                break;
            case ast::OpExp::Oper::lt:
-                in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") = -1";
+                in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") <= 0";
                break;
            case ast::OpExp::Oper::le:
                in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") >= 0";
                break;
            case ast::OpExp::Oper::gt:
-               in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") > 1";
+               in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") > 0";
                break;
            case ast::OpExp::Oper::ge:
                in << "strcmp(" << e.left_get() << ", " << e.right_get() << ") >= 0";
