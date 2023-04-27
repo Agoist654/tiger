@@ -17,7 +17,8 @@ namespace escapes
             vars_[&e] = funvector_.back();
             //std::cout << "vardec set to 0:" << e.name_get() << "\n";
             e.escape_set(0);
-            super_type::operator()(e.init_get());
+            if (e.init_get() != nullptr)
+                super_type::operator()(e.init_get());
 
     }
 
