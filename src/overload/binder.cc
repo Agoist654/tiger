@@ -42,6 +42,19 @@ namespace overload
           undeclared("undeclared function:", e);
       }
 
+    else
+      {
+          //e.def_set(funscope_.get_back_map().find(e.name_get())->second);
+          if (e.args_get())
+          {
+              for (auto& v : *e.args_get())
+              {
+                  super_type::operator()(v);
+              }
+          }
+      }
+
+
   }
 
   // Insert the prototype of the function in the environment.
@@ -63,8 +76,8 @@ namespace overload
         if (m.contains(dec->name_get()))
         {
             //check_main(e);
-            redefinition(*m.find(dec->name_get())->second, *dec);
-            return;
+            //redefinition(*m.find(dec->name_get())->second, *dec);
+            //return;
         }
         m[dec->name_get()] = dec;
         visit_dec_header(*dec);

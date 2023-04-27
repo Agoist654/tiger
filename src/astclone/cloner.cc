@@ -150,7 +150,7 @@ namespace astclone
     Exp* thenclause = recurse(*e.thenclause_get());
     Exp* elseclause = nullptr;
     if( e.elseclause_get())
-        Exp* elseclause = recurse(*e.elseclause_get());
+        elseclause = recurse(*e.elseclause_get());
     result_ = new IfExp(location, test, thenclause, elseclause);
 
 
