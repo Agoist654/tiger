@@ -37,7 +37,7 @@ namespace overload
   void Binder::operator()(ast::CallExp& e)
   {
     // FIXME: Some code was deleted here.
-    if (!funscope_.get_back_map().contains(e.name_get()))
+    if (overfuns_.get(e.name_get()).first == overfuns_.get(e.name_get()).second)
       {
           undeclared("undeclared function:", e);
       }
@@ -45,6 +45,10 @@ namespace overload
     else
       {
           //e.def_set(funscope_.get_back_map().find(e.name_get())->second);
+          for (auto it = overfuns_.get(e.name_get()).first; it != overfuns_.get(e.name_get()).second; it++)
+          {
+                overfun_bindings_.emplace(&e, it->second);
+          }
           if (e.args_get())
           {
               for (auto& v : *e.args_get())
@@ -75,7 +79,7 @@ namespace overload
     {
         if (m.contains(dec->name_get()))
         {
-            //check_main(e);
+            check_main(*dec);
             //redefinition(*m.find(dec->name_get())->second, *dec);
             //return;
         }
