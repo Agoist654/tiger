@@ -51,8 +51,8 @@ namespace inlining
             super_type::operator()(e);
         else
         {
-            exps_type* args = e.args_get();
-            auto fun_ref = e.def_get();
+            exps_type* args = recurse_collection(*e.args_get());
+            auto fun_ref = recurse(*e.def_get());
             parse::Tweast in;
             parse::Tweast in2;
 
