@@ -12,7 +12,7 @@ namespace type
   // FIXME: Some code was deleted here.
   inline void Array::arrtype_set(const Type& type)
   {
-      *arrtype_ = type;
+      arrtype_ = const_cast<Type*>(&type);
   }
   inline Type* Array::arrtype_get() const
   {

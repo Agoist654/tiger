@@ -86,9 +86,9 @@ namespace type
       {
         // FIXME: Some code was deleted here.
         if(dynamic_cast<const Nil*>(&type1) != nullptr)
-            dynamic_cast<const Nil*>(&type1)->record_type_set(type2.actual());
+            dynamic_cast<const Nil*>(&type1)->record_type_set(type2);
         else if(dynamic_cast<const Nil*>(&type2) != nullptr)
-            dynamic_cast<const Nil*>(&type2)->record_type_set(type1.actual());
+            dynamic_cast<const Nil*>(&type2)->record_type_set(type1);
 
       }
   }
@@ -152,6 +152,11 @@ namespace type
       check_type(e.index_get(), "index in array must integer", *&Int::instance());
 
       type_default(e, dynamic_cast<const Array*>(&e.var_get().type_get()->actual())->arrtype_get());
+      //std::cout << "\nsubscript "<< &e.var_get().type_get()->actual();
+      //std::cout << "\n" << dynamic_cast<const Array*>(&e.var_get().type_get()->actual())->arrtype_get();
+      //std::cout << "\n" << e.type_get() << " " << e.type_get()->actual() ;
+
+      //std::cout << dynamic_cast<const Array*>(&e.var_get().type_get()->actual());
     }
 
 
@@ -237,7 +242,7 @@ namespace type
         else
         {
             //je fais un checktype avec un type random pour soulever une erreur
-            std::cout << "HELLO WORLD\n";
+            //std::cout << "HELLO WORLD\n";
             check_type(*e.Type_name_get(), "arrayexp's namety is not a array", *&Void::instance());
         }
 
@@ -438,7 +443,10 @@ namespace type
           e.type_set(e.def_get()->type_constructor_get());
 
       else if (e.name_get().get() == "int")
+        {
           type_default(e, &Int::instance());
+          //std::cout << "\n<INT>\n";
+        }
 
       else//string
           type_default(e, &String::instance());
@@ -464,13 +472,18 @@ namespace type
   void TypeChecker::operator()(ast::ArrayTy& e)
   {
     // FIXME: Some code was deleted here.
+     // operator()(e.base_type_get());
+      type(e.base_type_get());
 
       auto array = new Array();
       created_type_default(e, array);
       type_default(e, array);
+      //e.type_set(array);
       array->arrtype_set(*e.base_type_get().type_get());
-      e.type_set(array);
-      super_type::operator()(e.base_type_get());
+      //e.type_set(array);
+      //std::cout << "arrayTy " << e.type_get() << "\n";
+      //std::cout << "base_type " << e.base_type_get().type_get() << " INT" << &Int::instance() << " array " << array->arrtype_get();
+      //super_type::operator()(e.base_type_get());
   }
 
 
@@ -573,6 +586,7 @@ namespace type
     void TypeChecker::operator()(ast::AssignExp& e)
     {
         type(*e.var_get());
+        //std::cout << "\nAssign " << e.var_get()->type_get() << "\n";
         type(*e.exp_get());
 
         if (dynamic_cast<const ast::SimpleVar*>(e.var_get()) != nullptr)
@@ -584,6 +598,8 @@ namespace type
         //type(const_cast<ast::SimpleVar&>(*simplevar));
         //super_type::operator()(*e.exp_get());
         type_default(e, &Void::instance());
+        //std::cout << "\nAssign " << e.var_get()->type_get() << "\n";
+
     }
 
 
