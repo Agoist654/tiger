@@ -78,7 +78,7 @@ namespace type
     error_ << misc::error::error_type::type << ast.location_get()
            << ": check type " << misc::incendl << exp1 << " type: " << type1
            << misc::iendl << exp2 << " type: " << type2 << misc::decendl;
-               //("expected type: " << type2 << "got: " << type1)
+             //("expected type: " << type2 << "got: " << type1)
   }
 
     // If any of the type is Nil, set its `record_type_` to the other type.
@@ -233,16 +233,22 @@ namespace type
         check_type(*e.size_get(), "array size is not a integer ", *&Int::instance());
 
 
-        if (dynamic_cast<ast::ArrayTy*>(&e.Type_name_get()->def_get()->ty_get()) != nullptr)
+        if (dynamic_cast<const Array*>(&e.Type_name_get()->type_get()->actual()) != nullptr)
         {
-            auto imma_def = dynamic_cast<ast::ArrayTy*>(&e.Type_name_get()->def_get()->ty_get());
-            check_types(e, "type inside the array expected: ", imma_def->base_type_get(), "got: ", *e.init_get());
+            //auto imma_def = dynamic_cast<ast::ArrayTy*>(&e.Type_name_get()->def_get()->ty_get()->actual());
+            auto imma_actual = dynamic_cast<const Array*>(&e.Type_name_get()->type_get()->actual());
+
+            //auto imma_array = dynamic_cast<>();
+            check_types(e, "type inside the array expected: ", *imma_actual->arrtype_get(), "got: ", e.init_get()->type_get()->actual());
         }
 
+            //auto imma_def = dynamic_cast<const Array*>(&e.Type_name_get()->def_get()->ty_get().type_get()->actual());
+            //check_types(e, "type inside the array expected: ", imma_def, "got: ", *e.init_get());
         else
         {
             //je fais un checktype avec un type random pour soulever une erreur
             //std::cout << "HELLO WORLD\n";
+
             check_type(*e.Type_name_get(), "arrayexp's namety is not a array", *&Void::instance());
         }
 
@@ -276,6 +282,12 @@ namespace type
           }
       }
 
+      //on a vu aue r et l etait de meme type
+      if (dynamic_cast<const Record*>(&e.left_get().type_get()->actual()) != nullptr || dynamic_cast<const Array*>(&e.left_get().type_get()->actual()) != nullptr)
+      {
+          if (e.oper_get() != ast::OpExp::Oper::eq && e.oper_get() != ast::OpExp::Oper::ne)
+              error(e, "= and <> are the only operation accepted for array and record");
+      }
   }
 
   // FIXME: Some code was deleted here.
