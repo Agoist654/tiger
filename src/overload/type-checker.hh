@@ -30,6 +30,23 @@ namespace overload
     virtual ~TypeChecker() = default;
 
     // FIXME: Some code was deleted here.
+    void operator()(ast::CallExp& e) override;
+    const overfun_bindings_type& overfun_bindings_get();
+    bool  check_types(const ast::Ast& ast,
+                                const std::string& exp1,
+                                const type::Type& type1,
+                                const std::string& exp2,
+                                const type::Type& type2);
+      bool      check_types(const ast::Ast& ast,
+                                const std::string& exp1,
+                                ast::Typable& type1,
+                                const std::string& exp2,
+                                ast::Typable& type2);
+
+    
+//template <class D> void chunk_visit(ast::Chunk<D>& e)
+
+
   private:
     const overfun_bindings_type& overfun_bindings_;
   };
