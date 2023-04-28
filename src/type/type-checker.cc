@@ -351,7 +351,7 @@ namespace type
           auto t = type(*e.type_name_get());
           if (e.init_get() != nullptr)
                 check_types(e, "type should be: ", *e.type_name_get(), "got: ", *e.init_get());
-          type_default(e, t);
+          type_set(e, t);
       }
   }
 

@@ -41,21 +41,11 @@ namespace type {
                                                         //...soit il est nil
     }*/
     bool Record::compatible_with(const Type &other) const {
-        const Nil nil;
         if (dynamic_cast<const Nil*>(&other))
             return true;
         const Record& other_record = dynamic_cast<const Record&>(other.actual());
-        if (other_record == other) {
-            if (fields_.size() == other_record.fields_.size()) {
-                for (std::size_t i = 0; i < fields_.size(); ++i) {
-                    if (fields_[i].name_get() != other_record.fields_[i].name_get()
-                        || !fields_[i].type_get().compatible_with(other_record.fields_[i].type_get())) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
+        if (other_record == other)
+            return *this == other_record;
         return false;
     }
 } // namespace type

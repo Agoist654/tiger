@@ -63,7 +63,7 @@ namespace desugar
       super_type::operator()(e);
       if(e.name_get() == "main_")
       {
-        std::cout << "HELLO WORLD\n";
+        //std::cout << "HELLO WORLD\n";
 
         parse::Tweast in;
 
